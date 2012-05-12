@@ -2,21 +2,25 @@ package org.verba.stardict;
 
 public class WordCoordinates {
 	private String targetWord;
+	private long wordDefinitionOffset;
+	private long wordDefinitionLength;
 	
-	public WordCoordinates(String aTargetWord) {
+	public WordCoordinates(String aTargetWord, long aWordDefinitionOffset, long aWordDefinitionLength) {
 		targetWord = aTargetWord;
+		wordDefinitionOffset = aWordDefinitionOffset;
+		wordDefinitionLength = aWordDefinitionLength;
 	}
 
 	public String getTargetWord() {
 		return targetWord;
 	}
 
-	public String getWordDataOffset() {
-		return "aaaa";
+	public long getWordDefinitionOffset() {
+		return wordDefinitionOffset;
 	}
 
-	public int getWordDataSize() {
-		return 1650614882;
+	public long getWordDefinitionLength() {
+		return wordDefinitionLength;
 	}
 
 }
