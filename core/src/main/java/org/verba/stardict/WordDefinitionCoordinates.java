@@ -1,11 +1,11 @@
 package org.verba.stardict;
 
-public class WordCoordinates {
+public class WordDefinitionCoordinates {
 	private String targetWord;
 	private long wordDefinitionOffset;
-	private long wordDefinitionLength;
+	private int wordDefinitionLength;
 	
-	public WordCoordinates(String aTargetWord, long aWordDefinitionOffset, long aWordDefinitionLength) {
+	public WordDefinitionCoordinates(String aTargetWord, long aWordDefinitionOffset, int aWordDefinitionLength) {
 		targetWord = aTargetWord;
 		wordDefinitionOffset = aWordDefinitionOffset;
 		wordDefinitionLength = aWordDefinitionLength;
@@ -19,8 +19,12 @@ public class WordCoordinates {
 		return wordDefinitionOffset;
 	}
 
-	public long getWordDefinitionLength() {
+	public int getWordDefinitionLength() {
 		return wordDefinitionLength;
+	}
+
+	public boolean matches(String wordToCompareWith) {
+		return targetWord.startsWith(wordToCompareWith);
 	}
 
 }

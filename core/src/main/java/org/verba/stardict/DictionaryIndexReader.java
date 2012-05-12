@@ -2,39 +2,46 @@ package org.verba.stardict;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.PushbackInputStream;
 import java.nio.ByteBuffer;
 
+import org.verba.util.InputStreamReader;
+
 public class DictionaryIndexReader {
-	private PushbackInputStream dictionaryIndexPayloadStream;
+	private InputStreamReader streamReader;
 	private ByteBuffer targetWordBuffer;
 	
 	int nextByte = 0;
 	
 	public DictionaryIndexReader(InputStream aDictionaryIndexPayloadStream) {
-		dictionaryIndexPayloadStream = new PushbackInputStream(aDictionaryIndexPayloadStream);
+		streamReader = new InputStreamReader(aDictionaryIndexPayloadStream);
 		targetWordBuffer = ByteBuffer.allocate(256);
-	}
-
-	public WordCoordinates readWordCoordinates() throws IOException {		
-		return new WordCoordinates(readTargetWord(), readWordDefinitionOffset(), readWordDefinitionLength());
 	}
 	
 	public boolean hasNextWordDefinition() throws IOException {
-		return !nextByteWillBeEndOfStream();
+		return !streamReader.isNextByteEndOfStream();
+	}
+
+	public WordDefinitionCoordinates readWordCoordinates() throws IOException {		
+		return new WordDefinitionCoordinates(readTargetWord(), readWordDefinitionOffset(), readWordDefinitionLength());
+	}
+	
+	public void close() throws IOException {
+		streamReader.close();
 	}
 
 	private String readTargetWord() throws IOException {
-		for (readNextByte(); !isEndOfStreamReached() && !isEndOfTargetWordReached(); readNextByte()) {
-			targetWordBuffer.put((byte) nextByte);
+		for (readNextByte(); !isEndOfTargetWordReached(); readNextByte()) {
+			appendByteToTheTargetWord();
 		}
 		
-		ensureNotEndOfStream();
-		
-		return flushFromTargetWordBuffer();
+		return getTargetWord();
 	}
 
-	private String flushFromTargetWordBuffer() {
+	private void appendByteToTheTargetWord() {
+		targetWordBuffer.put((byte) nextByte);
+	}
+
+	private String getTargetWord() {
 		String targetWord = new String(targetWordBuffer.array(), 0, targetWordBuffer.position());
 		targetWordBuffer.rewind();
 		
@@ -49,59 +56,18 @@ public class DictionaryIndexReader {
 		}
 	}
 
-	private boolean isEndOfStreamReached() throws IOException {
-		return isEndOfStreamByte(nextByte);
-	}
-	
-	private boolean isEndOfStreamByte(int byteToCheck) throws IOException {
-		if (byteToCheck == -1) {
-			return true;
-		} else {
-			return false;
-		}
-	}
-
 	private long readWordDefinitionOffset() throws IOException {
-		return convertBytesToLong(readNextBytes(4));
+		return convertBytesToLong(streamReader.readNextBytes(4));
 	}
 	
-	private long readWordDefinitionLength() throws IOException {
-		return convertBytesToLong(readNextBytes(4));
+	private int readWordDefinitionLength() throws IOException {
+		return (int) convertBytesToLong(streamReader.readNextBytes(4));
 	}
 
 	private void readNextByte() throws IOException {
-		nextByte = dictionaryIndexPayloadStream.read();
+		nextByte = streamReader.readNextByte();
 	}
-	
-	private boolean nextByteWillBeEndOfStream() throws IOException {
-		int byteAhead = dictionaryIndexPayloadStream.read();
-		boolean nextByteEndOfStream = isEndOfStreamByte(byteAhead);
-		dictionaryIndexPayloadStream.unread(byteAhead);
-		
-		return nextByteEndOfStream;
-	}
-	
-	private byte[] readNextBytes(int numOfBytesToRead) throws IOException {
-		byte[] byteBuffer = new byte[numOfBytesToRead];
-		
-		int numOfBytesRead = dictionaryIndexPayloadStream.read(byteBuffer);
-		ensureDidNotHitEndOfStream(numOfBytesToRead, numOfBytesRead);
-		
-		return byteBuffer;
-	}
-	
-	private void ensureNotEndOfStream() throws IOException {
-		if (isEndOfStreamReached()) {
-			throw new RuntimeException("Unexpected index end reached while reading target word");
-		}
-	}
-	
-	private void ensureDidNotHitEndOfStream(int numOfBytesToRead, int numOfBytesRead) {
-		if (numOfBytesRead != numOfBytesToRead) {
-			throw new RuntimeException("Unexpected index end reached while reading word definition offset");
-		}
-	}
-	
+
 	private long convertBytesToLong(byte[] byteBuffer) {
 		long value = 0;
 		
