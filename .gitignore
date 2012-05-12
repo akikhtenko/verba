@@ -6,7 +6,7 @@
 *.ear
 .project
 .classpath
-.settings/*
+.settings/
 
-target/*
-bin/*
+target/
+bin/
