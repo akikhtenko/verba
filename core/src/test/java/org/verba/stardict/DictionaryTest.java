@@ -44,19 +44,4 @@ public class DictionaryTest {
 		verify(mockedWordDefinitionRepository).find(mockedCoordinates);
 		assertThat(wordDefinition, is(mockedWordDefinition));
 	}
-	
-	@SuppressWarnings("unchecked")
-	@Test(expected = RuntimeException.class)
-	public void shouldFailIfProblemWhenLookingForWordDefinitionCoordinatesInRepository() throws IOException, WordDefinitionCoordinatesNotFoundException {
-		when(mockedWordDefinitionCoordinatesRepository.find(WORD_TO_LOOK_FOR)).thenThrow(IOException.class);
-		dictionary.lookup(WORD_TO_LOOK_FOR);
-	}
-	
-	@SuppressWarnings("unchecked")
-	@Test(expected = RuntimeException.class)
-	public void shouldFailIfProblemWhenLookingForWordDefinitionInRepository() throws IOException, WordDefinitionCoordinatesNotFoundException {
-		when(mockedWordDefinitionCoordinatesRepository.find(WORD_TO_LOOK_FOR)).thenReturn(mockedCoordinates);
-		when(mockedWordDefinitionRepository.find(mockedCoordinates)).thenThrow(IOException.class);
-		dictionary.lookup(WORD_TO_LOOK_FOR);
-	}
 }
