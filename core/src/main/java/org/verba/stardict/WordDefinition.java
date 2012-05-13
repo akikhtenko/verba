@@ -10,5 +10,8 @@ public class WordDefinition {
 	public String asPlainText() {
 		return new String(rawWordDefinition);
 	}
-
+	
+	public byte[] bytes() {
+		return rawWordDefinition;
+	}
 }

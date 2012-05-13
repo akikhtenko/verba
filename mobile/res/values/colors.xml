@@ -1,0 +1,5 @@
+
+    <resources>
+        <color name="word_definition_details_background">#fff1c2</color>
+        <color name="word_definition_details_text">#000000</color>
+    </resources>
