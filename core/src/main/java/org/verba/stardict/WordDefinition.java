@@ -1,14 +1,14 @@
 package org.verba.stardict;
 
 public class WordDefinition {
-	private String wordDefinitionText;
+	private byte[] rawWordDefinition;
 	
-	public WordDefinition(String aWordDefinitionText) {
-		wordDefinitionText = aWordDefinitionText;
+	public WordDefinition(byte[] wordDefinitionBuffer) {
+		rawWordDefinition = wordDefinitionBuffer;
 	}
 	
-	public String asText() {
-		return wordDefinitionText;
+	public String asPlainText() {
+		return new String(rawWordDefinition);
 	}
 
 }

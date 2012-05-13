@@ -14,7 +14,7 @@ public class WordDefinitionRepository {
 
 	public WordDefinition find(WordDefinitionCoordinates wordCoordinates) throws IOException {
 		byte[] wordDefinitionBuffer = streamReader.readBytesAtOffset(wordCoordinates.getWordDefinitionOffset(), wordCoordinates.getWordDefinitionLength());
-		return new WordDefinition(new String(wordDefinitionBuffer));
+		return new WordDefinition(wordDefinitionBuffer);
 	}
 	
 }

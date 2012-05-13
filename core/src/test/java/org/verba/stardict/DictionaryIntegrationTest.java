@@ -7,7 +7,7 @@ import org.junit.Test;
 import org.verba.stardict.WordDefinitionCoordinatesRepository.WordDefinitionCoordinatesNotFoundException;
 
 public class DictionaryIntegrationTest {
-	private static final String WORD_TO_LOOK_FOR = "addiction";
+	private static final String WORD_TO_LOOK_FOR = "admission";
 	private static final int MILLIS_IN_SECOND = 1000;
 
 	@Test
@@ -25,7 +25,7 @@ public class DictionaryIntegrationTest {
 		
 		try {
 			WordDefinition wordDefinition = dictionary.lookup(WORD_TO_LOOK_FOR);
-			System.out.println(String.format("%s [%s]", WORD_TO_LOOK_FOR, wordDefinition.asText()));
+			System.out.println(String.format("%s [%s]", WORD_TO_LOOK_FOR, wordDefinition.asPlainText()));
 		} finally {
 			indexReader.close();
 			dictionaryStream.close();

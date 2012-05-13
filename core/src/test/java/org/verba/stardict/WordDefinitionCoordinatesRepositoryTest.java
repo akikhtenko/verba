@@ -43,9 +43,15 @@ public class WordDefinitionCoordinatesRepositoryTest {
 	
 	@Test(expected = WordDefinitionCoordinatesNotFoundException.class)
 	public void shouldFailWhenCoordinatesNotFOundInDictionaryIndex() throws IOException, WordDefinitionCoordinatesNotFoundException {
-		when(mockedIndexReader.hasNextWordDefinition()).thenReturn(false);
+		givenIndexWithoutAWordToBeFound();
 		
 		index.find(WORD_TO_LOOK_FOR);
+	}
+
+	private void givenIndexWithoutAWordToBeFound() throws IOException {
+		when(mockedIndexReader.hasNextWordDefinition()).thenReturn(true, false);
+		when(mockedIndexReader.readWordCoordinates()).thenReturn(mockedCoordinates);
+		when(mockedCoordinates.matches(WORD_TO_LOOK_FOR)).thenReturn(false);
 	}
 	
 	private void givenThreeWordDefinitionCoordinates() throws IOException {

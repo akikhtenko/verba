@@ -32,7 +32,7 @@ public class WordDefinitionRepositoryTest {
 	public void shouldGetWordDefinitionByWordDefinitionCoordinates() throws IOException {
 		WordDefinitionRepository wordsRepository = new WordDefinitionRepository(new ByteArrayInputStream(DICTIONARY_CONTENT.getBytes()));
 		WordDefinition wordDefinition = wordsRepository.find(mockedWordCoordinates);
-		assertThat(wordDefinition.asText(), is(WORD_DEFINITION));
+		assertThat(wordDefinition.asPlainText(), is(WORD_DEFINITION));
 	}
 
 	@Test(expected = RuntimeException.class)

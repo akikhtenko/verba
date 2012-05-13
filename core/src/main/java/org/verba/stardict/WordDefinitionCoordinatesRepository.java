@@ -22,6 +22,8 @@ public class WordDefinitionCoordinatesRepository {
 			wordDefinitionCoordinates = indexReader.readWordCoordinates();
 			if (wordDefinitionCoordinates.matches(targetWord)) {
 				break;
+			} else {
+				wordDefinitionCoordinates = null;
 			}
 		}
 		
