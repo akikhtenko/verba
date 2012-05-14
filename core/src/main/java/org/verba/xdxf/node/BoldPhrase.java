@@ -1,10 +1,10 @@
 package org.verba.xdxf.node;
 
 
-public class RootXdxfElement extends XdxfElement {
+public class BoldPhrase extends XdxfElement {
 
 	@Override
 	public XdxfNodeType getType() {
-		return XdxfNodeType.ROOT;
+		return XdxfNodeType.BOLD_PHRASE;
 	}
 }

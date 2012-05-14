@@ -12,11 +12,13 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.verba.xdxf.XdxfWordDefinitionPart;
 
 @RunWith(MockitoJUnitRunner.class)
 public class WordDefinitionRepositoryTest {
 	private static final String WORD_DEFINITION = "word definition 1";
 	private static final String DICTIONARY_CONTENT = "some_rubbish###" + WORD_DEFINITION + "###another_piece_of_rubbish";
+	private static final String ADJJUSTED_WORD_DEFINITION = "<ar>" + WORD_DEFINITION + "</ar>";
 	private static final String CORRUPTED_DICTIONARY_CONTENT = "some_rubbish###word defini";
 	
 	@Mock
@@ -32,7 +34,8 @@ public class WordDefinitionRepositoryTest {
 	public void shouldGetWordDefinitionByWordDefinitionCoordinates() throws IOException {
 		WordDefinitionRepository wordsRepository = new WordDefinitionRepository(new ByteArrayInputStream(DICTIONARY_CONTENT.getBytes()));
 		WordDefinition wordDefinition = wordsRepository.find(mockedWordCoordinates);
-		assertThat(wordDefinition.asPlainText(), is(WORD_DEFINITION));
+		XdxfWordDefinitionPart wordDefinitionPart = (XdxfWordDefinitionPart) wordDefinition.iterator().next();
+		assertThat(wordDefinitionPart.asPlainText(), is(ADJJUSTED_WORD_DEFINITION));
 	}
 
 	@Test(expected = RuntimeException.class)

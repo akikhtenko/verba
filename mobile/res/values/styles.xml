@@ -1,0 +1,9 @@
+<resources>
+    <style name="KeyPhrase">
+        <item name="android:textColor">#960513</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+    <style name="BoldPhrase">
+        <item name="android:textStyle">bold</item>
+    </style>
+</resources>

@@ -1,17 +1,18 @@
 package org.verba.stardict;
 
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+
+
 public class WordDefinition {
-	private byte[] rawWordDefinition;
+	private List<WordDefinitionPart> wordDefinitionParts = new LinkedList<WordDefinitionPart>();
 	
-	public WordDefinition(byte[] wordDefinitionBuffer) {
-		rawWordDefinition = wordDefinitionBuffer;
+	public void add(WordDefinitionPart wordDefinitionPart) {
+		wordDefinitionParts.add(wordDefinitionPart);
 	}
 	
-	public String asPlainText() {
-		return new String(rawWordDefinition);
-	}
-	
-	public byte[] bytes() {
-		return rawWordDefinition;
+	public Iterator<WordDefinitionPart> iterator() {
+		return wordDefinitionParts.iterator();
 	}
 }

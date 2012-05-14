@@ -1,7 +1,7 @@
 package org.verba.xdxf.node;
 
 
-public class KeyPhrase extends DefaultXdxfElement {
+public class KeyPhrase extends XdxfElement {
 
 	@Override
 	public XdxfNodeType getType() {

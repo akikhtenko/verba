@@ -5,6 +5,7 @@ import java.io.InputStream;
 
 import org.junit.Test;
 import org.verba.stardict.WordDefinitionCoordinatesRepository.WordDefinitionCoordinatesNotFoundException;
+import org.verba.xdxf.XdxfWordDefinitionPart;
 
 public class DictionaryIntegrationTest {
 	private static final String WORD_TO_LOOK_FOR = "admission";
@@ -25,7 +26,9 @@ public class DictionaryIntegrationTest {
 		
 		try {
 			WordDefinition wordDefinition = dictionary.lookup(WORD_TO_LOOK_FOR);
-			System.out.println(String.format("%s [%s]", WORD_TO_LOOK_FOR, wordDefinition.asPlainText()));
+			XdxfWordDefinitionPart wordDefinitionPart = (XdxfWordDefinitionPart) wordDefinition.iterator().next();
+			
+			System.out.println(String.format("%s [%s]", WORD_TO_LOOK_FOR, wordDefinitionPart.asPlainText()));
 		} finally {
 			indexReader.close();
 			dictionaryStream.close();

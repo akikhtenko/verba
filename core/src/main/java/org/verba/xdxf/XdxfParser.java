@@ -6,6 +6,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
+import org.verba.xdxf.handler.BoldPhraseEventHandler;
 import org.verba.xdxf.handler.KeyPhraseEventHandler;
 import org.verba.xdxf.node.XdxfElement;
 import org.xml.sax.InputSource;
@@ -36,6 +37,7 @@ public class XdxfParser {
 		XdxfContentHandler xdxfContentHandler = new XdxfContentHandler();
 		
 		xdxfContentHandler.registerXdxfElementHandler(new KeyPhraseEventHandler());
+		xdxfContentHandler.registerXdxfElementHandler(new BoldPhraseEventHandler());
 		
 		return xdxfContentHandler;
 	}
