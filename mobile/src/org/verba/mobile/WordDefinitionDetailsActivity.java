@@ -2,34 +2,31 @@ package org.verba.mobile;
 
 import static org.verba.xdxf.node.XdxfNodeType.PLAIN_TEXT;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.Iterator;
+import java.util.regex.Pattern;
 
-import org.verba.stardict.Dictionary;
-import org.verba.stardict.DictionaryIndexReader;
 import org.verba.stardict.WordDefinition;
-import org.verba.stardict.WordDefinitionCoordinatesRepository;
-import org.verba.stardict.WordDefinitionCoordinatesRepository.WordDefinitionCoordinatesNotFoundException;
-import org.verba.stardict.WordDefinitionRepository;
 import org.verba.xdxf.XdxfWordDefinitionPart;
+import org.verba.xdxf.node.ColoredPhrase;
 import org.verba.xdxf.node.XdxfElement;
 import org.verba.xdxf.node.XdxfNode;
 
 import android.app.Activity;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Environment;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.method.ScrollingMovementMethod;
+import android.text.style.ForegroundColorSpan;
 import android.text.style.TextAppearanceSpan;
 import android.widget.TextView;
 import android.widget.TextView.BufferType;
 
 public class WordDefinitionDetailsActivity extends Activity {
+	Pattern rgbColorPattern = Pattern.compile("^#\\d{6}$");
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -82,8 +79,11 @@ public class WordDefinitionDetailsActivity extends Activity {
 						- totalChildrenLength, spannable.length(), Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
 				break;
 			case COLORED_PHRASE:
-				spannable.setSpan(new TextAppearanceSpan(this, R.style.ColoredPhrase), spannable.length()
-						- totalChildrenLength, spannable.length(), Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
+				int coloredPhraseStyle = getColoredPhraseStyleResource(((ColoredPhrase) xdxfNode).getColorCode());
+
+				spannable.setSpan(new ForegroundColorSpan(coloredPhraseStyle),
+						spannable.length() - totalChildrenLength, spannable.length(),
+						Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
 				break;
 			default:
 				break;
@@ -98,41 +98,29 @@ public class WordDefinitionDetailsActivity extends Activity {
 		}
 	}
 
+	private int getColoredPhraseStyleResource(String colorCode) {
+		int coloredPhraseStyle =
+				getResources().getIdentifier(colorCode.toLowerCase(), "color", getApplicationInfo().packageName);
+
+		if (coloredPhraseStyle == 0) {
+			if (rgbColorPattern.matcher(colorCode).matches()) {
+				coloredPhraseStyle = Color.parseColor(colorCode);
+			} else {
+				coloredPhraseStyle = getResources().getColor(R.color.default_colored_phrase);
+			}
+		} else {
+			coloredPhraseStyle = getResources().getColor(coloredPhraseStyle);
+		}
+		return coloredPhraseStyle;
+	}
+
 	private class LookupWordDefinitionTask extends AsyncTask<String, Void, WordDefinition> {
 		protected WordDefinition doInBackground(String... wordsToLookup) {
 			try {
-				return lookupWordDefinitionFromDeictionary(wordsToLookup[0]);
+				return new WordDefinitionLookup().lookupWordDefinition(wordsToLookup[0]);
 			} catch (IOException e) {
 				throw new RuntimeException(String.format("Unexpected error while looking up [%s]", wordsToLookup[0]), e);
 			}
-		}
-
-		private WordDefinition lookupWordDefinitionFromDeictionary(String wordToLookup) throws IOException {
-			File path = Environment.getExternalStoragePublicDirectory("verba");
-			File indexFile = new File(path, "dictionary.idx");
-			File dictionaryFile = new File(path, "dictionary.dict");
-			InputStream indexStream = new FileInputStream(indexFile);
-			InputStream dictionaryStream = new FileInputStream(dictionaryFile);
-
-			DictionaryIndexReader indexReader = new DictionaryIndexReader(indexStream);
-			WordDefinitionCoordinatesRepository coordinatesRepository = new WordDefinitionCoordinatesRepository(
-					indexReader);
-
-			WordDefinitionRepository definitionsRepository = new WordDefinitionRepository(dictionaryStream);
-
-			Dictionary dictionary = new Dictionary(coordinatesRepository, definitionsRepository);
-
-			WordDefinition wordDefinition = null;
-			try {
-				wordDefinition = dictionary.lookup(wordToLookup);
-			} catch (WordDefinitionCoordinatesNotFoundException e) {
-				return null;
-			} finally {
-				indexReader.close();
-				dictionaryStream.close();
-			}
-
-			return wordDefinition;
 		}
 
 		protected void onPostExecute(WordDefinition wordDefinitionFound) {
