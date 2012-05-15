@@ -1,6 +1,5 @@
 package org.verba.xdxf.node;
 
-
 public class BoldPhrase extends XdxfElement {
 
 	@Override

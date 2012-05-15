@@ -14,28 +14,30 @@ public class DictionaryIntegrationTest {
 	@Test
 	public void shouldLookupAWord() throws IOException, WordDefinitionCoordinatesNotFoundException {
 		InputStream indexStream = getClass().getClassLoader().getResourceAsStream("org/verba/stardict/dictionary.idx");
-		InputStream dictionaryStream = getClass().getClassLoader().getResourceAsStream("org/verba/stardict/dictionary.dict");
-		
+		InputStream dictionaryStream = getClass().getClassLoader().getResourceAsStream(
+				"org/verba/stardict/dictionary.dict");
+
 		DictionaryIndexReader indexReader = new DictionaryIndexReader(indexStream);
 		WordDefinitionCoordinatesRepository coordinatesRepository = new WordDefinitionCoordinatesRepository(indexReader);
-		
+
 		WordDefinitionRepository definitionsRepository = new WordDefinitionRepository(dictionaryStream);
-		
+
 		Dictionary dictionary = new Dictionary(coordinatesRepository, definitionsRepository);
 		long timeStarted = System.currentTimeMillis();
-		
+
 		try {
 			WordDefinition wordDefinition = dictionary.lookup(WORD_TO_LOOK_FOR);
 			XdxfWordDefinitionPart wordDefinitionPart = (XdxfWordDefinitionPart) wordDefinition.iterator().next();
-			
+
 			System.out.println(String.format("%s [%s]", WORD_TO_LOOK_FOR, wordDefinitionPart.asPlainText()));
 		} finally {
 			indexReader.close();
 			dictionaryStream.close();
 		}
-		
+
 		long spent = System.currentTimeMillis() - timeStarted;
-		
-		System.out.println(String.format("\nFinished lookup in %s.%s seconds", spent / MILLIS_IN_SECOND, spent % MILLIS_IN_SECOND));
+
+		System.out.println(String.format("\nFinished lookup in %s.%s seconds", spent / MILLIS_IN_SECOND, spent
+				% MILLIS_IN_SECOND));
 	}
 }

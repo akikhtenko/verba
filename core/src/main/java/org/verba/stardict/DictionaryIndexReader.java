@@ -7,24 +7,26 @@ import java.nio.ByteBuffer;
 import org.verba.util.InputStreamReader;
 
 public class DictionaryIndexReader {
+	private static final int BITS_PER_BYTE = 8;
+	private static final int MAX_WORD_LENGTH = 256;
 	private InputStreamReader streamReader;
 	private ByteBuffer targetWordBuffer;
-	
+
 	int nextByte = 0;
-	
+
 	public DictionaryIndexReader(InputStream aDictionaryIndexPayloadStream) {
 		streamReader = new InputStreamReader(aDictionaryIndexPayloadStream);
-		targetWordBuffer = ByteBuffer.allocate(256);
+		targetWordBuffer = ByteBuffer.allocate(MAX_WORD_LENGTH);
 	}
-	
+
 	public boolean hasNextWordDefinition() throws IOException {
 		return !streamReader.isNextByteEndOfStream();
 	}
 
-	public WordDefinitionCoordinates readWordCoordinates() throws IOException {		
+	public WordDefinitionCoordinates readWordCoordinates() throws IOException {
 		return new WordDefinitionCoordinates(readTargetWord(), readWordDefinitionOffset(), readWordDefinitionLength());
 	}
-	
+
 	public void close() throws IOException {
 		streamReader.close();
 	}
@@ -33,7 +35,7 @@ public class DictionaryIndexReader {
 		for (readNextByte(); !isEndOfTargetWordReached(); readNextByte()) {
 			appendByteToTheTargetWord();
 		}
-		
+
 		return getTargetWord();
 	}
 
@@ -44,22 +46,18 @@ public class DictionaryIndexReader {
 	private String getTargetWord() {
 		String targetWord = new String(targetWordBuffer.array(), 0, targetWordBuffer.position());
 		targetWordBuffer.rewind();
-		
+
 		return targetWord;
 	}
 
 	private boolean isEndOfTargetWordReached() {
-		if (nextByte == '\0') {
-			return true;
-		} else {
-			return false;
-		}
+		return nextByte == '\0';
 	}
 
 	private long readWordDefinitionOffset() throws IOException {
 		return convertBytesToLong(streamReader.readNextBytes(4));
 	}
-	
+
 	private int readWordDefinitionLength() throws IOException {
 		return (int) convertBytesToLong(streamReader.readNextBytes(4));
 	}
@@ -70,11 +68,11 @@ public class DictionaryIndexReader {
 
 	private long convertBytesToLong(byte[] byteBuffer) {
 		long value = 0;
-		
+
 		for (int i = 0; i < byteBuffer.length; i++) {
-			value = (value << 8) + (byteBuffer[i] & 0xff);
+			value = (value << BITS_PER_BYTE) + (byteBuffer[i] & 0xff);
 		}
-		
+
 		return value;
 	}
 

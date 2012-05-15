@@ -33,6 +33,7 @@ public final class R {
     }
     public static final class style {
         public static final int BoldPhrase=0x7f060001;
+        public static final int ColoredPhrase=0x7f060002;
         public static final int KeyPhrase=0x7f060000;
     }
 }

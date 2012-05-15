@@ -25,21 +25,21 @@ public class DictionaryTest {
 	private WordDefinitionCoordinates mockedCoordinates;
 	@Mock
 	private WordDefinition mockedWordDefinition;
-	
+
 	private Dictionary dictionary;
-	
+
 	@Before
 	public void prepareDictionary() {
 		dictionary = new Dictionary(mockedWordDefinitionCoordinatesRepository, mockedWordDefinitionRepository);
 	}
-	
+
 	@Test
 	public void shouldLookupAWord() throws IOException, WordDefinitionCoordinatesNotFoundException {
 		when(mockedWordDefinitionCoordinatesRepository.find(WORD_TO_LOOK_FOR)).thenReturn(mockedCoordinates);
 		when(mockedWordDefinitionRepository.find(mockedCoordinates)).thenReturn(mockedWordDefinition);
-		
+
 		WordDefinition wordDefinition = dictionary.lookup(WORD_TO_LOOK_FOR);
-		
+
 		verify(mockedWordDefinitionCoordinatesRepository).find(WORD_TO_LOOK_FOR);
 		verify(mockedWordDefinitionRepository).find(mockedCoordinates);
 		assertThat(wordDefinition, is(mockedWordDefinition));

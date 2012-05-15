@@ -12,23 +12,25 @@ public class DictionaryIndexReaderIntegrationTest {
 	@Test
 	public void shouldParseDictionaryIndexFile() throws IOException {
 		InputStream indexStream = getClass().getClassLoader().getResourceAsStream("org/verba/stardict/dictionary.idx");
-		
+
 		DictionaryIndexReader indexReader = new DictionaryIndexReader(new BufferedInputStream(indexStream));
 		long timeStarted = System.currentTimeMillis();
-		
+
 		try {
-			while(indexReader.hasNextWordDefinition()) {
+			while (indexReader.hasNextWordDefinition()) {
 				WordDefinitionCoordinates wordCoordinates = indexReader.readWordCoordinates();
-				System.out.println(String.format("%s [%s,%s]", wordCoordinates.getTargetWord(), wordCoordinates.getWordDefinitionOffset(), wordCoordinates.getWordDefinitionLength()));
+				System.out.println(String.format("%s [%s,%s]", wordCoordinates.getTargetWord(),
+						wordCoordinates.getWordDefinitionOffset(), wordCoordinates.getWordDefinitionLength()));
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		} finally {
 			indexReader.close();
 		}
-		
+
 		long spent = System.currentTimeMillis() - timeStarted;
-		
-		System.out.println(String.format("Finished reading index file in %s.%s seconds", spent / MILLIS_IN_SECOND, spent % MILLIS_IN_SECOND));
+
+		System.out.println(String.format("Finished reading index file in %s.%s seconds", spent / MILLIS_IN_SECOND,
+				spent % MILLIS_IN_SECOND));
 	}
 }

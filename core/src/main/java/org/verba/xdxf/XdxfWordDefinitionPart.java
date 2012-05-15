@@ -14,29 +14,29 @@ import org.verba.xdxf.node.XdxfElement;
 
 public class XdxfWordDefinitionPart implements WordDefinitionPart {
 	private byte[] rawWordDefinition;
-	
+
 	@Override
 	public WordDefinitionPartType getType() {
 		return XDXF;
 	}
-	
+
 	public XdxfWordDefinitionPart(byte[] wordDefinitionBuffer) {
-		rawWordDefinition = wordDefinitionBuffer;
+		rawWordDefinition = wordDefinitionBuffer.clone();
 	}
-	
+
 	public String asPlainText() {
 		return new String(rawWordDefinition);
 	}
-	
+
 	public byte[] bytes() {
 		return rawWordDefinition;
 	}
-	
+
 	public XdxfElement asXdxfArticle() {
 		InputStream xdxfStream = new ByteArrayInputStream(rawWordDefinition);
-		
+
 		XdxfElement xdxfArticle = parseXdxfArticle(xdxfStream);
-		
+
 		return xdxfArticle;
 	}
 
@@ -50,13 +50,13 @@ public class XdxfWordDefinitionPart implements WordDefinitionPart {
 		}
 	}
 
-    private void closeQuietly(Closeable closeable) {
-        try {
-            if (closeable != null) {
-                closeable.close();
-            }
-        } catch (IOException ioe) {
-            // ignore
-        }
-    }
+	private void closeQuietly(Closeable closeable) {
+		try {
+			if (closeable != null) {
+				closeable.close();
+			}
+		} catch (IOException ioe) {
+			throw new RuntimeException("Couldn't close a stream", ioe);
+		}
+	}
 }

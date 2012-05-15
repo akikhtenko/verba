@@ -9,7 +9,7 @@ import org.verba.xdxf.XdxfWordDefinitionPart;
 
 public class WordDefinitionRepository {
 	private InputStreamReader streamReader;
-	
+
 	public WordDefinitionRepository(InputStream aDictionaryPayloadStream) {
 		streamReader = new InputStreamReader(aDictionaryPayloadStream);
 	}
@@ -19,22 +19,23 @@ public class WordDefinitionRepository {
 
 		WordDefinitionPart wordDefinitionPart = readWordDefinitionPart(wordCoordinates);
 		wordDefinition.add(wordDefinitionPart);
-		
+
 		return wordDefinition;
 	}
 
 	private WordDefinitionPart readWordDefinitionPart(WordDefinitionCoordinates wordCoordinates) throws IOException {
-		byte[] wordDefinitionBuffer = streamReader.readBytesAtOffset(wordCoordinates.getWordDefinitionOffset(), wordCoordinates.getWordDefinitionLength());
+		byte[] wordDefinitionBuffer = streamReader.readBytesAtOffset(wordCoordinates.getWordDefinitionOffset(),
+				wordCoordinates.getWordDefinitionLength());
 		return new XdxfWordDefinitionPart(adjustWordDefinitionPart(wordDefinitionBuffer));
 	}
-	
+
 	private byte[] adjustWordDefinitionPart(byte[] pureWordDefinitionPartData) {
 		ByteBuffer adjustedWordDefinitionData = ByteBuffer.allocate(pureWordDefinitionPartData.length + 9);
-		
+
 		adjustedWordDefinitionData.put("<ar>".getBytes());
 		adjustedWordDefinitionData.put(pureWordDefinitionPartData);
 		adjustedWordDefinitionData.put("</ar>".getBytes());
-		
+
 		return adjustedWordDefinitionData.array();
 	}
 }

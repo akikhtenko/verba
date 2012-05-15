@@ -6,6 +6,8 @@
 *.ear
 .project
 .classpath
+.checkstyle
+.pmd
 .settings/
 
 target/

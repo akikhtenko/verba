@@ -8,7 +8,7 @@ import org.verba.xdxf.XdxfParser.XdxfArticleParseException;
 import org.verba.xdxf.node.XdxfElement;
 
 public class XdxfParserIntegrationTest {
-	
+
 	@Test
 	public void shouldParseXdxf() throws IOException, XdxfArticleParseException {
 		XdxfParser xdxfParser = new XdxfParser();

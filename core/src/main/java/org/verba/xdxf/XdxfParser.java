@@ -7,6 +7,7 @@ import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
 import org.verba.xdxf.handler.BoldPhraseEventHandler;
+import org.verba.xdxf.handler.ColoredPhraseEventHandler;
 import org.verba.xdxf.handler.KeyPhraseEventHandler;
 import org.verba.xdxf.node.XdxfElement;
 import org.xml.sax.InputSource;
@@ -17,33 +18,34 @@ public class XdxfParser {
 
 	public XdxfElement parse(InputStream xdxfStream) throws XdxfArticleParseException {
 		InputSource inputSource = new InputSource(xdxfStream);
-		
+
 		XdxfContentHandler xdxfContentHandler = prepareContentHandler();
-		
+
 		try {
-	        SAXParser saxParser = createSaxParser();
-	        XMLReader xmlReader = saxParser.getXMLReader();
-	        xmlReader.setContentHandler(xdxfContentHandler);
-	        
+			SAXParser saxParser = createSaxParser();
+			XMLReader xmlReader = saxParser.getXMLReader();
+			xmlReader.setContentHandler(xdxfContentHandler);
+
 			xmlReader.parse(inputSource);
 		} catch (Exception e) {
 			throw new XdxfArticleParseException(e);
 		}
-		
+
 		return xdxfContentHandler.getXdxfArticle();
 	}
 
 	protected XdxfContentHandler prepareContentHandler() {
 		XdxfContentHandler xdxfContentHandler = new XdxfContentHandler();
-		
+
 		xdxfContentHandler.registerXdxfElementHandler(new KeyPhraseEventHandler());
 		xdxfContentHandler.registerXdxfElementHandler(new BoldPhraseEventHandler());
-		
+		xdxfContentHandler.registerXdxfElementHandler(new ColoredPhraseEventHandler());
+
 		return xdxfContentHandler;
 	}
 
 	protected SAXParser createSaxParser() throws ParserConfigurationException, SAXException {
-		SAXParserFactory saxParserFactory =  SAXParserFactory.newInstance();
+		SAXParserFactory saxParserFactory = SAXParserFactory.newInstance();
 		return saxParserFactory.newSAXParser();
 	}
 

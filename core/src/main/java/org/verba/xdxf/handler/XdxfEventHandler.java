@@ -5,5 +5,6 @@ import org.xml.sax.Attributes;
 
 public interface XdxfEventHandler {
 	boolean isEventTarget(String elementName);
+
 	XdxfElement createElement(Attributes atts);
 }

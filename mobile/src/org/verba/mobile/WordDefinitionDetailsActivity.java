@@ -30,15 +30,15 @@ import android.widget.TextView;
 import android.widget.TextView.BufferType;
 
 public class WordDefinitionDetailsActivity extends Activity {
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.word_definition_details);
-        
-        doDosplay("Looking for definition...");
-        
-        new LookupWordDefinitionTask().execute(getIntent().getStringExtra("wordToLookup"));
-    }
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.word_definition_details);
+
+		doDosplay("Looking for definition...");
+
+		new LookupWordDefinitionTask().execute(getIntent().getStringExtra("wordToLookup"));
+	}
 
 	private void desplayWordDefinition(WordDefinition wordDefinition) {
 		if (wordDefinition == null) {
@@ -52,70 +52,76 @@ public class WordDefinitionDetailsActivity extends Activity {
 	private void doDosplay(CharSequence toDisplay) {
 		TextView wordDefinitionDetailsView = (TextView) findViewById(R.id.wordDefinitionView);
 		wordDefinitionDetailsView.setMovementMethod(new ScrollingMovementMethod());
-        wordDefinitionDetailsView.setText(toDisplay, BufferType.SPANNABLE);
+		wordDefinitionDetailsView.setText(toDisplay, BufferType.SPANNABLE);
 	}
-	
+
 	private CharSequence asSpannableString(XdxfElement xdxfArticle) {
 		SpannableStringBuilder spannable = new SpannableStringBuilder();
-		
+
 		processChild(xdxfArticle, spannable);
-		
+
 		return spannable;
 	}
-	
+
 	private int processChild(XdxfNode xdxfNode, SpannableStringBuilder spannable) {
 		if (xdxfNode.getType() != PLAIN_TEXT) {
 			int totalChildrenLength = 0;
-			for(Iterator<XdxfNode> i = ((XdxfElement) xdxfNode).iterator(); i.hasNext(); ) {
+			for (Iterator<XdxfNode> i = ((XdxfElement) xdxfNode).iterator(); i.hasNext();) {
 				XdxfNode nextNode = i.next();
-				
+
 				totalChildrenLength += processChild(nextNode, spannable);
 			}
-			
-			int lengthBefore = spannable.length();
+
 			switch (xdxfNode.getType()) {
-				case KEY_PHRASE:
-					spannable.setSpan(new TextAppearanceSpan(this, R.style.KeyPhrase), spannable.length() - totalChildrenLength, spannable.length(), Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
-					break;
-				case BOLD_PHRASE:
-					spannable.setSpan(new TextAppearanceSpan(this, R.style.BoldPhrase), spannable.length() - totalChildrenLength, spannable.length(), Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
-					break;
-				default:
-					break;
+			case KEY_PHRASE:
+				spannable.setSpan(new TextAppearanceSpan(this, R.style.KeyPhrase), spannable.length()
+						- totalChildrenLength, spannable.length(), Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
+				break;
+			case BOLD_PHRASE:
+				spannable.setSpan(new TextAppearanceSpan(this, R.style.BoldPhrase), spannable.length()
+						- totalChildrenLength, spannable.length(), Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
+				break;
+			case COLORED_PHRASE:
+				spannable.setSpan(new TextAppearanceSpan(this, R.style.ColoredPhrase), spannable.length()
+						- totalChildrenLength, spannable.length(), Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
+				break;
+			default:
+				break;
 			}
-			
+
 			return totalChildrenLength;
 		} else {
 			String plainTextNodeValue = xdxfNode.asPlainText();
 			spannable.append(plainTextNodeValue);
-			
+
 			return plainTextNodeValue.length();
 		}
 	}
-	
+
 	private class LookupWordDefinitionTask extends AsyncTask<String, Void, WordDefinition> {
-	    protected WordDefinition doInBackground(String... wordsToLookup) {
-	        try {
+		protected WordDefinition doInBackground(String... wordsToLookup) {
+			try {
 				return lookupWordDefinitionFromDeictionary(wordsToLookup[0]);
 			} catch (IOException e) {
 				throw new RuntimeException(String.format("Unexpected error while looking up [%s]", wordsToLookup[0]), e);
 			}
-	    }
-	    
-	    private WordDefinition lookupWordDefinitionFromDeictionary(String wordToLookup) throws IOException {
-	    	File path = Environment.getExternalStoragePublicDirectory("verba");
-	    	File indexFile = new File(path, "dictionary.idx");
-	    	File dictionaryFile = new File(path, "dictionary.dict");
-	    	InputStream indexStream = new FileInputStream(indexFile);
-	    	InputStream dictionaryStream = new FileInputStream(dictionaryFile);
-	    	
+		}
+
+		private WordDefinition lookupWordDefinitionFromDeictionary(String wordToLookup) throws IOException {
+			File path = Environment.getExternalStoragePublicDirectory("verba");
+			File indexFile = new File(path, "dictionary.idx");
+			File dictionaryFile = new File(path, "dictionary.dict");
+			InputStream indexStream = new FileInputStream(indexFile);
+			InputStream dictionaryStream = new FileInputStream(dictionaryFile);
+
 			DictionaryIndexReader indexReader = new DictionaryIndexReader(indexStream);
-			WordDefinitionCoordinatesRepository coordinatesRepository = new WordDefinitionCoordinatesRepository(indexReader);
-			
+			WordDefinitionCoordinatesRepository coordinatesRepository = new WordDefinitionCoordinatesRepository(
+					indexReader);
+
 			WordDefinitionRepository definitionsRepository = new WordDefinitionRepository(dictionaryStream);
-			
+
 			Dictionary dictionary = new Dictionary(coordinatesRepository, definitionsRepository);
-			
+
 			WordDefinition wordDefinition = null;
 			try {
 				wordDefinition = dictionary.lookup(wordToLookup);
@@ -125,12 +131,12 @@ public class WordDefinitionDetailsActivity extends Activity {
 				indexReader.close();
 				dictionaryStream.close();
 			}
-	    	
+
 			return wordDefinition;
 		}
-		
+
 		protected void onPostExecute(WordDefinition wordDefinitionFound) {
-	    	desplayWordDefinition(wordDefinitionFound);
-	    }
+			desplayWordDefinition(wordDefinitionFound);
+		}
 	}
 }

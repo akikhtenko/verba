@@ -38,27 +38,29 @@ public class XdxfParserTest {
 	private XdxfElement mockedXdxfElement;
 	@Spy
 	private XdxfParser xdxfParser;
-	
+
 	@Test
-	public void shouldParseXdxfArticle() throws IOException, XdxfArticleParseException, ParserConfigurationException, SAXException {
+	public void shouldParseXdxfArticle() throws IOException, XdxfArticleParseException, ParserConfigurationException,
+			SAXException {
 		when(xdxfParser.createSaxParser()).thenReturn(mockedSaxParser);
 		when(xdxfParser.prepareContentHandler()).thenReturn(mockedContentHandler);
 		when(mockedSaxParser.getXMLReader()).thenReturn(mockedXmlReader);
 		when(mockedContentHandler.getXdxfArticle()).thenReturn(mockedXdxfElement);
-		
+
 		XdxfElement xdxfArticle = xdxfParser.parse(mockedInputStream);
-		
+
 		verify(mockedXmlReader).setContentHandler(mockedContentHandler);
 		verify(mockedXmlReader).parse(any(InputSource.class));
 		assertThat(xdxfArticle, is(mockedXdxfElement));
 	}
-	
+
 	@Test(expected = XdxfArticleParseException.class)
-	public void shouldThrowParseExceptionWhenParsingFails() throws ParserConfigurationException, SAXException, XdxfArticleParseException, IOException {
+	public void shouldThrowParseExceptionWhenParsingFails() throws ParserConfigurationException, SAXException,
+			XdxfArticleParseException, IOException {
 		when(xdxfParser.createSaxParser()).thenReturn(mockedSaxParser);
 		when(mockedSaxParser.getXMLReader()).thenReturn(mockedXmlReader);
 		doThrow(XdxfArticleParseException.class).when(mockedXmlReader).parse(any(InputSource.class));
-		
+
 		xdxfParser.parse(mockedInputStream);
 	}
 }

@@ -18,24 +18,25 @@ public class XdxfContentHandler extends DefaultHandler {
 	private Set<XdxfEventHandler> handlers = new HashSet<XdxfEventHandler>();
 	private StringBuilder plainText = new StringBuilder();
 	private Deque<XdxfElement> nodesStack = new LinkedList<XdxfElement>();
-	
+
 	public void registerXdxfElementHandler(XdxfEventHandler xdxfEventHandler) {
 		handlers.add(xdxfEventHandler);
 	}
-	
+
 	public XdxfElement getXdxfArticle() {
 		return nodesStack.removeLast();
 	}
-	
+
 	public void startDocument() throws SAXException {
 		nodesStack.add(new RootXdxfElement());
 	}
-	
-	public void startElement(String namespaceURI, String localName, String qName, Attributes attributes) throws SAXException {
+
+	public void startElement(String namespaceURI, String localName, String qName, Attributes attributes)
+			throws SAXException {
 		flushPlainTextBufferIfNeeded();
-			
+
 		XdxfEventHandler targetEventHandler = pickTargetHandler(qName);
-		
+
 		XdxfElement element = targetEventHandler.createElement(attributes);
 
 		nodesStack.getLast().addChild(element);
@@ -50,24 +51,24 @@ public class XdxfContentHandler extends DefaultHandler {
 		flushPlainTextBufferIfNeeded();
 		nodesStack.removeLast();
 	}
-	
+
 	private XdxfEventHandler pickTargetHandler(String qName) {
 		XdxfEventHandler targetEventHandler = null;
-		
-		for (XdxfEventHandler eventHandler: handlers) {
+
+		for (XdxfEventHandler eventHandler : handlers) {
 			if (eventHandler.isEventTarget(qName)) {
 				targetEventHandler = eventHandler;
 				break;
 			}
 		}
-		
+
 		if (targetEventHandler == null) {
 			targetEventHandler = new DefaultXdxfEventHandler();
 		}
-		
+
 		return targetEventHandler;
 	}
-	
+
 	private void flushPlainTextBufferIfNeeded() {
 		if (plainText.length() != 0) {
 			PlainText plainTextNode = new PlainText(plainText.toString());

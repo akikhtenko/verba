@@ -22,7 +22,8 @@ public class DictionaryIndexReaderTest {
 
 	@Test
 	public void canReadTargetWordThreeTimesInARow() throws IOException {
-		DictionaryIndexReader indexReader = new DictionaryIndexReader(new ByteArrayInputStream(DUMMY_INDEX_CONTENT.getBytes()));
+		DictionaryIndexReader indexReader = new DictionaryIndexReader(new ByteArrayInputStream(
+				DUMMY_INDEX_CONTENT.getBytes()));
 		WordDefinitionCoordinates wordCoordinates = indexReader.readWordCoordinates();
 		assertThat(wordCoordinates.getTargetWord(), is(equalTo("abc")));
 		wordCoordinates = indexReader.readWordCoordinates();
@@ -30,10 +31,11 @@ public class DictionaryIndexReaderTest {
 		wordCoordinates = indexReader.readWordCoordinates();
 		assertThat(wordCoordinates.getTargetWord(), is(equalTo("fedcba")));
 	}
-	
+
 	@Test
 	public void canReadWordDefinitionOffsetThreeTimesInARow() throws IOException {
-		DictionaryIndexReader indexReader = new DictionaryIndexReader(new ByteArrayInputStream(DUMMY_INDEX_CONTENT.getBytes()));
+		DictionaryIndexReader indexReader = new DictionaryIndexReader(new ByteArrayInputStream(
+				DUMMY_INDEX_CONTENT.getBytes()));
 		WordDefinitionCoordinates wordCoordinates = indexReader.readWordCoordinates();
 		assertThat(wordCoordinates.getWordDefinitionOffset(), is(1633771873L));
 		wordCoordinates = indexReader.readWordCoordinates();
@@ -41,10 +43,11 @@ public class DictionaryIndexReaderTest {
 		wordCoordinates = indexReader.readWordCoordinates();
 		assertThat(wordCoordinates.getWordDefinitionOffset(), is(1701143909L));
 	}
-	
+
 	@Test
 	public void canReadWordDefinitionLengthThreeTimesInARow() throws IOException {
-		DictionaryIndexReader indexReader = new DictionaryIndexReader(new ByteArrayInputStream(DUMMY_INDEX_CONTENT.getBytes()));
+		DictionaryIndexReader indexReader = new DictionaryIndexReader(new ByteArrayInputStream(
+				DUMMY_INDEX_CONTENT.getBytes()));
 		WordDefinitionCoordinates wordCoordinates = indexReader.readWordCoordinates();
 		assertThat(wordCoordinates.getWordDefinitionLength(), is(1650614882));
 		wordCoordinates = indexReader.readWordCoordinates();
@@ -52,53 +55,56 @@ public class DictionaryIndexReaderTest {
 		wordCoordinates = indexReader.readWordCoordinates();
 		assertThat(wordCoordinates.getWordDefinitionLength(), is(1717986918));
 	}
-	
+
 	@Test(expected = RuntimeException.class)
 	public void shouldFailWhenEndOfStreamReachedWhileReadingATargetWord() throws IOException {
 		DictionaryIndexReader indexReader = new DictionaryIndexReader(new ByteArrayInputStream("abc".getBytes()));
 		indexReader.readWordCoordinates();
 	}
-	
+
 	@Test(expected = RuntimeException.class)
 	public void shouldFailWhenEndOfStreamReachedWhileReadingAWordDefinitionOffset() throws IOException {
 		DictionaryIndexReader indexReader = new DictionaryIndexReader(new ByteArrayInputStream("abc\0a".getBytes()));
 		indexReader.readWordCoordinates();
 	}
-	
+
 	@Test(expected = RuntimeException.class)
 	public void shouldFailWhenEndOfStreamReachedWhileReadingAWordDefinitionLength() throws IOException {
 		DictionaryIndexReader indexReader = new DictionaryIndexReader(new ByteArrayInputStream("abc\0aaaab".getBytes()));
 		indexReader.readWordCoordinates();
 	}
-	
+
 	@Test
 	public void showsWhenThereIsMoreWordDefinitionsToRead() throws IOException {
-		DictionaryIndexReader indexReader = new DictionaryIndexReader(new ByteArrayInputStream("abc\0aaaabbbb".getBytes()));
+		DictionaryIndexReader indexReader = new DictionaryIndexReader(new ByteArrayInputStream(
+				"abc\0aaaabbbb".getBytes()));
 		assertThat(indexReader.hasNextWordDefinition(), is(true));
 		indexReader.readWordCoordinates();
 		assertThat(indexReader.hasNextWordDefinition(), is(false));
 	}
-	
+
 	@Test
-	public void repetativeCheckingIfThereIsMoreWordDefinitionsToReadShouldNotCauseTroubleForNextWordDefinitionRead() throws IOException {
-		DictionaryIndexReader indexReader = new DictionaryIndexReader(new ByteArrayInputStream("abc\0aaaabbbb".getBytes()));
-		
+	public void repetativeCheckingIfThereIsMoreWordDefinitionsToReadShouldNotCauseTroubleForNextWordDefinitionRead()
+			throws IOException {
+		DictionaryIndexReader indexReader = new DictionaryIndexReader(new ByteArrayInputStream(
+				"abc\0aaaabbbb".getBytes()));
+
 		indexReader.hasNextWordDefinition();
 		indexReader.hasNextWordDefinition();
 		indexReader.hasNextWordDefinition();
-		
+
 		WordDefinitionCoordinates wordCoordinates = indexReader.readWordCoordinates();
 		assertThat(wordCoordinates.getTargetWord(), is(equalTo("abc")));
 		assertThat(wordCoordinates.getWordDefinitionOffset(), is(1633771873L));
 		assertThat(wordCoordinates.getWordDefinitionLength(), is(1650614882));
 	}
-	
+
 	@Test
 	public void closesInputStream() throws IOException {
 		DictionaryIndexReader indexReader = new DictionaryIndexReader(mockedInputStream);
-		
+
 		indexReader.close();
-		
+
 		verify(mockedInputStream).close();
 	}
 }

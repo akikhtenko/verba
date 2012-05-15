@@ -4,7 +4,7 @@ public class WordDefinitionCoordinates {
 	private String targetWord;
 	private long wordDefinitionOffset;
 	private int wordDefinitionLength;
-	
+
 	public WordDefinitionCoordinates(String aTargetWord, long aWordDefinitionOffset, int aWordDefinitionLength) {
 		targetWord = aTargetWord;
 		wordDefinitionOffset = aWordDefinitionOffset;
