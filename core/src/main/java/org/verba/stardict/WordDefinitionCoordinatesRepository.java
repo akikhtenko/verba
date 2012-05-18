@@ -46,4 +46,8 @@ public class WordDefinitionCoordinatesRepository {
 			super(message);
 		}
 	}
+
+	public void destroy() throws IOException {
+		indexReader.close();
+	}
 }

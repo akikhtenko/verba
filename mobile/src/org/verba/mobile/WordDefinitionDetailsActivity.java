@@ -7,6 +7,7 @@ import java.util.Iterator;
 import java.util.regex.Pattern;
 
 import org.verba.stardict.WordDefinition;
+import org.verba.stardict.WordDefinitionCoordinatesRepository.WordDefinitionCoordinatesNotFoundException;
 import org.verba.xdxf.XdxfWordDefinitionPart;
 import org.verba.xdxf.node.ColoredPhrase;
 import org.verba.xdxf.node.XdxfElement;
@@ -32,21 +33,17 @@ public class WordDefinitionDetailsActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.word_definition_details);
 
-		doDosplay("Looking for definition...");
+		displayTextOnTheScreen("Looking for definition...");
 
 		new LookupWordDefinitionTask().execute(getIntent().getStringExtra("wordToLookup"));
 	}
 
-	private void desplayWordDefinition(WordDefinition wordDefinition) {
-		if (wordDefinition == null) {
-			doDosplay("Nothing found in the dictionary");
-		} else {
-			XdxfWordDefinitionPart wordDefinitionPart = (XdxfWordDefinitionPart) wordDefinition.iterator().next();
-			doDosplay(asSpannableString(wordDefinitionPart.asXdxfArticle()));
-		}
+	private void displayWordDefinition(WordDefinition wordDefinition) {
+		XdxfWordDefinitionPart wordDefinitionPart = (XdxfWordDefinitionPart) wordDefinition.iterator().next();
+		displayTextOnTheScreen(asSpannableString(wordDefinitionPart.asXdxfArticle()));
 	}
 
-	private void doDosplay(CharSequence toDisplay) {
+	private void displayTextOnTheScreen(CharSequence toDisplay) {
 		TextView wordDefinitionDetailsView = (TextView) findViewById(R.id.wordDefinitionView);
 		wordDefinitionDetailsView.setMovementMethod(new ScrollingMovementMethod());
 		wordDefinitionDetailsView.setText(toDisplay, BufferType.SPANNABLE);
@@ -115,16 +112,23 @@ public class WordDefinitionDetailsActivity extends Activity {
 	}
 
 	private class LookupWordDefinitionTask extends AsyncTask<String, Void, WordDefinition> {
+
 		protected WordDefinition doInBackground(String... wordsToLookup) {
 			try {
 				return new WordDefinitionLookup().lookupWordDefinition(wordsToLookup[0]);
+			} catch (WordDefinitionCoordinatesNotFoundException e) {
+				return null;
 			} catch (IOException e) {
 				throw new RuntimeException(String.format("Unexpected error while looking up [%s]", wordsToLookup[0]), e);
 			}
 		}
 
 		protected void onPostExecute(WordDefinition wordDefinitionFound) {
-			desplayWordDefinition(wordDefinitionFound);
+			if (wordDefinitionFound == null) {
+				displayTextOnTheScreen("Nothing found in the dictionary");
+			} else {
+				displayWordDefinition(wordDefinitionFound);
+			}
 		}
 	}
 }

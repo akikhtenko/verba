@@ -31,8 +31,8 @@ public class DictionaryIntegrationTest {
 
 			System.out.println(String.format("%s [%s]", WORD_TO_LOOK_FOR, wordDefinitionPart.asPlainText()));
 		} finally {
-			indexReader.close();
-			dictionaryStream.close();
+			coordinatesRepository.destroy();
+			definitionsRepository.destroy();
 		}
 
 		long spent = System.currentTimeMillis() - timeStarted;

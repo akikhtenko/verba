@@ -50,6 +50,12 @@ public class WordDefinitionCoordinatesRepositoryTest {
 		index.find(WORD_TO_LOOK_FOR);
 	}
 
+	@Test
+	public void shouldDestroyDisctionaryIndex() throws IOException {
+		index.destroy();
+		verify(mockedIndexReader).close();
+	}
+
 	private void givenIndexWithoutAWordToBeFound() throws IOException {
 		when(mockedIndexReader.hasNextWordDefinition()).thenReturn(true, false);
 		when(mockedIndexReader.readWordCoordinates()).thenReturn(mockedCoordinates);

@@ -23,6 +23,10 @@ public class WordDefinitionRepository {
 		return wordDefinition;
 	}
 
+	public void destroy() throws IOException {
+		streamReader.close();
+	}
+
 	private WordDefinitionPart readWordDefinitionPart(WordDefinitionCoordinates wordCoordinates) throws IOException {
 		byte[] wordDefinitionBuffer = streamReader.readBytesAtOffset(wordCoordinates.getWordDefinitionOffset(),
 				wordCoordinates.getWordDefinitionLength());

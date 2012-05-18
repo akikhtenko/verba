@@ -2,10 +2,12 @@ package org.verba.stardict;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -24,6 +26,8 @@ public class WordDefinitionRepositoryTest {
 
 	@Mock
 	private WordDefinitionCoordinates mockedWordCoordinates;
+	@Mock
+	private InputStream mockedInputStream;
 
 	@Before
 	public void prepareMocks() {
@@ -51,5 +55,11 @@ public class WordDefinitionRepositoryTest {
 		WordDefinitionRepository wordsRepository = new WordDefinitionRepository(new ByteArrayInputStream(
 				CORRUPTED_DICTIONARY_CONTENT.getBytes()));
 		wordsRepository.find(mockedWordCoordinates);
+	}
+
+	@Test
+	public void shouldDestroyWordDefinitionRepository() throws IOException {
+		new WordDefinitionRepository(mockedInputStream).destroy();
+		verify(mockedInputStream).close();
 	}
 }
