@@ -8,7 +8,9 @@ import javax.xml.parsers.SAXParserFactory;
 
 import org.verba.xdxf.handler.BoldPhraseEventHandler;
 import org.verba.xdxf.handler.ColoredPhraseEventHandler;
+import org.verba.xdxf.handler.ItalicPhraseEventHandler;
 import org.verba.xdxf.handler.KeyPhraseEventHandler;
+import org.verba.xdxf.handler.PhraseReferenceEventHandler;
 import org.verba.xdxf.node.XdxfElement;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -39,7 +41,9 @@ public class XdxfParser {
 
 		xdxfContentHandler.registerXdxfElementHandler(new KeyPhraseEventHandler());
 		xdxfContentHandler.registerXdxfElementHandler(new BoldPhraseEventHandler());
+		xdxfContentHandler.registerXdxfElementHandler(new ItalicPhraseEventHandler());
 		xdxfContentHandler.registerXdxfElementHandler(new ColoredPhraseEventHandler());
+		xdxfContentHandler.registerXdxfElementHandler(new PhraseReferenceEventHandler());
 
 		return xdxfContentHandler;
 	}

@@ -3,12 +3,21 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:orientation="vertical" >
+
+    <ScrollView
+        android:id="@+id/scrollView1"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:overScrollMode="always"
+        android:background="@color/word_definition_details_background">
+
+        <TextView
+            android:id="@+id/wordDefinitionView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="3dip"
+            android:textColor="@color/word_definition_details_text" />
 
-    <TextView
-        android:id="@+id/wordDefinitionView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/word_definition_details_background"
-        android:textColor="@color/word_definition_details_text" android:padding="3dip"/>
+    </ScrollView>
 
 </LinearLayout>

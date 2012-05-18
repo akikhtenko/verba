@@ -2,11 +2,11 @@ package org.verba.xdxf.node;
 
 import org.verba.xdxf.XdxfNodeDisplay;
 
-public class BoldPhrase extends XdxfElement {
+public class ItalicPhrase extends XdxfElement {
 
 	@Override
 	public XdxfNodeType getType() {
-		return XdxfNodeType.BOLD_PHRASE;
+		return XdxfNodeType.ITALIC_PHRASE;
 	}
 
 	@Override

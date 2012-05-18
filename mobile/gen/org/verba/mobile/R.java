@@ -160,7 +160,8 @@ public final class R {
     }
     public static final class id {
         public static final int lookupButton=0x7f070001;
-        public static final int wordDefinitionView=0x7f070002;
+        public static final int scrollView1=0x7f070002;
+        public static final int wordDefinitionView=0x7f070003;
         public static final int wordToFindField=0x7f070000;
     }
     public static final class layout {
@@ -173,7 +174,7 @@ public final class R {
         public static final int wordToFindHint=0x7f050001;
     }
     public static final class style {
-        public static final int BoldPhrase=0x7f060001;
         public static final int KeyPhrase=0x7f060000;
+        public static final int PhraseReference=0x7f060001;
     }
 }

@@ -2,11 +2,11 @@ package org.verba.xdxf.node;
 
 import org.verba.xdxf.XdxfNodeDisplay;
 
-public class BoldPhrase extends XdxfElement {
+public class PhraseReference extends XdxfElement {
 
 	@Override
 	public XdxfNodeType getType() {
-		return XdxfNodeType.BOLD_PHRASE;
+		return XdxfNodeType.PHRASE_REFERENCE;
 	}
 
 	@Override
