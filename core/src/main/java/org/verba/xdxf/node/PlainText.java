@@ -28,6 +28,6 @@ public class PlainText implements XdxfNode {
 
 	@Override
 	public void print(XdxfNodeDisplay display) {
-		display.print(plainText);
+		display.print(this);
 	}
 }

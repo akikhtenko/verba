@@ -4,10 +4,10 @@ import org.verba.xdxf.node.KeyPhrase;
 import org.verba.xdxf.node.XdxfElement;
 import org.xml.sax.Attributes;
 
-public class KeyPhraseEventHandler implements XdxfEventHandler {
+public class KeyPhraseEventHandler extends XdxfEventHandler {
 	@Override
-	public boolean isEventTarget(String elementName) {
-		return "k".equalsIgnoreCase(elementName);
+	protected String getMatchingTag() {
+		return "k";
 	}
 
 	@Override

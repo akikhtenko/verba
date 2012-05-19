@@ -10,6 +10,7 @@ import org.verba.xdxf.node.ColoredPhrase;
 import org.verba.xdxf.node.ItalicPhrase;
 import org.verba.xdxf.node.KeyPhrase;
 import org.verba.xdxf.node.PhraseReference;
+import org.verba.xdxf.node.PlainText;
 import org.verba.xdxf.node.XdxfNode;
 
 import android.content.Context;
@@ -35,28 +36,34 @@ public class AndroidXdxfNodeDisplay implements XdxfNodeDisplay {
 		spannable = aSpannable;
 	}
 
-	public void print(String plainText) {
-		spannable.append(plainText);
+	@Override
+	public void print(PlainText plainText) {
+		spannable.append(plainText.asPlainText());
 	}
 
+	@Override
 	public void print(KeyPhrase keyPhrase) {
 		applySpan(new TextAppearanceSpan(activityContext, R.style.KeyPhrase), keyPhrase);
 	}
 
+	@Override
 	public void print(ColoredPhrase coloredPhrase) {
 		int coloredPhraseStyle = getColoredPhraseStyleResource(coloredPhrase.getColorCode());
 
 		applySpan(new ForegroundColorSpan(coloredPhraseStyle), coloredPhrase);
 	}
 
+	@Override
 	public void print(BoldPhrase boldPhrase) {
 		applySpan(new StyleSpan(Typeface.BOLD), boldPhrase);
 	}
 
+	@Override
 	public void print(ItalicPhrase italicPhrase) {
 		applySpan(new StyleSpan(Typeface.ITALIC), italicPhrase);
 	}
 
+	@Override
 	public void print(final PhraseReference phraseReference) {
 		CharacterStyle linkToAnotherDefinition = new ClickableSpan() {
 			@Override

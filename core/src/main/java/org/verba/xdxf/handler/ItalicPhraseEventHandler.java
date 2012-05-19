@@ -4,10 +4,10 @@ import org.verba.xdxf.node.ItalicPhrase;
 import org.verba.xdxf.node.XdxfElement;
 import org.xml.sax.Attributes;
 
-public class ItalicPhraseEventHandler implements XdxfEventHandler {
+public class ItalicPhraseEventHandler extends XdxfEventHandler {
 	@Override
-	public boolean isEventTarget(String elementName) {
-		return "i".equalsIgnoreCase(elementName);
+	protected String getMatchingTag() {
+		return "i";
 	}
 
 	@Override

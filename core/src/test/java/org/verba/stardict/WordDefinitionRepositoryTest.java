@@ -41,7 +41,7 @@ public class WordDefinitionRepositoryTest {
 				DICTIONARY_CONTENT.getBytes()));
 		WordDefinition wordDefinition = wordsRepository.find(mockedWordCoordinates);
 		XdxfWordDefinitionPart wordDefinitionPart = (XdxfWordDefinitionPart) wordDefinition.iterator().next();
-		assertThat(wordDefinitionPart.asPlainText(), is(ADJJUSTED_WORD_DEFINITION));
+		assertThat(new String(wordDefinitionPart.bytes()), is(ADJJUSTED_WORD_DEFINITION));
 	}
 
 	@Test(expected = RuntimeException.class)

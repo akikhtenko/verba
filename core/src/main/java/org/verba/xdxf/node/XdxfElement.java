@@ -1,6 +1,5 @@
 package org.verba.xdxf.node;
 
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -9,6 +8,7 @@ import org.verba.xdxf.XdxfNodeDisplay;
 public class XdxfElement implements XdxfNode {
 	private List<XdxfNode> children = new LinkedList<XdxfNode>();
 
+	@Override
 	public XdxfNodeType getType() {
 		return XdxfNodeType.UNKNOWN;
 	}
@@ -17,6 +17,7 @@ public class XdxfElement implements XdxfNode {
 		children.add(xdxfNode);
 	}
 
+	@Override
 	public String asPlainText() {
 		StringBuffer childrenText = new StringBuffer();
 		for (XdxfNode child : children) {
@@ -26,6 +27,7 @@ public class XdxfElement implements XdxfNode {
 		return childrenText.toString();
 	}
 
+	@Override
 	public int getContentLength() {
 		int childrenLength = 0;
 		for (XdxfNode child : children) {
@@ -33,10 +35,6 @@ public class XdxfElement implements XdxfNode {
 		}
 
 		return childrenLength;
-	}
-
-	public Iterator<XdxfNode> iterator() {
-		return children.iterator();
 	}
 
 	@Override

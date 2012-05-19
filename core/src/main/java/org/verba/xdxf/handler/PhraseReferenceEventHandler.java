@@ -4,10 +4,10 @@ import org.verba.xdxf.node.PhraseReference;
 import org.verba.xdxf.node.XdxfElement;
 import org.xml.sax.Attributes;
 
-public class PhraseReferenceEventHandler implements XdxfEventHandler {
+public class PhraseReferenceEventHandler extends XdxfEventHandler {
 	@Override
-	public boolean isEventTarget(String elementName) {
-		return "kref".equalsIgnoreCase(elementName);
+	protected String getMatchingTag() {
+		return "kref";
 	}
 
 	@Override

@@ -4,10 +4,10 @@ import org.verba.xdxf.node.ColoredPhrase;
 import org.verba.xdxf.node.XdxfElement;
 import org.xml.sax.Attributes;
 
-public class ColoredPhraseEventHandler implements XdxfEventHandler {
+public class ColoredPhraseEventHandler extends XdxfEventHandler {
 	@Override
-	public boolean isEventTarget(String elementName) {
-		return "c".equalsIgnoreCase(elementName);
+	protected String getMatchingTag() {
+		return "c";
 	}
 
 	@Override

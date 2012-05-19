@@ -6,6 +6,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
+import org.verba.xdxf.handler.XdxfEventHandler;
 import org.verba.xdxf.handler.BoldPhraseEventHandler;
 import org.verba.xdxf.handler.ColoredPhraseEventHandler;
 import org.verba.xdxf.handler.ItalicPhraseEventHandler;
@@ -37,13 +38,13 @@ public class XdxfParser {
 	}
 
 	protected XdxfContentHandler prepareContentHandler() {
-		XdxfContentHandler xdxfContentHandler = new XdxfContentHandler();
+		XdxfEventHandler xdxfEventHandlersChain = new KeyPhraseEventHandler()
+		.chainNextHandler(new BoldPhraseEventHandler())
+		.chainNextHandler(new ItalicPhraseEventHandler())
+		.chainNextHandler(new ColoredPhraseEventHandler())
+		.chainNextHandler(new PhraseReferenceEventHandler());
 
-		xdxfContentHandler.registerXdxfElementHandler(new KeyPhraseEventHandler());
-		xdxfContentHandler.registerXdxfElementHandler(new BoldPhraseEventHandler());
-		xdxfContentHandler.registerXdxfElementHandler(new ItalicPhraseEventHandler());
-		xdxfContentHandler.registerXdxfElementHandler(new ColoredPhraseEventHandler());
-		xdxfContentHandler.registerXdxfElementHandler(new PhraseReferenceEventHandler());
+		XdxfContentHandler xdxfContentHandler = new XdxfContentHandler(xdxfEventHandlersChain);
 
 		return xdxfContentHandler;
 	}

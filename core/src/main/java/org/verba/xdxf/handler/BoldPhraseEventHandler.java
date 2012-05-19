@@ -4,10 +4,10 @@ import org.verba.xdxf.node.BoldPhrase;
 import org.verba.xdxf.node.XdxfElement;
 import org.xml.sax.Attributes;
 
-public class BoldPhraseEventHandler implements XdxfEventHandler {
+public class BoldPhraseEventHandler extends XdxfEventHandler {
 	@Override
-	public boolean isEventTarget(String elementName) {
-		return "b".equalsIgnoreCase(elementName);
+	protected String getMatchingTag() {
+		return "b";
 	}
 
 	@Override

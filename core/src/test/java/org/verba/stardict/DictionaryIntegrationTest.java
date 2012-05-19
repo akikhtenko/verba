@@ -3,6 +3,7 @@ package org.verba.stardict;
 import java.io.IOException;
 import java.io.InputStream;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.verba.stardict.WordDefinitionCoordinatesRepository.WordDefinitionCoordinatesNotFoundException;
 import org.verba.xdxf.XdxfWordDefinitionPart;
@@ -12,6 +13,7 @@ public class DictionaryIntegrationTest {
 	private static final int MILLIS_IN_SECOND = 1000;
 
 	@Test
+	@Ignore
 	public void shouldLookupAWord() throws IOException, WordDefinitionCoordinatesNotFoundException {
 		InputStream indexStream = getClass().getClassLoader().getResourceAsStream("org/verba/stardict/dictionary.idx");
 		InputStream dictionaryStream = getClass().getClassLoader().getResourceAsStream(
@@ -29,7 +31,7 @@ public class DictionaryIntegrationTest {
 			WordDefinition wordDefinition = dictionary.lookup(WORD_TO_LOOK_FOR);
 			XdxfWordDefinitionPart wordDefinitionPart = (XdxfWordDefinitionPart) wordDefinition.iterator().next();
 
-			System.out.println(String.format("%s [%s]", WORD_TO_LOOK_FOR, wordDefinitionPart.asPlainText()));
+			System.out.println(String.format("%s [%s]", WORD_TO_LOOK_FOR, new String(wordDefinitionPart.bytes())));
 		} finally {
 			coordinatesRepository.destroy();
 			definitionsRepository.destroy();
