@@ -19,7 +19,7 @@
         <maven-compiler-plugin-version>2.4</maven-compiler-plugin-version>
         <android-maven-plugin-version>3.1.1</android-maven-plugin-version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <android-platform>10</android-platform>
+        <android-platform>11</android-platform>
         <java-version>1.6</java-version>
         <coverage.rate>85</coverage.rate>
     </properties>

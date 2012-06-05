@@ -12,11 +12,20 @@ import android.app.Activity;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.SpannableStringBuilder;
-import android.text.method.LinkMovementMethod;
-import android.widget.TextView;
+import android.view.MotionEvent;
+import android.view.View;
+import android.view.View.OnLongClickListener;
+import android.view.View.OnTouchListener;
 import android.widget.TextView.BufferType;
 
 public class WordDefinitionDetailsActivity extends Activity {
+	private WordUtils wordUtils;
+	private int lastTapCharOffset;
+
+	public WordDefinitionDetailsActivity() {
+		wordUtils = new WordUtils();
+	}
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -33,9 +42,32 @@ public class WordDefinitionDetailsActivity extends Activity {
 	}
 
 	private void displayTextOnTheScreen(CharSequence toDisplay) {
-		TextView wordDefinitionDetailsView = (TextView) findViewById(R.id.wordDefinitionView);
-		wordDefinitionDetailsView.setMovementMethod(LinkMovementMethod.getInstance());
+		final VerbaTextView wordDefinitionDetailsView = (VerbaTextView) findViewById(R.id.wordDefinitionView);
 		wordDefinitionDetailsView.setText(toDisplay, BufferType.SPANNABLE);
+
+		wordDefinitionDetailsView.setOnLongClickListener(new OnLongClickListener() {
+			@Override
+			public boolean onLongClick(View v) {
+				wordUtils.selectWordAtLastTapOffset(wordDefinitionDetailsView.getText(), lastTapCharOffset);
+				wordDefinitionDetailsView.showSelectionHandles();
+				return true;
+			}
+		});
+
+		wordDefinitionDetailsView.setOnTouchListener(new OnTouchListener() {
+
+			@Override
+			public boolean onTouch(View view, MotionEvent event) {
+				if (event.getActionMasked() == MotionEvent.ACTION_DOWN) {
+					final int x = (int) event.getX();
+					final int y = (int) event.getY();
+
+					lastTapCharOffset = wordDefinitionDetailsView.getCharOffsetForCoordinates(x, y);
+				}
+
+				return false;
+			}
+		});
 	}
 
 	private CharSequence asSpannableString(XdxfElement xdxfArticle) {
@@ -46,9 +78,28 @@ public class WordDefinitionDetailsActivity extends Activity {
 
 		return spannable;
 	}
+//
+//	private void setupWordSelectionListener() {
+//		TextView wordDefinitionDetailsView = (TextView) findViewById(R.id.wordDefinitionView);
+//
+//		wordDefinitionDetailsView.setOnTouchListener(new View.OnTouchListener() {
+//			@Override
+//			public boolean onTouch(View v, MotionEvent event) {
+//				Layout layout = ((TextView) v).getLayout();
+//				int x = (int) event.getX();
+//				int y = (int) event.getY();
+//				if (layout != null) {
+//					int line = layout.getLineForVertical(y);
+//					int charIndex = layout.getOffsetForHorizontal(line, x);
+//				}
+//				return true;
+//			}
+//		});
+//	}
 
 	private class LookupWordDefinitionTask extends AsyncTask<String, Void, WordDefinition> {
 
+		@Override
 		protected WordDefinition doInBackground(String... wordsToLookup) {
 			try {
 				return new WordDefinitionLookup().lookupWordDefinition(wordsToLookup[0]);
@@ -59,6 +110,7 @@ public class WordDefinitionDetailsActivity extends Activity {
 			}
 		}
 
+		@Override
 		protected void onPostExecute(WordDefinition wordDefinitionFound) {
 			if (wordDefinitionFound == null) {
 				displayTextOnTheScreen("Nothing found in the dictionary");

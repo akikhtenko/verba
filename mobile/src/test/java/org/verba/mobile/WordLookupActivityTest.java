@@ -31,10 +31,10 @@ public class WordLookupActivityTest {
 		wordToLookupField = (EditText) wordLookupActivity.findViewById(R.id.wordToFindField);
 	}
 
-    @Test
+	@Test
 	public void shouldHaveVerbaLabel() throws Exception {
 		assertThat(wordLookupActivity.getResources().getString(R.string.app_name), is("Verba"));
-    }
+	}
 
 	@Test
 	public void shouldRunWordDefinitionDetailsActivityWithTargetWord() throws Exception {

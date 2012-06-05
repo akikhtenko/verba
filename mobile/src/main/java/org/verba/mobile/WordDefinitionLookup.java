@@ -22,7 +22,7 @@ public class WordDefinitionLookup {
 
 		WordDefinitionRepository definitionsRepository = getWordDefinitionsRepository();
 
-		Dictionary dictionary = new Dictionary(coordinatesRepository, definitionsRepository);
+		Dictionary dictionary = createDictionary(coordinatesRepository, definitionsRepository);
 
 		WordDefinition wordDefinition = null;
 		try {
@@ -35,12 +35,17 @@ public class WordDefinitionLookup {
 		return wordDefinition;
 	}
 
-	private WordDefinitionCoordinatesRepository getWordDefinitionCoordinatesRepository() throws FileNotFoundException {
+	protected Dictionary createDictionary(WordDefinitionCoordinatesRepository coordinatesRepository,
+			WordDefinitionRepository definitionsRepository) {
+		return new Dictionary(coordinatesRepository, definitionsRepository);
+	}
+
+	protected WordDefinitionCoordinatesRepository getWordDefinitionCoordinatesRepository() throws FileNotFoundException {
 		DictionaryIndexReader indexReader = getIndexReader();
 		return new WordDefinitionCoordinatesRepository(indexReader);
 	}
 
-	private WordDefinitionRepository getWordDefinitionsRepository() throws FileNotFoundException {
+	protected WordDefinitionRepository getWordDefinitionsRepository() throws FileNotFoundException {
 		InputStream dictionaryStream = getDictionaryInputStream();
 		return new WordDefinitionRepository(dictionaryStream);
 	}
@@ -57,7 +62,7 @@ public class WordDefinitionLookup {
 		return new DictionaryIndexReader(indexStream);
 	}
 
-	private File getVerbaDirectory() {
+	protected File getVerbaDirectory() {
 		return Environment.getExternalStoragePublicDirectory("verba");
 	}
 }
