@@ -9,6 +9,7 @@ import android.widget.Button;
 import android.widget.EditText;
 
 public class WordLookupActivity extends Activity implements OnClickListener {
+	@Override
 	public void onClick(View v) {
 		Intent commandToOpenWordDefinitionDetails = new Intent(this, WordDefinitionDetailsActivity.class);
 		commandToOpenWordDefinitionDetails.putExtra("wordToLookup", getWordToLookup());

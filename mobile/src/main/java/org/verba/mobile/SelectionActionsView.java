@@ -86,6 +86,20 @@ public class SelectionActionsView extends View {
 		Rect clip = getVisibilityClip();
 		int[] parentCoordinates = getParentViewAbsoluteCoordinates();
 
+		computePanelXCoordinate(handleView, clip, parentCoordinates);
+		computePanelYCoordinate(handleView, clip, parentCoordinates);
+	}
+
+	private void computePanelXCoordinate(HandleView handleView, Rect clip, int[] parentCoordinates) {
+		absoluteXInView = handleView.getHandleAbsoluteXInView();
+		if (absoluteXInView + parentCoordinates[0] < clip.left) {
+			absoluteXInView = clip.left - parentCoordinates[0];
+		} else if (absoluteXInView + parentCoordinates[0] + mContentView.getMeasuredWidth() > clip.right) {
+			absoluteXInView = clip.right - parentCoordinates[0] - mContentView.getMeasuredWidth();
+		}
+	}
+
+	private void computePanelYCoordinate(HandleView handleView, Rect clip, int[] parentCoordinates) {
 		if (handleView == textView.getLeftHandle()) {
 			int line = textView.getLayout().getLineForOffset(getSelectionStart());
 			absoluteYInView = getVerticalLocalPosition(line);
@@ -107,12 +121,10 @@ public class SelectionActionsView extends View {
 				absoluteYInView -= PANEL_FROM_HANDLES_OFFSET;
 			}
 		}
-
-		absoluteXInView = handleView.getHandleAbsoluteXInView();
 	}
 
 	private void updatePosition(int parentPositionX, int parentPositionY) {
-		int positionX = clipHorizontally(parentPositionX + absoluteXInView);
+		int positionX = parentPositionX + absoluteXInView;
 		int positionY = parentPositionY + absoluteYInView;
 
 		if (!isPositionVisible(positionX, positionY)) {
@@ -124,12 +136,6 @@ public class SelectionActionsView extends View {
 				mContainer.showAtLocation(textView, Gravity.NO_GRAVITY, positionX, positionY);
 			}
 		}
-	}
-
-	private int clipHorizontally(int x) {
-		DisplayMetrics displayMetrics = textView.getContext().getResources().getDisplayMetrics();
-		int positionX = Math.min(displayMetrics.widthPixels - mContentView.getMeasuredWidth(), x);
-		return Math.max(0, positionX);
 	}
 
 	void hide() {
@@ -171,7 +177,6 @@ public class SelectionActionsView extends View {
 
 	private boolean isPositionVisible(int posX, int posY) {
 		Rect clip = getVisibilityClip();
-
 		return posX >= clip.left
 				&& (posX + mContentView.getMeasuredWidth()) <= clip.right
 				&& posY >= clip.top
