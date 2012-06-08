@@ -4,6 +4,6 @@
     <string name="app_name">Verba</string>
     <string name="wordToFindHint">Enter a word to find</string>
     <string name="lookupButtonLabel">Search</string>
-    <item type="string" name="databaseVersion" format="integer">0</item>
+    <item type="string" name="databaseVersion" format="integer">1</item>
 
 </resources>

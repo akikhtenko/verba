@@ -4,14 +4,16 @@ CREATE TABLE dictionary (
     description		TEXT
 );
 
-CREATE TABLE dictionary_index (
+CREATE TABLE dictionary_entry (
 	_id 			INTEGER PRIMARY KEY,
     phrase 			TEXT,
     offset			INTEGER,
-    length			INTEGER
+    length			INTEGER,
+    dictionary_id	INTEGER,
+    FOREIGN KEY(dictionary_id) REFERENCES dictionary(_id)
 );
 
-CREATE UNIQUE INDEX idx_dictionary_index ON dictionary_index (phrase);
+CREATE UNIQUE INDEX idx_dictionary_entry ON dictionary_entry (phrase);
 
 CREATE TABLE cards_set (
 	_id 	INTEGER PRIMARY KEY,

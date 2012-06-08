@@ -15,7 +15,7 @@ public class VerbaDbManager extends SQLiteOpenHelper {
 
 	private Context context;
 
-	VerbaDbManager(Context aContext) {
+	public VerbaDbManager(Context aContext) {
 		super(aContext, DATABASE_NAME, null, aContext.getResources().getInteger(R.string.databaseVersion));
 		context = aContext;
 	}

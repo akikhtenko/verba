@@ -6,7 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 public class DictionaryDao {
-	private static final String SELECT_DICTIONARY_BY_NAME = null;
+	private static final String SELECT_DICTIONARY_BY_NAME = "select * from dictionary where name = ?";
 	private VerbaDbManager verbaDbManager;
 
 	public DictionaryDao(VerbaDbManager aVerbaDbManager) {
