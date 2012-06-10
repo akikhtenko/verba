@@ -1,0 +1,46 @@
+package org.verba.stardict;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.ByteBuffer;
+
+import org.verba.util.InputStreamReader;
+import org.verba.xdxf.XdxfPhraseDefinitionPart;
+
+public class PhraseDefinitionRepository {
+	private InputStreamReader streamReader;
+
+	public PhraseDefinitionRepository(InputStream aDictionaryPayloadStream) {
+		streamReader = new InputStreamReader(aDictionaryPayloadStream);
+	}
+
+	public PhraseDefinition find(PhraseDefinitionCoordinates wordCoordinates) throws IOException {
+		PhraseDefinition phraseDefinition = new PhraseDefinition();
+
+		PhraseDefinitionPart phraseDefinitionPart = readPhraseDefinitionPart(wordCoordinates);
+		phraseDefinition.add(phraseDefinitionPart);
+
+		return phraseDefinition;
+	}
+
+	public void destroy() throws IOException {
+		streamReader.close();
+	}
+
+	private PhraseDefinitionPart readPhraseDefinitionPart(PhraseDefinitionCoordinates phraseCoordinates)
+			throws IOException {
+		byte[] phraseDefinitionBuffer = streamReader.readBytesAtOffset(phraseCoordinates.getPhraseDefinitionOffset(),
+				phraseCoordinates.getPhraseDefinitionLength());
+		return new XdxfPhraseDefinitionPart(adjustPhraseDefinitionPart(phraseDefinitionBuffer));
+	}
+
+	private byte[] adjustPhraseDefinitionPart(byte[] purePhraseDefinitionPartData) {
+		ByteBuffer adjustedPhraseDefinitionData = ByteBuffer.allocate(purePhraseDefinitionPartData.length + 9);
+
+		adjustedPhraseDefinitionData.put("<ar>".getBytes());
+		adjustedPhraseDefinitionData.put(purePhraseDefinitionPartData);
+		adjustedPhraseDefinitionData.put("</ar>".getBytes());
+
+		return adjustedPhraseDefinitionData.array();
+	}
+}
