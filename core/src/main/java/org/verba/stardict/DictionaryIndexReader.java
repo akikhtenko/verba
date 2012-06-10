@@ -1,12 +1,13 @@
 package org.verba.stardict;
 
+import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
 
 import org.verba.util.InputStreamReader;
 
-public class DictionaryIndexReader {
+public class DictionaryIndexReader implements Closeable {
 	private static final int BITS_PER_BYTE = 8;
 	private static final int MAX_WORD_LENGTH = 256;
 	private InputStreamReader streamReader;
@@ -19,14 +20,15 @@ public class DictionaryIndexReader {
 		targetWordBuffer = ByteBuffer.allocate(MAX_WORD_LENGTH);
 	}
 
-	public boolean hasNextWordDefinition() throws IOException {
+	public boolean hasNextPhraseDefinitionCoordinates() throws IOException {
 		return !streamReader.isNextByteEndOfStream();
 	}
 
-	public WordDefinitionCoordinates readWordCoordinates() throws IOException {
-		return new WordDefinitionCoordinates(readTargetWord(), readWordDefinitionOffset(), readWordDefinitionLength());
+	public PhraseDefinitionCoordinates readPhraseDefinitionCoordinates() throws IOException {
+		return new PhraseDefinitionCoordinates(readTargetWord(), readPhraseDefinitionOffset(), readPhraseDefinitionLength());
 	}
 
+	@Override
 	public void close() throws IOException {
 		streamReader.close();
 	}
@@ -54,11 +56,11 @@ public class DictionaryIndexReader {
 		return nextByte == '\0';
 	}
 
-	private long readWordDefinitionOffset() throws IOException {
+	private long readPhraseDefinitionOffset() throws IOException {
 		return convertBytesToLong(streamReader.readNextBytes(4));
 	}
 
-	private int readWordDefinitionLength() throws IOException {
+	private int readPhraseDefinitionLength() throws IOException {
 		return (int) convertBytesToLong(streamReader.readNextBytes(4));
 	}
 

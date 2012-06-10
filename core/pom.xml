@@ -73,7 +73,7 @@
           <instrumentation>
             <excludes>
               <exclude>org/verba/xdxf/node/XdxfNodeType.class</exclude>
-              <exclude>org/verba/stardict/WordDefinitionPartType.class</exclude>
+              <exclude>org/verba/stardict/PhraseDefinitionPartType.class</exclude>
             </excludes>
           </instrumentation>
         </configuration>

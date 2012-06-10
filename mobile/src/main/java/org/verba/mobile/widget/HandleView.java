@@ -1,4 +1,6 @@
-package org.verba.mobile;
+package org.verba.mobile.widget;
+
+import org.verba.mobile.R;
 
 import android.graphics.Canvas;
 import android.graphics.Rect;
@@ -11,7 +13,7 @@ import android.widget.PopupWindow;
 
 public abstract class HandleView extends View {
 	private static final int ROTATION_180_DEGREES = 180;
-	protected VerbaTextView textView;
+	protected PhraseDefinitionView textView;
 	protected SelectionActionsView selectionActionsView;
 	private Drawable underlyingDrawable;
 	private PopupWindow mContainer;
@@ -33,7 +35,7 @@ public abstract class HandleView extends View {
 		TOP, BOTTOM, INLINE
 	}
 
-	public HandleView(VerbaTextView aTextView, SelectionActionsView aSelectionActionsView) {
+	public HandleView(PhraseDefinitionView aTextView, SelectionActionsView aSelectionActionsView) {
 		super(aTextView.getContext());
 		textView = aTextView;
 		selectionActionsView = aSelectionActionsView;
@@ -42,7 +44,7 @@ public abstract class HandleView extends View {
 		initialiseState();
 	}
 
-	private void createPopupWindow(VerbaTextView aTextView) {
+	private void createPopupWindow(PhraseDefinitionView aTextView) {
 		mContainer = new PopupWindow(aTextView.getContext());
 		mContainer.setClippingEnabled(false);
 		mContainer.setWindowLayoutMode(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);

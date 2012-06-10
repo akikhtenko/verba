@@ -1,12 +1,14 @@
 package org.verba.stardict;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URISyntaxException;
+import java.net.URL;
 
 import org.junit.Ignore;
 import org.junit.Test;
-import org.verba.stardict.WordDefinitionCoordinatesRepository.WordDefinitionCoordinatesNotFoundException;
-import org.verba.xdxf.XdxfWordDefinitionPart;
+import org.verba.xdxf.XdxfPhraseDefinitionPart;
 
 public class DictionaryIntegrationTest {
 	private static final String WORD_TO_LOOK_FOR = "admission";
@@ -14,26 +16,25 @@ public class DictionaryIntegrationTest {
 
 	@Test
 	@Ignore
-	public void shouldLookupAWord() throws IOException, WordDefinitionCoordinatesNotFoundException {
-		InputStream indexStream = getClass().getClassLoader().getResourceAsStream("org/verba/stardict/dictionary.idx");
+	public void shouldLookupAWord() throws IOException, PhraseDefinitionCoordinatesNotFoundException, URISyntaxException {
+		URL indexUrl = getClass().getClassLoader().getResource("org/verba/stardict/dictionary.idx");
+		File indexFile = new File(indexUrl.toURI());
 		InputStream dictionaryStream = getClass().getClassLoader().getResourceAsStream(
 				"org/verba/stardict/dictionary.dict");
 
-		DictionaryIndexReader indexReader = new DictionaryIndexReader(indexStream);
-		WordDefinitionCoordinatesRepository coordinatesRepository = new WordDefinitionCoordinatesRepository(indexReader);
+		PhraseDefinitionCoordinatesRepository coordinatesRepository = new FsPhraseDefinitionCoordinatesRepository(indexFile);
 
-		WordDefinitionRepository definitionsRepository = new WordDefinitionRepository(dictionaryStream);
+		PhraseDefinitionRepository definitionsRepository = new PhraseDefinitionRepository(dictionaryStream);
 
 		Dictionary dictionary = new Dictionary(coordinatesRepository, definitionsRepository);
 		long timeStarted = System.currentTimeMillis();
 
 		try {
-			WordDefinition wordDefinition = dictionary.lookup(WORD_TO_LOOK_FOR);
-			XdxfWordDefinitionPart wordDefinitionPart = (XdxfWordDefinitionPart) wordDefinition.iterator().next();
+			PhraseDefinition phraseDefinition = dictionary.lookup(WORD_TO_LOOK_FOR);
+			XdxfPhraseDefinitionPart phraseDefinitionPart = (XdxfPhraseDefinitionPart) phraseDefinition.iterator().next();
 
-			System.out.println(String.format("%s [%s]", WORD_TO_LOOK_FOR, new String(wordDefinitionPart.bytes())));
+			System.out.println(String.format("%s [%s]", WORD_TO_LOOK_FOR, new String(phraseDefinitionPart.bytes())));
 		} finally {
-			coordinatesRepository.destroy();
 			definitionsRepository.destroy();
 		}
 

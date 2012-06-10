@@ -3,15 +3,15 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:orientation="vertical"
-    android:background="@color/word_definition_details_background">
+    android:background="@color/phrase_definition_details_background">
     <ScrollView
         android:id="@+id/scrollView1"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:overScrollMode="always" >
 
-        <org.verba.mobile.VerbaTextView
-            android:id="@+id/wordDefinitionView"
+        <org.verba.mobile.widget.PhraseDefinitionView
+            android:id="@+id/phraseDefinitionView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingTop="8dip"
@@ -21,7 +21,7 @@
             android:cursorVisible="false"
             android:focusableInTouchMode="true"
             android:focusable="true"
-            android:textColor="@color/word_definition_details_text" />
+            android:textColor="@color/phrase_definition_details_text" />
 
     </ScrollView>
 

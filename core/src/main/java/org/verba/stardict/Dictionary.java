@@ -2,21 +2,19 @@ package org.verba.stardict;
 
 import java.io.IOException;
 
-import org.verba.stardict.WordDefinitionCoordinatesRepository.WordDefinitionCoordinatesNotFoundException;
-
 public class Dictionary {
-	private WordDefinitionCoordinatesRepository wordDefinitionCoordinatesRepository;
-	private WordDefinitionRepository wordDefinitionRepository;
+	private PhraseDefinitionCoordinatesRepository phraseDefinitionCoordinatesRepository;
+	private PhraseDefinitionRepository phraseDefinitionRepository;
 
-	public Dictionary(WordDefinitionCoordinatesRepository aWordDefinitionCoordinatesRepository,
-			WordDefinitionRepository aWordDefinitionRepository) {
-		wordDefinitionCoordinatesRepository = aWordDefinitionCoordinatesRepository;
-		wordDefinitionRepository = aWordDefinitionRepository;
+	public Dictionary(PhraseDefinitionCoordinatesRepository aPhraseDefinitionCoordinatesRepository,
+			PhraseDefinitionRepository aPhraseDefinitionRepository) {
+		phraseDefinitionCoordinatesRepository = aPhraseDefinitionCoordinatesRepository;
+		phraseDefinitionRepository = aPhraseDefinitionRepository;
 	}
 
-	public WordDefinition lookup(String wordToLookFor) throws WordDefinitionCoordinatesNotFoundException, IOException {
-		WordDefinitionCoordinates wordDefinitionCoordinates = wordDefinitionCoordinatesRepository.find(wordToLookFor);
+	public PhraseDefinition lookup(String wordToLookFor) throws PhraseDefinitionCoordinatesNotFoundException, IOException {
+		PhraseDefinitionCoordinates phraseDefinitionCoordinates = phraseDefinitionCoordinatesRepository.find(wordToLookFor);
 
-		return wordDefinitionRepository.find(wordDefinitionCoordinates);
+		return phraseDefinitionRepository.find(phraseDefinitionCoordinates);
 	}
 }

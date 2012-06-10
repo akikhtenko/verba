@@ -3,7 +3,7 @@ package org.verba.mobile.xdxf;
 import java.util.regex.Pattern;
 
 import org.verba.mobile.R;
-import org.verba.mobile.WordDefinitionDetailsActivity;
+import org.verba.mobile.PhraseDefinitionDetailsActivity;
 import org.verba.xdxf.XdxfNodeDisplay;
 import org.verba.xdxf.node.BoldPhrase;
 import org.verba.xdxf.node.ColoredPhrase;
@@ -68,10 +68,10 @@ public class AndroidXdxfNodeDisplay implements XdxfNodeDisplay {
 		CharacterStyle linkToAnotherDefinition = new ClickableSpan() {
 			@Override
 			public void onClick(View widget) {
-				Intent commandToOpenWordDefinitionDetails = new Intent(activityContext,
-						WordDefinitionDetailsActivity.class);
-				commandToOpenWordDefinitionDetails.putExtra("wordToLookup", phraseReference.asPlainText());
-				activityContext.startActivity(commandToOpenWordDefinitionDetails);
+				Intent commandToOpenPhraseDefinitionDetails = new Intent(activityContext,
+						PhraseDefinitionDetailsActivity.class);
+				commandToOpenPhraseDefinitionDetails.putExtra("wordToLookup", phraseReference.asPlainText());
+				activityContext.startActivity(commandToOpenPhraseDefinitionDetails);
 			}
 		};
 

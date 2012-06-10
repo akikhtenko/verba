@@ -1,4 +1,6 @@
-package org.verba.mobile;
+package org.verba.mobile.widget;
+
+import org.verba.mobile.R;
 
 import android.content.Context;
 import android.graphics.Rect;
@@ -12,7 +14,7 @@ import android.widget.PopupWindow;
 
 public class SelectionActionsView extends View {
 	private static final int PANEL_FROM_HANDLES_OFFSET = 7;
-	private VerbaTextView textView;
+	private PhraseDefinitionView textView;
 	private PopupWindow mContainer;
 	private View mContentView;
 	private int absoluteXInView;
@@ -28,9 +30,9 @@ public class SelectionActionsView extends View {
 		mContainer.setBackgroundDrawable(null);
 	}
 
-	public SelectionActionsView(VerbaTextView verbaTextView) {
-		super(verbaTextView.getContext());
-		textView = verbaTextView;
+	public SelectionActionsView(PhraseDefinitionView phraseDefinitionView) {
+		super(phraseDefinitionView.getContext());
+		textView = phraseDefinitionView;
 
 		createPopupWindow();
 

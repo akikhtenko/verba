@@ -12,36 +12,35 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.verba.stardict.WordDefinitionCoordinatesRepository.WordDefinitionCoordinatesNotFoundException;
 
 @RunWith(MockitoJUnitRunner.class)
 public class DictionaryTest {
-	private static final String WORD_TO_LOOK_FOR = "verba";
+	private static final String PHRASE_TO_LOOK_FOR = "verba";
 	@Mock
-	private WordDefinitionCoordinatesRepository mockedWordDefinitionCoordinatesRepository;
+	private FsPhraseDefinitionCoordinatesRepository phraseDefinitionCoordinatesRepository;
 	@Mock
-	private WordDefinitionRepository mockedWordDefinitionRepository;
+	private PhraseDefinitionRepository phraseDefinitionRepository;
 	@Mock
-	private WordDefinitionCoordinates mockedCoordinates;
+	private PhraseDefinitionCoordinates phraseCoordinates;
 	@Mock
-	private WordDefinition mockedWordDefinition;
+	private PhraseDefinition phraseDefinition;
 
 	private Dictionary dictionary;
 
 	@Before
 	public void prepareDictionary() {
-		dictionary = new Dictionary(mockedWordDefinitionCoordinatesRepository, mockedWordDefinitionRepository);
+		dictionary = new Dictionary(phraseDefinitionCoordinatesRepository, phraseDefinitionRepository);
 	}
 
 	@Test
-	public void shouldLookupAWord() throws IOException, WordDefinitionCoordinatesNotFoundException {
-		when(mockedWordDefinitionCoordinatesRepository.find(WORD_TO_LOOK_FOR)).thenReturn(mockedCoordinates);
-		when(mockedWordDefinitionRepository.find(mockedCoordinates)).thenReturn(mockedWordDefinition);
+	public void shouldLookupAWord() throws IOException, PhraseDefinitionCoordinatesNotFoundException {
+		when(phraseDefinitionCoordinatesRepository.find(PHRASE_TO_LOOK_FOR)).thenReturn(phraseCoordinates);
+		when(phraseDefinitionRepository.find(phraseCoordinates)).thenReturn(phraseDefinition);
 
-		WordDefinition wordDefinition = dictionary.lookup(WORD_TO_LOOK_FOR);
+		PhraseDefinition actualPhraseDefinition = dictionary.lookup(PHRASE_TO_LOOK_FOR);
 
-		verify(mockedWordDefinitionCoordinatesRepository).find(WORD_TO_LOOK_FOR);
-		verify(mockedWordDefinitionRepository).find(mockedCoordinates);
-		assertThat(wordDefinition, is(mockedWordDefinition));
+		verify(phraseDefinitionCoordinatesRepository).find(PHRASE_TO_LOOK_FOR);
+		verify(phraseDefinitionRepository).find(phraseCoordinates);
+		assertThat(actualPhraseDefinition, is(phraseDefinition));
 	}
 }

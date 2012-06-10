@@ -1,4 +1,5 @@
-package org.verba.mobile;
+package org.verba.mobile.widget;
+
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -16,7 +17,7 @@ import android.view.ViewTreeObserver;
 import android.view.ViewTreeObserver.OnScrollChangedListener;
 import android.widget.TextView;
 
-public class VerbaTextView extends TextView {
+public class PhraseDefinitionView extends TextView {
 	private static final int HYSTERESIS_OFFSET_THRESHOLD_BASIS = 8;
 	private static final int SELECTION_COLOR = 0x4403992B;
 
@@ -44,15 +45,15 @@ public class VerbaTextView extends TextView {
 		highlightPaint.setStyle(Paint.Style.FILL);
 	}
 
-	public VerbaTextView(Context context, AttributeSet attrs, int defStyle) {
+	public PhraseDefinitionView(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
 	}
 
-	public VerbaTextView(Context context, AttributeSet attrs) {
+	public PhraseDefinitionView(Context context, AttributeSet attrs) {
 		super(context, attrs);
 	}
 
-	public VerbaTextView(Context context) {
+	public PhraseDefinitionView(Context context) {
 		super(context);
 	}
 

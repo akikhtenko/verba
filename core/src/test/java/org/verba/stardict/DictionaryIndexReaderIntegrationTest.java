@@ -19,10 +19,10 @@ public class DictionaryIndexReaderIntegrationTest {
 		long timeStarted = System.currentTimeMillis();
 
 		try {
-			while (indexReader.hasNextWordDefinition()) {
-				WordDefinitionCoordinates wordCoordinates = indexReader.readWordCoordinates();
-				System.out.println(String.format("%s [%s,%s]", wordCoordinates.getTargetWord(),
-						wordCoordinates.getWordDefinitionOffset(), wordCoordinates.getWordDefinitionLength()));
+			while (indexReader.hasNextPhraseDefinitionCoordinates()) {
+				PhraseDefinitionCoordinates wordCoordinates = indexReader.readPhraseDefinitionCoordinates();
+				System.out.println(String.format("%s [%s,%s]", wordCoordinates.getTargetPhrase(),
+						wordCoordinates.getPhraseDefinitionOffset(), wordCoordinates.getPhraseDefinitionLength()));
 			}
 		} catch (IOException e) {
 			e.printStackTrace();

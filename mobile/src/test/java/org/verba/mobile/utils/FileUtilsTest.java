@@ -15,7 +15,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.class)
 public class FileUtilsTest {
-	private static final String DUMMY_SQL = "select\n id--, name\n from table;\nanother statement";
+	private static final String DUMMY_SQL = "select\n id--, name\n from table/\nanother statement";
 	private FileUtils fileUtils = new FileUtils();
 	@Mock BufferedReader mockedBufferedReader;
 

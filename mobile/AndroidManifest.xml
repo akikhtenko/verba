@@ -10,7 +10,7 @@
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name" >
         <activity
-            android:name="WordLookupActivity"
+            android:name=".PhraseLookupActivity"
             android:label="@string/app_name"
             android:theme="@android:style/Theme.NoTitleBar">
             <intent-filter>
@@ -19,7 +19,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="WordDefinitionDetailsActivity"
+        <activity android:name=".PhraseDefinitionDetailsActivity"
             android:theme="@android:style/Theme.NoTitleBar"/>
         <service android:name="DictionaryDataService" android:exported="false"/>
     </application>

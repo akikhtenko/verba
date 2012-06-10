@@ -6,11 +6,14 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 public class DictionaryDao {
-	private static final String SELECT_DICTIONARY_BY_NAME = "select * from dictionary where name = ?";
-	private VerbaDbManager verbaDbManager;
+	public static final String SELECT_DICTIONARY_BY_NAME = "select * from dictionary where name = ?";
+	public static final String INSERT_DICTIONARY = "insert into dictionary (name, description) values (?, ?)";
+	public static final String DELETE_DICTIONARY = "delete from dictionary where _id = ?";
+
+	private SQLiteDatabase database;
 
 	public DictionaryDao(VerbaDbManager aVerbaDbManager) {
-		verbaDbManager = aVerbaDbManager;
+		database = aVerbaDbManager.getWritableDatabase();
 	}
 
 	public DictionaryDataObject getDictionaryByName(String dictionaryName) throws NoDictionaryFoundException,
@@ -24,6 +27,27 @@ public class DictionaryDao {
 		ensureOnlyOneFound(dictionaryName, dictionariesCursor);
 
 		return result;
+	}
+
+	public int addDictionary(DictionaryDataObject dictionaryDataObject) {
+		database.execSQL(INSERT_DICTIONARY,
+				new String[] { dictionaryDataObject.getName(), dictionaryDataObject.getDescription() });
+
+		return getInsertedDictionaryId(dictionaryDataObject);
+	}
+
+	private int getInsertedDictionaryId(DictionaryDataObject dictionaryDataObject) {
+		Cursor dictionaryCursor = queryDictionaryByName(dictionaryDataObject.getName());
+
+		if (dictionaryCursor.moveToFirst()) {
+			return dictionaryCursor.getInt(dictionaryCursor.getColumnIndex("_id"));
+		} else {
+			return -1;
+		}
+	}
+
+	public void deleteDictionary(DictionaryDataObject dictionaryDataObject) {
+		database.execSQL(DELETE_DICTIONARY, new Object[] { dictionaryDataObject.getId() });
 	}
 
 	private void ensureOnlyOneFound(String dictionaryName, Cursor dictionariesCursor)
@@ -52,8 +76,7 @@ public class DictionaryDao {
 	}
 
 	private Cursor queryDictionaryByName(String dictionaryName) {
-		SQLiteDatabase db = verbaDbManager.getReadableDatabase();
-		return db.rawQuery(SELECT_DICTIONARY_BY_NAME, new String[] { dictionaryName });
+		return database.rawQuery(SELECT_DICTIONARY_BY_NAME, new String[] { dictionaryName });
 	}
 
 	public static class NoDictionaryFoundException extends Exception {
@@ -70,5 +93,9 @@ public class DictionaryDao {
 		public MoreThanOneDictionaryFoundException(String message) {
 			super(message);
 		}
+	}
+
+	public void close() {
+		database.close();
 	}
 }

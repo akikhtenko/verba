@@ -24,79 +24,79 @@ public class DictionaryIndexReaderTest {
 	public void canReadTargetWordThreeTimesInARow() throws IOException {
 		DictionaryIndexReader indexReader = new DictionaryIndexReader(new ByteArrayInputStream(
 				DUMMY_INDEX_CONTENT.getBytes()));
-		WordDefinitionCoordinates wordCoordinates = indexReader.readWordCoordinates();
-		assertThat(wordCoordinates.getTargetWord(), is(equalTo("abc")));
-		wordCoordinates = indexReader.readWordCoordinates();
-		assertThat(wordCoordinates.getTargetWord(), is(equalTo("cba")));
-		wordCoordinates = indexReader.readWordCoordinates();
-		assertThat(wordCoordinates.getTargetWord(), is(equalTo("fedcba")));
+		PhraseDefinitionCoordinates wordCoordinates = indexReader.readPhraseDefinitionCoordinates();
+		assertThat(wordCoordinates.getTargetPhrase(), is(equalTo("abc")));
+		wordCoordinates = indexReader.readPhraseDefinitionCoordinates();
+		assertThat(wordCoordinates.getTargetPhrase(), is(equalTo("cba")));
+		wordCoordinates = indexReader.readPhraseDefinitionCoordinates();
+		assertThat(wordCoordinates.getTargetPhrase(), is(equalTo("fedcba")));
 	}
 
 	@Test
-	public void canReadWordDefinitionOffsetThreeTimesInARow() throws IOException {
+	public void canReadPhraseDefinitionOffsetThreeTimesInARow() throws IOException {
 		DictionaryIndexReader indexReader = new DictionaryIndexReader(new ByteArrayInputStream(
 				DUMMY_INDEX_CONTENT.getBytes()));
-		WordDefinitionCoordinates wordCoordinates = indexReader.readWordCoordinates();
-		assertThat(wordCoordinates.getWordDefinitionOffset(), is(1633771873L));
-		wordCoordinates = indexReader.readWordCoordinates();
-		assertThat(wordCoordinates.getWordDefinitionOffset(), is(1667457891L));
-		wordCoordinates = indexReader.readWordCoordinates();
-		assertThat(wordCoordinates.getWordDefinitionOffset(), is(1701143909L));
+		PhraseDefinitionCoordinates wordCoordinates = indexReader.readPhraseDefinitionCoordinates();
+		assertThat(wordCoordinates.getPhraseDefinitionOffset(), is(1633771873L));
+		wordCoordinates = indexReader.readPhraseDefinitionCoordinates();
+		assertThat(wordCoordinates.getPhraseDefinitionOffset(), is(1667457891L));
+		wordCoordinates = indexReader.readPhraseDefinitionCoordinates();
+		assertThat(wordCoordinates.getPhraseDefinitionOffset(), is(1701143909L));
 	}
 
 	@Test
-	public void canReadWordDefinitionLengthThreeTimesInARow() throws IOException {
+	public void canReadPhraseDefinitionLengthThreeTimesInARow() throws IOException {
 		DictionaryIndexReader indexReader = new DictionaryIndexReader(new ByteArrayInputStream(
 				DUMMY_INDEX_CONTENT.getBytes()));
-		WordDefinitionCoordinates wordCoordinates = indexReader.readWordCoordinates();
-		assertThat(wordCoordinates.getWordDefinitionLength(), is(1650614882));
-		wordCoordinates = indexReader.readWordCoordinates();
-		assertThat(wordCoordinates.getWordDefinitionLength(), is(1684300900));
-		wordCoordinates = indexReader.readWordCoordinates();
-		assertThat(wordCoordinates.getWordDefinitionLength(), is(1717986918));
+		PhraseDefinitionCoordinates wordCoordinates = indexReader.readPhraseDefinitionCoordinates();
+		assertThat(wordCoordinates.getPhraseDefinitionLength(), is(1650614882));
+		wordCoordinates = indexReader.readPhraseDefinitionCoordinates();
+		assertThat(wordCoordinates.getPhraseDefinitionLength(), is(1684300900));
+		wordCoordinates = indexReader.readPhraseDefinitionCoordinates();
+		assertThat(wordCoordinates.getPhraseDefinitionLength(), is(1717986918));
 	}
 
 	@Test(expected = RuntimeException.class)
 	public void shouldFailWhenEndOfStreamReachedWhileReadingATargetWord() throws IOException {
 		DictionaryIndexReader indexReader = new DictionaryIndexReader(new ByteArrayInputStream("abc".getBytes()));
-		indexReader.readWordCoordinates();
+		indexReader.readPhraseDefinitionCoordinates();
 	}
 
 	@Test(expected = RuntimeException.class)
-	public void shouldFailWhenEndOfStreamReachedWhileReadingAWordDefinitionOffset() throws IOException {
+	public void shouldFailWhenEndOfStreamReachedWhileReadingAPhraseDefinitionOffset() throws IOException {
 		DictionaryIndexReader indexReader = new DictionaryIndexReader(new ByteArrayInputStream("abc\0a".getBytes()));
-		indexReader.readWordCoordinates();
+		indexReader.readPhraseDefinitionCoordinates();
 	}
 
 	@Test(expected = RuntimeException.class)
-	public void shouldFailWhenEndOfStreamReachedWhileReadingAWordDefinitionLength() throws IOException {
+	public void shouldFailWhenEndOfStreamReachedWhileReadingAPhraseDefinitionLength() throws IOException {
 		DictionaryIndexReader indexReader = new DictionaryIndexReader(new ByteArrayInputStream("abc\0aaaab".getBytes()));
-		indexReader.readWordCoordinates();
+		indexReader.readPhraseDefinitionCoordinates();
 	}
 
 	@Test
-	public void showsWhenThereIsMoreWordDefinitionsToRead() throws IOException {
+	public void showsWhenThereIsMorePhraseDefinitionsToRead() throws IOException {
 		DictionaryIndexReader indexReader = new DictionaryIndexReader(new ByteArrayInputStream(
 				"abc\0aaaabbbb".getBytes()));
-		assertThat(indexReader.hasNextWordDefinition(), is(true));
-		indexReader.readWordCoordinates();
-		assertThat(indexReader.hasNextWordDefinition(), is(false));
+		assertThat(indexReader.hasNextPhraseDefinitionCoordinates(), is(true));
+		indexReader.readPhraseDefinitionCoordinates();
+		assertThat(indexReader.hasNextPhraseDefinitionCoordinates(), is(false));
 	}
 
 	@Test
-	public void repetativeCheckingIfThereIsMoreWordDefinitionsToReadShouldNotCauseTroubleForNextWordDefinitionRead()
+	public void repetativeCheckingIfThereIsMorePhraseDefinitionsToReadShouldNotCauseTroubleForNextPhraseDefinitionRead()
 			throws IOException {
 		DictionaryIndexReader indexReader = new DictionaryIndexReader(new ByteArrayInputStream(
 				"abc\0aaaabbbb".getBytes()));
 
-		indexReader.hasNextWordDefinition();
-		indexReader.hasNextWordDefinition();
-		indexReader.hasNextWordDefinition();
+		indexReader.hasNextPhraseDefinitionCoordinates();
+		indexReader.hasNextPhraseDefinitionCoordinates();
+		indexReader.hasNextPhraseDefinitionCoordinates();
 
-		WordDefinitionCoordinates wordCoordinates = indexReader.readWordCoordinates();
-		assertThat(wordCoordinates.getTargetWord(), is(equalTo("abc")));
-		assertThat(wordCoordinates.getWordDefinitionOffset(), is(1633771873L));
-		assertThat(wordCoordinates.getWordDefinitionLength(), is(1650614882));
+		PhraseDefinitionCoordinates wordCoordinates = indexReader.readPhraseDefinitionCoordinates();
+		assertThat(wordCoordinates.getTargetPhrase(), is(equalTo("abc")));
+		assertThat(wordCoordinates.getPhraseDefinitionOffset(), is(1633771873L));
+		assertThat(wordCoordinates.getPhraseDefinitionLength(), is(1650614882));
 	}
 
 	@Test

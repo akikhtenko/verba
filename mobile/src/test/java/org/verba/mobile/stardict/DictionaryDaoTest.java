@@ -5,7 +5,10 @@ import static org.junit.Assert.assertThat;
 import static org.mockito.AdditionalMatchers.aryEq;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.verba.mobile.stardict.DictionaryDao.DELETE_DICTIONARY;
+import static org.verba.mobile.stardict.DictionaryDao.INSERT_DICTIONARY;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -36,13 +39,37 @@ public class DictionaryDaoTest {
 
 	@Before
 	public void prepareDbInfrastructure() {
-		dictionaryDao = new DictionaryDao(verbaDbManager);
 		when(verbaDbManager.getReadableDatabase()).thenReturn(sqLiteDatabase);
+		when(verbaDbManager.getWritableDatabase()).thenReturn(sqLiteDatabase);
 		when(sqLiteDatabase.rawQuery(anyString(), aryEq(new String[] {DICTIONARY_NAME}))).thenReturn(cursor);
+		dictionaryDao = new DictionaryDao(verbaDbManager);
 	}
 
 	@Test
-	public void shouldGetDIctionaryByName() throws NoDictionaryFoundException, MoreThanOneDictionaryFoundException {
+	public void shouldAddDictionary() {
+		DictionaryDataObject dictionaryDataObject = new DictionaryDataObject();
+		dictionaryDataObject.setName(DICTIONARY_NAME);
+		dictionaryDataObject.setDescription(DICTIONARY_DESCRIPTION);
+
+		givenOneRowInCursor();
+		int dictionaryId = dictionaryDao.addDictionary(dictionaryDataObject);
+
+		verify(sqLiteDatabase).execSQL(INSERT_DICTIONARY, new String[] {DICTIONARY_NAME, DICTIONARY_DESCRIPTION});
+		assertThat(dictionaryId, is(DICTIONARY_ID));
+	}
+
+	@Test
+	public void shouldDeleteDictionary() {
+		DictionaryDataObject dictionaryDataObject = new DictionaryDataObject();
+		dictionaryDataObject.setId(DICTIONARY_ID);
+
+		dictionaryDao.deleteDictionary(dictionaryDataObject);
+
+		verify(sqLiteDatabase).execSQL(DELETE_DICTIONARY, new Object[] {DICTIONARY_ID});
+	}
+
+	@Test
+	public void shouldGetDictionaryByName() throws NoDictionaryFoundException, MoreThanOneDictionaryFoundException {
 		givenOneRowInCursor();
 
 		DictionaryDataObject dictionary = dictionaryDao.getDictionaryByName(DICTIONARY_NAME);
@@ -64,6 +91,12 @@ public class DictionaryDaoTest {
 		givenTwoRowsInCursor();
 
 		dictionaryDao.getDictionaryByName(DICTIONARY_NAME);
+	}
+
+	@Test
+	public void shouldCloseDatabase() {
+		dictionaryDao.close();
+		verify(sqLiteDatabase).close();
 	}
 
 	private void givenNoRowsInCursor() {

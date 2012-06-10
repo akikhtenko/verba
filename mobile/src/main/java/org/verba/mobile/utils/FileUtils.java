@@ -22,7 +22,7 @@ public class FileUtils {
 			sqlFile.close();
 		}
 
-		return normalizedSql.split(";");
+		return normalizedSql.split("/");
 	}
 
 	private String normalizeQueries(BufferedReader sqlFile) throws IOException {

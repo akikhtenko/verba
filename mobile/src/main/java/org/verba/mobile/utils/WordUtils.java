@@ -1,4 +1,4 @@
-package org.verba.mobile;
+package org.verba.mobile.utils;
 
 import android.text.Selection;
 import android.text.Spannable;

@@ -24,7 +24,9 @@ public class InputStreamReader {
 	public boolean isNextByteEndOfStream() throws IOException {
 		int byteAhead = stream.read();
 		boolean nextByteEndOfStream = isEndOfStreamByte(byteAhead);
-		stream.unread(byteAhead);
+		if (!nextByteEndOfStream) {
+			stream.unread(byteAhead);
+		}
 
 		return nextByteEndOfStream;
 	}

@@ -1,20 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    >
-        <EditText
-            android:id="@+id/wordToFindField"
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:hint="@string/wordToFindHint"
-            android:layout_width="0dip"
-            android:singleLine="true" android:layout_weight="1.67"/>
-
-        <Button
-            android:id="@+id/lookupButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/lookupButtonLabel" />
+    android:layout_height="wrap_content" 
+    android:orientation="vertical">
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content" >
+    
+                <EditText
+                android:id="@+id/wordToFindField"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:hint="@string/wordToFindHint"
+                android:layout_width="0dip"
+                android:singleLine="true" android:layout_weight="1.67"/>
+    
+            <Button
+                android:id="@+id/lookupButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/lookupButtonLabel" />
+    
+    </LinearLayout>
+
+    <ProgressBar
+        android:id="@+id/dictionaryPopulationProgress"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 
 </LinearLayout>
