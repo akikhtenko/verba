@@ -4,7 +4,7 @@ CREATE TABLE dictionary (
     description		TEXT
 )/
 
-CREATE VIRTUAL TABLE dictionary_entry USING fts3 (
+CREATE TABLE dictionary_entry (
     offset			INTEGER,
     length			INTEGER,
     phrase			TEXT,
@@ -12,7 +12,9 @@ CREATE VIRTUAL TABLE dictionary_entry USING fts3 (
     FOREIGN KEY(dictionary_id) REFERENCES dictionary(_id)
 )/
 
-CREATE TABLE cards_set (
+CREATE INDEX dictionary_entry_phrase_idx on dictionary_entry (phrase)/
+
+CREATE TABLE card_set (
 	_id 	INTEGER PRIMARY KEY,
     name  	TEXT
 )/

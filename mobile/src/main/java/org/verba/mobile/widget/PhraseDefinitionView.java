@@ -17,27 +17,13 @@ import android.view.ViewTreeObserver;
 import android.view.ViewTreeObserver.OnScrollChangedListener;
 import android.widget.TextView;
 
-public class PhraseDefinitionView extends TextView {
+public class PhraseDefinitionView extends TextView implements OnScrollChangedListener {
 	private static final int HYSTERESIS_OFFSET_THRESHOLD_BASIS = 8;
 	private static final int SELECTION_COLOR = 0x4403992B;
 
 	private SelectionActionsView selectionActionsView = new SelectionActionsView(this);
 	private HandleView leftHandle = new LeftHandleView(this, selectionActionsView);
 	private HandleView rightHandle = new RightHandleView(this, selectionActionsView);
-	private OnScrollChangedListener handlesScrollListener = new OnScrollChangedListener() {
-		@Override
-		public void onScrollChanged() {
-			if (leftHandle.isActive()) {
-				leftHandle.refreshHandle();
-			}
-			if (rightHandle.isActive()) {
-				rightHandle.refreshHandle();
-			}
-			if (selectionActionsView.isActive()) {
-				selectionActionsView.refreshPanel();
-			}
-		}
-	};
 	private Paint highlightPaint = new Paint();
 
 	{
@@ -63,6 +49,10 @@ public class PhraseDefinitionView extends TextView {
 
 	HandleView getRightHandle() {
 		return rightHandle;
+	}
+
+	public void setOnUseSelectionButtonClick(OnClickListener listener) {
+		selectionActionsView.setOnUseSelectionButtonClick(listener);
 	}
 
 	public void showSelectionHandles() {
@@ -150,6 +140,19 @@ public class PhraseDefinitionView extends TextView {
 		canvas.restore();
 	}
 
+	@Override
+	public void onScrollChanged() {
+		if (leftHandle.isActive()) {
+			leftHandle.refreshHandle();
+		}
+		if (rightHandle.isActive()) {
+			rightHandle.refreshHandle();
+		}
+		if (selectionActionsView.isActive()) {
+			selectionActionsView.refreshPanel();
+		}
+	}
+
 	private void autoScrollDownWhenDraggingRightHandle() {
 		if (rightHandle.isDragged()) {
 			int curs = getSelectionEnd();
@@ -235,14 +238,14 @@ public class PhraseDefinitionView extends TextView {
 	private void registerOnScrollListener() {
 		ViewTreeObserver vto = getViewTreeObserver();
 		if (vto != null) {
-			vto.addOnScrollChangedListener(handlesScrollListener);
+			vto.addOnScrollChangedListener(this);
 		}
 	}
 
 	private void deregisterOnScrollListener() {
 		ViewTreeObserver vto = getViewTreeObserver();
 		if (vto != null) {
-			vto.removeOnScrollChangedListener(handlesScrollListener);
+			vto.removeOnScrollChangedListener(this);
 		}
 	}
 

@@ -1,5 +1,7 @@
 package org.verba.mobile;
 
+import org.verba.mobile.card.CardDao;
+import org.verba.mobile.card.CardSetDao;
 import org.verba.mobile.stardict.DictionaryDao;
 import org.verba.mobile.stardict.DictionaryEntryDao;
 import org.verba.mobile.tools.VerbaDbManager;
@@ -12,6 +14,8 @@ import android.os.IBinder;
 public class DictionaryDataService extends Service {
 	private DictionaryDao dictionaryDao;
 	private DictionaryEntryDao dictionaryEntryDao;
+	private CardSetDao cardSetDao;
+	private CardDao cardDao;
 	private final IBinder mBinder = new DictionaryBinder();
 
 	public class DictionaryBinder extends Binder {
@@ -22,6 +26,14 @@ public class DictionaryDataService extends Service {
 		DictionaryEntryDao getDictionaryEntryDao() {
 			return dictionaryEntryDao;
 		}
+
+		CardSetDao getCardSetDao() {
+			return cardSetDao;
+		}
+
+		CardDao getCardDao() {
+			return cardDao;
+		}
 	}
 
 	@Override
@@ -30,6 +42,8 @@ public class DictionaryDataService extends Service {
 		VerbaDbManager verbaDbManager = new VerbaDbManager(getApplicationContext());
 		dictionaryDao = new DictionaryDao(verbaDbManager);
 		dictionaryEntryDao = new DictionaryEntryDao(verbaDbManager);
+		cardSetDao = new CardSetDao(verbaDbManager);
+		cardDao = new CardDao(verbaDbManager);
 	}
 
 	@Override
@@ -37,6 +51,8 @@ public class DictionaryDataService extends Service {
 		super.onDestroy();
 		dictionaryDao.close();
 		dictionaryEntryDao.close();
+		cardSetDao.close();
+		cardDao.close();
 	}
 
 	@Override

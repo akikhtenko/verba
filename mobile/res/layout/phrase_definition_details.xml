@@ -21,7 +21,9 @@
             android:cursorVisible="false"
             android:focusableInTouchMode="true"
             android:focusable="true"
-            android:textColor="@color/phrase_definition_details_text" />
+            android:textColor="@color/phrase_definition_details_text"
+            android:textSize="16sp"
+            android:lineSpacingMultiplier="1.2"/>
 
     </ScrollView>
 

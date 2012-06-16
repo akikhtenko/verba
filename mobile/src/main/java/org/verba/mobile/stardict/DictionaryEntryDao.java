@@ -1,20 +1,26 @@
 package org.verba.mobile.stardict;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.verba.mobile.tools.VerbaDbManager;
 
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 public class DictionaryEntryDao {
+	private static final String WILDCARD = "*";
 	public static final String SELECT_DICTIONARY_ENTRY_BY_ID =
 			"select rowid as _id, * from dictionary_entry where rowid = ?";
 	public static final String SELECT_DICTIONARY_ENTRY_BY_PATTERN =
-			"select rowid as _id, * from dictionary_entry where phrase match ?";
+			"select rowid as _id, * from dictionary_entry where phrase = ? limit 1";
 	public static final String INSERT_DICTIONARY_ENTRY = "insert into dictionary_entry "
 																		+ "(phrase, offset, length, dictionary_id) "
 																		+ "values "
 																		+ "(?, ?, ?, ?)";
 	public static final String DELETE_DICTIONARY_ENTRY = "delete from dictionary_entry where rowid = ?";
+	public static final String SELECT_PHRASE_SUGGESTIONS =
+			"select rowid as _id, * from dictionary_entry where phrase glob ? limit ?";
 
 	private SQLiteDatabase database;
 
@@ -39,6 +45,12 @@ public class DictionaryEntryDao {
 		return extractDictionaryEntryFromCursor(dictionaryEntriesCursor);
 	}
 
+	public List<DictionaryEntryDataObject> getTopSuggestions(String pattern, int count) {
+		Cursor dictionaryEntriesCursor = querySuggestionsByPhrasePattern(pattern + WILDCARD, count);
+
+		return extractDictionaryEntriesFromCursor(dictionaryEntriesCursor);
+	}
+
 	public void addDictionaryEntry(DictionaryEntryDataObject dictionaryEntryDataObject) {
 		database.execSQL(INSERT_DICTIONARY_ENTRY,
 				new Object[] {
@@ -50,6 +62,14 @@ public class DictionaryEntryDao {
 
 	public void deleteDictionaryEntry(DictionaryEntryDataObject dictionaryEntryDataObject) {
 		database.execSQL(DELETE_DICTIONARY_ENTRY, new Object[] { dictionaryEntryDataObject.getId() });
+	}
+
+	private List<DictionaryEntryDataObject> extractDictionaryEntriesFromCursor(Cursor cursor) {
+		List<DictionaryEntryDataObject> result = new ArrayList<DictionaryEntryDataObject>();
+		while (cursor.moveToNext()) {
+			result.add(extractDictionaryEntryFromCursor(cursor));
+		}
+		return result;
 	}
 
 	private DictionaryEntryDataObject extractDictionaryEntryFromCursor(Cursor cursor) {
@@ -85,6 +105,10 @@ public class DictionaryEntryDao {
 
 	private Cursor queryDictionaryEntryByPhrasePattern(String pattern) {
 		return database.rawQuery(SELECT_DICTIONARY_ENTRY_BY_PATTERN, new String[] { pattern });
+	}
+
+	private Cursor querySuggestionsByPhrasePattern(String pattern, int count) {
+		return database.rawQuery(SELECT_PHRASE_SUGGESTIONS, new String[] { pattern, String.valueOf(count) });
 	}
 
 	public static class NoDictionaryEntryFoundException extends Exception {

@@ -1,4 +1,4 @@
-package org.verba.mobile;
+package org.verba.mobile.task;
 
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;

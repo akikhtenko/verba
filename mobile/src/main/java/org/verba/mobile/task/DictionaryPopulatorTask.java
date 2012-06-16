@@ -12,20 +12,20 @@ import org.verba.mobile.stardict.DictionaryEntryDataObject;
 import org.verba.stardict.DictionaryIndexReader;
 import org.verba.stardict.PhraseDefinitionCoordinates;
 
+import android.app.ProgressDialog;
 import android.os.AsyncTask;
 import android.os.Environment;
-import android.widget.ProgressBar;
 
 public class DictionaryPopulatorTask extends AsyncTask<Void, Integer, Void> {
 	private static final int TRANSACTION_BATCH_SIZE = 5000;
 	private static final int PROGRESS_DELTA = 100;
-	private ProgressBar progressBar;
+	private ProgressDialog progressBar;
 	private int dictionaryId;
 	private int dictionarySize;
 	private int countInserted;
 	private DictionaryEntryDao dictionaryEntryDao;
 
-	public DictionaryPopulatorTask(ProgressBar progressBar, int dictionaryId, int dictionarySize,
+	public DictionaryPopulatorTask(ProgressDialog progressBar, int dictionaryId, int dictionarySize,
 			DictionaryEntryDao dictionaryEntryDao) {
 		this.progressBar = progressBar;
 		this.dictionaryId = dictionaryId;
@@ -35,8 +35,9 @@ public class DictionaryPopulatorTask extends AsyncTask<Void, Integer, Void> {
 
 	@Override
 	protected void onPreExecute() {
-		progressBar.setMax(dictionarySize);
 		countInserted = 0;
+		progressBar.setMax(dictionarySize);
+		progressBar.show();
 	}
 
 	@Override
@@ -58,6 +59,7 @@ public class DictionaryPopulatorTask extends AsyncTask<Void, Integer, Void> {
 	@Override
 	protected void onPostExecute(Void result) {
 		progressBar.setProgress(progressBar.getMax());
+		progressBar.dismiss();
 	}
 
 	private void insertEntriesToDictionary() throws IOException {

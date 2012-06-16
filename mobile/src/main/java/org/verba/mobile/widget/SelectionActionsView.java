@@ -10,13 +10,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
+import android.widget.ImageButton;
 import android.widget.PopupWindow;
 
 public class SelectionActionsView extends View {
 	private static final int PANEL_FROM_HANDLES_OFFSET = 7;
 	private PhraseDefinitionView textView;
 	private PopupWindow mContainer;
-	private View mContentView;
+	private View selectionPanelView;
 	private int absoluteXInView;
 	private int absoluteYInView;
 	private boolean active;
@@ -38,19 +39,24 @@ public class SelectionActionsView extends View {
 
 		initContentView();
 
-		mContainer.setContentView(mContentView);
+		mContainer.setContentView(selectionPanelView);
 	}
 
 	protected void initContentView() {
 		LayoutInflater inflater = (LayoutInflater) textView.getContext().getSystemService(
 				Context.LAYOUT_INFLATER_SERVICE);
 
-		mContentView = inflater.inflate(R.layout.text_selection_actions, null);
+		selectionPanelView = inflater.inflate(R.layout.text_selection_actions, null);
+	}
+
+	public void setOnUseSelectionButtonClick(OnClickListener listener) {
+		ImageButton useSelectionButton = (ImageButton) selectionPanelView.findViewById(R.id.useSelectionButton);
+		useSelectionButton.setOnClickListener(listener);
 	}
 
 	protected void measureContent() {
 		final DisplayMetrics displayMetrics = textView.getContext().getResources().getDisplayMetrics();
-		mContentView.measure(View.MeasureSpec.makeMeasureSpec(displayMetrics.widthPixels, View.MeasureSpec.AT_MOST),
+		selectionPanelView.measure(View.MeasureSpec.makeMeasureSpec(displayMetrics.widthPixels, View.MeasureSpec.AT_MOST),
 				View.MeasureSpec.makeMeasureSpec(displayMetrics.heightPixels, View.MeasureSpec.AT_MOST));
 	}
 
@@ -59,7 +65,7 @@ public class SelectionActionsView extends View {
 	}
 
 	private int getVerticalLocalPosition(int line) {
-		return textView.getLayout().getLineTop(line) - mContentView.getMeasuredHeight();
+		return textView.getLayout().getLineTop(line) - selectionPanelView.getMeasuredHeight();
 	}
 
 	public void show() {
@@ -96,8 +102,8 @@ public class SelectionActionsView extends View {
 		absoluteXInView = handleView.getHandleAbsoluteXInView();
 		if (absoluteXInView + parentCoordinates[0] < clip.left) {
 			absoluteXInView = clip.left - parentCoordinates[0];
-		} else if (absoluteXInView + parentCoordinates[0] + mContentView.getMeasuredWidth() > clip.right) {
-			absoluteXInView = clip.right - parentCoordinates[0] - mContentView.getMeasuredWidth();
+		} else if (absoluteXInView + parentCoordinates[0] + selectionPanelView.getMeasuredWidth() > clip.right) {
+			absoluteXInView = clip.right - parentCoordinates[0] - selectionPanelView.getMeasuredWidth();
 		}
 	}
 
@@ -116,7 +122,7 @@ public class SelectionActionsView extends View {
 			absoluteYInView = handleView.getHandleAbsoluteYInView() + handleView.getHandleHeight();
 			absoluteYInView += PANEL_FROM_HANDLES_OFFSET;
 
-			if (parentCoordinates[1] + absoluteYInView + mContentView.getMeasuredHeight() > clip.bottom) {
+			if (parentCoordinates[1] + absoluteYInView + selectionPanelView.getMeasuredHeight() > clip.bottom) {
 				int line = textView.getLayout().getLineForOffset(getSelectionEnd());
 				absoluteYInView = getVerticalLocalPosition(line);
 				absoluteYInView += viewportToContentVerticalOffset();
@@ -180,9 +186,9 @@ public class SelectionActionsView extends View {
 	private boolean isPositionVisible(int posX, int posY) {
 		Rect clip = getVisibilityClip();
 		return posX >= clip.left
-				&& (posX + mContentView.getMeasuredWidth()) <= clip.right
+				&& (posX + selectionPanelView.getMeasuredWidth()) <= clip.right
 				&& posY >= clip.top
-				&& (posY + mContentView.getMeasuredHeight()) <= clip.bottom;
+				&& (posY + selectionPanelView.getMeasuredHeight()) <= clip.bottom;
 	}
 
 	private int[] getParentViewAbsoluteCoordinates() {

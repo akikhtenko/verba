@@ -24,8 +24,7 @@ public class LookupPhraseDefinitionCoordinatesTask extends AsyncTask<String, Voi
 			DictionaryEntryDataObject dictionaryEntry = dictionaryEntryDao
 					.getDictionaryEntryByPhrasePattern(wordsToLookup[0]);
 
-			return new PhraseDefinitionCoordinates(dictionaryEntry.getPhrase(), dictionaryEntry.getOffset(),
-					dictionaryEntry.getLength());
+			return dictionaryEntry.asPhraseDefinitionCoordinates();
 		} catch (NoDictionaryEntryFoundException e) {
 			return null;
 		}

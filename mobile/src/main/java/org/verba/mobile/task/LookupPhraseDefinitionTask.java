@@ -3,7 +3,6 @@ package org.verba.mobile.task;
 import java.io.IOException;
 
 import org.verba.mobile.PhraseDefinitionDetailsActivity;
-import org.verba.mobile.PhraseDefinitionLookup;
 import org.verba.stardict.PhraseDefinition;
 import org.verba.stardict.PhraseDefinitionCoordinates;
 
