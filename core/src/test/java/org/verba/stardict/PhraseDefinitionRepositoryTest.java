@@ -14,7 +14,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.verba.xdxf.XdxfPhraseDefinitionPart;
+import org.verba.xdxf.XdxfPhraseDefinitionElement;
 
 @RunWith(MockitoJUnitRunner.class)
 public class PhraseDefinitionRepositoryTest {
@@ -40,7 +40,8 @@ public class PhraseDefinitionRepositoryTest {
 		PhraseDefinitionRepository wordsRepository = new PhraseDefinitionRepository(new ByteArrayInputStream(
 				DICTIONARY_CONTENT.getBytes()));
 		PhraseDefinition phraseDefinition = wordsRepository.find(phraseCoordinates);
-		XdxfPhraseDefinitionPart phraseDefinitionPart = (XdxfPhraseDefinitionPart) phraseDefinition.iterator().next();
+		XdxfPhraseDefinitionElement phraseDefinitionPart = (XdxfPhraseDefinitionElement) phraseDefinition.parts()
+				.next().elements().next();
 		assertThat(new String(phraseDefinitionPart.bytes()), is(ADJJUSTED_WORD_DEFINITION));
 	}
 

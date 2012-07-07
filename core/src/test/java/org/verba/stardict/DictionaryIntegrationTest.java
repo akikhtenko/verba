@@ -8,7 +8,7 @@ import java.net.URL;
 
 import org.junit.Ignore;
 import org.junit.Test;
-import org.verba.xdxf.XdxfPhraseDefinitionPart;
+import org.verba.xdxf.XdxfPhraseDefinitionElement;
 
 public class DictionaryIntegrationTest {
 	private static final String WORD_TO_LOOK_FOR = "admission";
@@ -31,7 +31,8 @@ public class DictionaryIntegrationTest {
 
 		try {
 			PhraseDefinition phraseDefinition = dictionary.lookup(WORD_TO_LOOK_FOR);
-			XdxfPhraseDefinitionPart phraseDefinitionPart = (XdxfPhraseDefinitionPart) phraseDefinition.iterator().next();
+			XdxfPhraseDefinitionElement phraseDefinitionPart = (XdxfPhraseDefinitionElement) phraseDefinition.parts()
+					.next().elements().next();
 
 			System.out.println(String.format("%s [%s]", WORD_TO_LOOK_FOR, new String(phraseDefinitionPart.bytes())));
 		} finally {

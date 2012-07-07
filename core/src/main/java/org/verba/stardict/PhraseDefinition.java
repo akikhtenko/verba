@@ -11,7 +11,7 @@ public class PhraseDefinition {
 		phraseDefinitionParts.add(phraseDefinitionPart);
 	}
 
-	public Iterator<PhraseDefinitionPart> iterator() {
+	public Iterator<PhraseDefinitionPart> parts() {
 		return phraseDefinitionParts.iterator();
 	}
 }

@@ -5,7 +5,7 @@ import java.io.InputStream;
 import java.nio.ByteBuffer;
 
 import org.verba.util.InputStreamReader;
-import org.verba.xdxf.XdxfPhraseDefinitionPart;
+import org.verba.xdxf.XdxfPhraseDefinitionElement;
 
 public class PhraseDefinitionRepository {
 	private InputStreamReader streamReader;
@@ -31,7 +31,13 @@ public class PhraseDefinitionRepository {
 			throws IOException {
 		byte[] phraseDefinitionBuffer = streamReader.readBytesAtOffset(phraseCoordinates.getPhraseDefinitionOffset(),
 				phraseCoordinates.getPhraseDefinitionLength());
-		return new XdxfPhraseDefinitionPart(adjustPhraseDefinitionPart(phraseDefinitionBuffer));
+		return createPhraseDefinitionPart(phraseDefinitionBuffer);
+	}
+
+	private PhraseDefinitionPart createPhraseDefinitionPart(byte[] phraseDefinitionBuffer) {
+		PhraseDefinitionPart phraseDefinitionPart = new PhraseDefinitionPart();
+		phraseDefinitionPart.add(new XdxfPhraseDefinitionElement(adjustPhraseDefinitionPart(phraseDefinitionBuffer)));
+		return phraseDefinitionPart;
 	}
 
 	private byte[] adjustPhraseDefinitionPart(byte[] purePhraseDefinitionPartData) {

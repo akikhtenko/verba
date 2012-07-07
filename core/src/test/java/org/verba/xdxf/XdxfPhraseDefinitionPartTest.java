@@ -6,7 +6,7 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.verba.stardict.PhraseDefinitionPartType.XDXF;
+import static org.verba.stardict.PhraseDefinitionElementType.XDXF;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -29,27 +29,27 @@ public class XdxfPhraseDefinitionPartTest {
 	@Captor
 	private ArgumentCaptor<InputStream> inputStreamCaptor;
 
-	private XdxfPhraseDefinitionPart xdxfPhraseDefinitionPart;
+	private XdxfPhraseDefinitionElement xdxfPhraseDefinitionElement;
 
 	@Before
 	public void createXdxfPhraseDefinitionPart() {
-		xdxfPhraseDefinitionPart = spy(new XdxfPhraseDefinitionPart(WORD_DEFINITION.getBytes()));
-		when(xdxfPhraseDefinitionPart.createXdxfParser()).thenReturn(xdxfParser);
+		xdxfPhraseDefinitionElement = spy(new XdxfPhraseDefinitionElement(WORD_DEFINITION.getBytes()));
+		when(xdxfPhraseDefinitionElement.createXdxfParser()).thenReturn(xdxfParser);
 	}
 
 	@Test
 	public void shouldReturnXdxfType() {
-		assertThat(xdxfPhraseDefinitionPart.getType(), is(XDXF));
+		assertThat(xdxfPhraseDefinitionElement.getType(), is(XDXF));
 	}
 
 	@Test
 	public void shouldReturnRawContent() {
-		assertThat(new String(xdxfPhraseDefinitionPart.bytes()), is(WORD_DEFINITION));
+		assertThat(new String(xdxfPhraseDefinitionElement.bytes()), is(WORD_DEFINITION));
 	}
 
 	@Test
 	public void shouldParsePhraseDefinition() throws XdxfArticleParseException, IOException {
-		xdxfPhraseDefinitionPart.asXdxfArticle();
+		xdxfPhraseDefinitionElement.asXdxfArticle();
 
 		verify(xdxfParser).parse(inputStreamCaptor.capture());
 
@@ -61,6 +61,6 @@ public class XdxfPhraseDefinitionPartTest {
 	public void shouldFailWhenParsingException() throws XdxfArticleParseException, IOException {
 		when(xdxfParser.parse(any(InputStream.class))).thenThrow(XdxfArticleParseException.class);
 
-		xdxfPhraseDefinitionPart.asXdxfArticle();
+		xdxfPhraseDefinitionElement.asXdxfArticle();
 	}
 }

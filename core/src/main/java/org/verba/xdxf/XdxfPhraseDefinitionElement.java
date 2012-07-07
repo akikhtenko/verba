@@ -1,25 +1,25 @@
 package org.verba.xdxf;
 
-import static org.verba.stardict.PhraseDefinitionPartType.XDXF;
+import static org.verba.stardict.PhraseDefinitionElementType.XDXF;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
 import org.apache.commons.io.IOUtils;
-import org.verba.stardict.PhraseDefinitionPart;
-import org.verba.stardict.PhraseDefinitionPartType;
+import org.verba.stardict.PhraseDefinitionElement;
+import org.verba.stardict.PhraseDefinitionElementType;
 import org.verba.xdxf.XdxfParser.XdxfArticleParseException;
 import org.verba.xdxf.node.XdxfElement;
 
-public class XdxfPhraseDefinitionPart implements PhraseDefinitionPart {
+public class XdxfPhraseDefinitionElement implements PhraseDefinitionElement {
 	private byte[] rawPhraseDefinition;
 
-	public XdxfPhraseDefinitionPart(byte[] phraseDefinitionBuffer) {
+	public XdxfPhraseDefinitionElement(byte[] phraseDefinitionBuffer) {
 		rawPhraseDefinition = phraseDefinitionBuffer.clone();
 	}
 
 	@Override
-	public PhraseDefinitionPartType getType() {
+	public PhraseDefinitionElementType getType() {
 		return XDXF;
 	}
 
