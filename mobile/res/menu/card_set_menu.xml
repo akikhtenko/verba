@@ -1,0 +1,4 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/editCardSetMenuItem" android:title="@string/editCardSetMenuItemTitle"/>
+    <item android:id="@+id/deleteCardSetMenuItem" android:title="@string/deleteCardSetMenuItemTitle"/>
+</menu>

@@ -1,7 +1,5 @@
 package org.verba.mobile;
 
-import static org.verba.mobile.PhraseLookupActivity.PHRASE_TO_LOOKUP;
-
 import org.verba.mobile.task.LookupPhraseDefinitionTask;
 import org.verba.mobile.utils.WordUtils;
 import org.verba.mobile.widget.PhraseDefinitionView;
@@ -11,7 +9,6 @@ import org.verba.stardict.PhraseDefinitionCoordinates;
 import org.verba.xdxf.XdxfPhraseDefinitionPart;
 import org.verba.xdxf.node.XdxfElement;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.SpannableStringBuilder;
@@ -22,7 +19,7 @@ import android.view.View.OnLongClickListener;
 import android.view.View.OnTouchListener;
 import android.widget.TextView.BufferType;
 
-public class PhraseDefinitionDetailsActivity extends Activity {
+public class PhraseDefinitionDetailsActivity extends DictionaryActivity {
 	public static final String CARD_PHRASE_PARAMETER = "cardPhrase";
 	public static final String CARD_DEFINITION_PARAMETER = "cardDefinition";
 	private String phraseBeingShown;
@@ -76,12 +73,16 @@ public class PhraseDefinitionDetailsActivity extends Activity {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.phrase_definition_details);
 
 		setupPhraseDefinitionDetailsView();
 
 		displayText("Looking for definition...");
 		lookupPhraseDefinition();
+	}
+
+	@Override
+	protected int getContentLayout() {
+		return R.layout.phrase_definition_details;
 	}
 
 	private void setupPhraseDefinitionDetailsView() {

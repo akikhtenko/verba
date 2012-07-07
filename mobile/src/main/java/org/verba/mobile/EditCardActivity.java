@@ -13,7 +13,6 @@ import org.verba.mobile.card.CardDao;
 import org.verba.mobile.card.CardSet;
 import org.verba.mobile.card.CardSetDao;
 
-import android.app.Activity;
 import android.app.Dialog;
 import android.content.ComponentName;
 import android.content.Intent;
@@ -27,7 +26,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 
-public class EditCardActivity extends Activity implements OnClickListener, ServiceConnection {
+public class EditCardActivity extends VerbaActivity implements OnClickListener, ServiceConnection {
 	private static final int DIALOG_ADD_CARD_SET = 0;
 	private CardSetDao cardSetDao;
 	private CardDao cardDao;
@@ -86,7 +85,6 @@ public class EditCardActivity extends Activity implements OnClickListener, Servi
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.edit_card);
 
 		setupCardSetsList();
 		setupAddCardSetButton();
@@ -94,6 +92,12 @@ public class EditCardActivity extends Activity implements OnClickListener, Servi
 		setupCardDefinitionField();
 		setupSaveButton();
 	}
+
+	@Override
+	protected int getContentLayout() {
+		return R.layout.edit_card;
+	}
+
 
 	private void setupAddCardSetButton() {
 		Button button = (Button) findViewById(R.id.addCardSetButton);

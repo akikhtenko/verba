@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@color/phrase_definition_details_background"
+    android:orientation="vertical">
+    
+    <FrameLayout 
+        android:id="@+id/layoutContent"
+        android:layout_width="fill_parent" 
+        android:layout_height="0dip"
+        android:layout_weight="1"/>
+
+    <LinearLayout
+        android:id="@+id/menuLayout"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/phrase_definition_details_background">
+        
+        <ImageButton
+            android:id="@+id/dictionaryMenuButton"
+            android:layout_width="0dip"
+            android:layout_weight="0.33"
+            android:layout_height="wrap_content"
+            android:background="@drawable/menu_button_border"
+            android:src="@drawable/dictionary" />
+        
+        <Button
+            android:id="@+id/cardsMenuButton"
+            android:layout_width="0dip"
+            android:layout_weight="0.33"
+            android:layout_height="match_parent"
+            android:background="@drawable/menu_button_border"
+            android:text="Cards" />
+        
+        <Button
+            android:id="@+id/settingsMenuButton"
+            android:layout_width="0dip"
+            android:layout_weight="0.33"
+            android:layout_height="match_parent"
+            android:background="@drawable/menu_button_border"
+            android:text="Settings" />
+    </LinearLayout>
+</LinearLayout>

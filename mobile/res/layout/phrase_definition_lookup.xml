@@ -2,13 +2,13 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent" 
-    android:orientation="vertical"
-    android:background="@color/phrase_definition_details_background">
+    android:orientation="vertical">
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content" >
     
-                <EditText
+    
+            <EditText
                 android:id="@+id/wordToFindField"
                 android:layout_height="wrap_content"
                 android:ems="10"
@@ -27,7 +27,6 @@
     <ListView
         android:id="@+id/phraseSuggestions"
         android:layout_width="match_parent"
-        android:layout_height="0dip" android:layout_weight="1">
-    </ListView>
-
+        android:layout_height="0dip" 
+        android:layout_weight="1"/>
 </LinearLayout>

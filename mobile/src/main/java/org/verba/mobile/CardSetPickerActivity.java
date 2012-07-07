@@ -6,19 +6,22 @@ import org.verba.mobile.DictionaryDataService.DictionaryBinder;
 import org.verba.mobile.card.CardSet;
 import org.verba.mobile.card.CardSetDao;
 
-import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.view.ContextMenu;
+import android.view.ContextMenu.ContextMenuInfo;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
-public class CardSetPickerActivity extends Activity implements OnItemClickListener, ServiceConnection {
+public class CardSetPickerActivity extends VerbaActivity implements OnItemClickListener, ServiceConnection {
 	public static final String CARD_SET_ID_PARAMETER = "cardSetId";
 	private CardSetDao cardSetDao;
 	private ListView cardSetsList;
@@ -26,14 +29,19 @@ public class CardSetPickerActivity extends Activity implements OnItemClickListen
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.card_sets);
 
 		setupCardSetsList();
+	}
+
+	@Override
+	protected int getContentLayout() {
+		return R.layout.card_sets;
 	}
 
 	private void setupCardSetsList() {
 		cardSetsList = (ListView) findViewById(R.id.cardSets);
 		cardSetsList.setOnItemClickListener(this);
+		registerForContextMenu(cardSetsList);
 	}
 
 	private void populateCardSetsList() {
@@ -47,6 +55,20 @@ public class CardSetPickerActivity extends Activity implements OnItemClickListen
 	public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 		CardSet selectedCardSet = (CardSet) cardSetsList.getItemAtPosition(position);
 		openCardSetViewer(selectedCardSet.getId());
+	}
+
+	@Override
+	public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
+		super.onCreateContextMenu(menu, v, menuInfo);
+		MenuInflater inflater = getMenuInflater();
+		inflater.inflate(R.menu.card_set_menu, menu);
+		AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
+		menu.setHeaderTitle(cardSetsList.getItemAtPosition(info.position).toString());
+	}
+
+	@Override
+	public boolean onContextItemSelected(MenuItem item) {
+		return super.onContextItemSelected(item);
 	}
 
 	private void openCardSetViewer(int cardSetId) {

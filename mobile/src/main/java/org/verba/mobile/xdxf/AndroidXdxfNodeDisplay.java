@@ -2,8 +2,8 @@ package org.verba.mobile.xdxf;
 
 import java.util.regex.Pattern;
 
+import org.verba.mobile.DictionaryActivity;
 import org.verba.mobile.R;
-import org.verba.mobile.PhraseDefinitionDetailsActivity;
 import org.verba.xdxf.XdxfNodeDisplay;
 import org.verba.xdxf.node.BoldPhrase;
 import org.verba.xdxf.node.ColoredPhrase;
@@ -13,8 +13,6 @@ import org.verba.xdxf.node.PhraseReference;
 import org.verba.xdxf.node.PlainText;
 import org.verba.xdxf.node.XdxfNode;
 
-import android.content.Context;
-import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.text.Spannable;
@@ -28,11 +26,11 @@ import android.view.View;
 
 public class AndroidXdxfNodeDisplay implements XdxfNodeDisplay {
 	private SpannableStringBuilder spannable;
-	private Context activityContext;
+	private DictionaryActivity dictionaryActivity;
 	Pattern rgbColorPattern = Pattern.compile("^#\\d{6}$");
 
-	public AndroidXdxfNodeDisplay(Context anActivityContext, SpannableStringBuilder aSpannable) {
-		activityContext = anActivityContext;
+	public AndroidXdxfNodeDisplay(DictionaryActivity aDictionaryActivity, SpannableStringBuilder aSpannable) {
+		dictionaryActivity = aDictionaryActivity;
 		spannable = aSpannable;
 	}
 
@@ -43,7 +41,7 @@ public class AndroidXdxfNodeDisplay implements XdxfNodeDisplay {
 
 	@Override
 	public void print(KeyPhrase keyPhrase) {
-		applySpan(new TextAppearanceSpan(activityContext, R.style.KeyPhrase), keyPhrase);
+		applySpan(new TextAppearanceSpan(dictionaryActivity, R.style.KeyPhrase), keyPhrase);
 	}
 
 	@Override
@@ -68,10 +66,7 @@ public class AndroidXdxfNodeDisplay implements XdxfNodeDisplay {
 		CharacterStyle linkToAnotherDefinition = new ClickableSpan() {
 			@Override
 			public void onClick(View widget) {
-				Intent commandToOpenPhraseDefinitionDetails = new Intent(activityContext,
-						PhraseDefinitionDetailsActivity.class);
-				commandToOpenPhraseDefinitionDetails.putExtra("wordToLookup", phraseReference.asPlainText());
-				activityContext.startActivity(commandToOpenPhraseDefinitionDetails);
+				dictionaryActivity.lookupPhrase(phraseReference.asPlainText());
 			}
 		};
 
@@ -84,17 +79,17 @@ public class AndroidXdxfNodeDisplay implements XdxfNodeDisplay {
 	}
 
 	private int getColoredPhraseStyleResource(String colorCode) {
-		int coloredPhraseStyle = activityContext.getResources().getIdentifier(colorCode.toLowerCase(), "color",
-				activityContext.getApplicationInfo().packageName);
+		int coloredPhraseStyle = dictionaryActivity.getResources().getIdentifier(colorCode.toLowerCase(), "color",
+				dictionaryActivity.getApplicationInfo().packageName);
 
 		if (coloredPhraseStyle == 0) {
 			if (rgbColorPattern.matcher(colorCode).matches()) {
 				coloredPhraseStyle = Color.parseColor(colorCode);
 			} else {
-				coloredPhraseStyle = activityContext.getResources().getColor(R.color.default_colored_phrase);
+				coloredPhraseStyle = dictionaryActivity.getResources().getColor(R.color.default_colored_phrase);
 			}
 		} else {
-			coloredPhraseStyle = activityContext.getResources().getColor(coloredPhraseStyle);
+			coloredPhraseStyle = dictionaryActivity.getResources().getColor(coloredPhraseStyle);
 		}
 		return coloredPhraseStyle;
 	}

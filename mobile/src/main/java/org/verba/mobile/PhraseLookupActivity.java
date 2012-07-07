@@ -2,24 +2,14 @@ package org.verba.mobile;
 
 import java.util.List;
 
-import org.verba.mobile.DictionaryDataService.DictionaryBinder;
-import org.verba.mobile.stardict.DictionaryDao;
 import org.verba.mobile.stardict.DictionaryDao.MoreThanOneDictionaryFoundException;
 import org.verba.mobile.stardict.DictionaryDao.NoDictionaryFoundException;
 import org.verba.mobile.stardict.DictionaryDataObject;
-import org.verba.mobile.stardict.DictionaryEntryDao;
 import org.verba.mobile.stardict.DictionaryEntryDataObject;
 import org.verba.mobile.task.DictionaryPopulatorTask;
-import org.verba.mobile.task.LookupPhraseDefinitionCoordinatesTask;
-import org.verba.stardict.PhraseDefinitionCoordinates;
 
-import android.app.Activity;
 import android.app.ProgressDialog;
-import android.content.ComponentName;
-import android.content.Intent;
-import android.content.ServiceConnection;
 import android.os.Bundle;
-import android.os.IBinder;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -32,35 +22,17 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListAdapter;
 import android.widget.ListView;
-import android.widget.Toast;
 
-public class PhraseLookupActivity extends Activity implements OnClickListener, ServiceConnection, TextWatcher,
+public class PhraseLookupActivity extends DictionaryActivity implements OnClickListener, TextWatcher,
 		OnItemClickListener {
-	public static final String PHRASE_TO_LOOKUP = "wordToLookup";
 	private static final int SUGGESTIONS_LIMIT = 100;
 	private static final int DICTIONARY_SIZE = 43041; // 706;
-	private DictionaryDao dictionaryDao;
-	private DictionaryEntryDao dictionaryEntryDao;
 	private EditText phraseToLookupField;
 	private ListView phraseSuggestionsList;
 
 	@Override
 	public void onClick(View v) {
 		lookupPhrase(getPhraseToLookup());
-	}
-
-	private void lookupPhrase(String pharaseToLookup) {
-		new LookupPhraseDefinitionCoordinatesTask(this, dictionaryEntryDao).execute(pharaseToLookup);
-	}
-
-	public void displayPhraseDefinitionNotFound() {
-		Toast.makeText(getApplicationContext(), "Nothing found in the dictionary!", Toast.LENGTH_SHORT).show();
-	}
-
-	public void displayPhraseDefinition(PhraseDefinitionCoordinates phraseDefinitionCoordinates) {
-		Intent commandToOpenPhraseDefinitionDetails = new Intent(this, PhraseDefinitionDetailsActivity.class);
-		commandToOpenPhraseDefinitionDetails.putExtra(PHRASE_TO_LOOKUP, phraseDefinitionCoordinates);
-		startActivity(commandToOpenPhraseDefinitionDetails);
 	}
 
 	private String getPhraseToLookup() {
@@ -70,11 +42,15 @@ public class PhraseLookupActivity extends Activity implements OnClickListener, S
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.phrase_definition_lookup);
 
 		setupLookupButton();
 		setupPhraseToLookupField();
 		setupPhraseSuggestionsList();
+	}
+
+	@Override
+	protected int getContentLayout() {
+		return R.layout.phrase_definition_lookup;
 	}
 
 	private void setupPhraseSuggestionsList() {
@@ -94,10 +70,6 @@ public class PhraseLookupActivity extends Activity implements OnClickListener, S
 	@Override
 	protected void onResume() {
 		super.onResume();
-
-		Intent intent = new Intent(this, DictionaryDataService.class);
-		bindService(intent, this, BIND_AUTO_CREATE);
-
 		setupRestoreSafePhraseChangeListener();
 	}
 
@@ -106,31 +78,11 @@ public class PhraseLookupActivity extends Activity implements OnClickListener, S
 	}
 
 	@Override
-	protected void onPause() {
-		super.onPause();
-
-		if (dictionaryDao != null || dictionaryEntryDao != null) {
-			unbindService(this);
-			dictionaryDao = null;
-			dictionaryEntryDao = null;
-		}
-	}
-
-	@Override
-	public void onServiceConnected(ComponentName className, IBinder service) {
-		DictionaryBinder binder = (DictionaryBinder) service;
-		dictionaryDao = binder.getDictionaryDao();
-		dictionaryEntryDao = binder.getDictionaryEntryDao();
+	protected void postDictionaryServiceConnected() {
 		checkDictionaryRegistration();
 	}
-
-	@Override
-	public void onServiceDisconnected(ComponentName arg0) {
-		dictionaryDao = null;
-		dictionaryEntryDao = null;
-	}
-
 	private void checkDictionaryRegistration() {
+
 		try {
 			DictionaryDataObject dictionaryDataObject = dictionaryDao.getDictionaryByName("dictionary");
 			Log.d("Verba", "Dictionary found");
@@ -185,7 +137,6 @@ public class PhraseLookupActivity extends Activity implements OnClickListener, S
 
 	@Override
 	public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-		phraseSuggestionsList.setSelection(position);
 		DictionaryEntryDataObject selectedDictionaryEntry = (DictionaryEntryDataObject) phraseSuggestionsList
 				.getItemAtPosition(position);
 		lookupPhrase(selectedDictionaryEntry.getPhrase());

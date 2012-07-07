@@ -8,7 +8,6 @@ import org.verba.mobile.card.Card;
 import org.verba.mobile.card.CardDao;
 import org.verba.mobile.card.CardDao.NoCardFoundException;
 
-import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
@@ -17,7 +16,7 @@ import android.os.IBinder;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class ViewCardActivity extends Activity implements ServiceConnection {
+public class ViewCardActivity extends VerbaActivity implements ServiceConnection {
 	private CardDao cardDao;
 	private TextView cardPhraseField;
 	private TextView cardDefinitionField;
@@ -26,11 +25,15 @@ public class ViewCardActivity extends Activity implements ServiceConnection {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.view_card);
 
 		cardId = getIntent().getIntExtra(CARD_ID_PARAMETER, -1);
 		setupCardPhraseField();
 		setupCardDefinitionField();
+	}
+
+	@Override
+	protected int getContentLayout() {
+		return R.layout.view_card;
 	}
 
 	private void setupCardPhraseField() {

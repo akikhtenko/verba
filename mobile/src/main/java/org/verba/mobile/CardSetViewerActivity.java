@@ -8,7 +8,6 @@ import org.verba.mobile.DictionaryDataService.DictionaryBinder;
 import org.verba.mobile.card.Card;
 import org.verba.mobile.card.CardDao;
 
-import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
@@ -20,7 +19,7 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
-public class CardSetViewerActivity extends Activity implements OnItemClickListener, ServiceConnection {
+public class CardSetViewerActivity extends VerbaActivity implements OnItemClickListener, ServiceConnection {
 	public static final String CARD_ID_PARAMETER = "cardId";
 	private CardDao cardDao;
 	private ListView cardsList;
@@ -29,10 +28,14 @@ public class CardSetViewerActivity extends Activity implements OnItemClickListen
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.card_set_viewer);
 
 		cardSetId = getIntent().getIntExtra(CARD_SET_ID_PARAMETER, -1);
 		setupCardsList();
+	}
+
+	@Override
+	protected int getContentLayout() {
+		return R.layout.card_set_viewer;
 	}
 
 	private void setupCardsList() {
