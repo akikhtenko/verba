@@ -1,5 +1,6 @@
 package org.verba.stardict;
 
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -8,5 +9,9 @@ public class PhraseDefinitionPartFormat {
 
 	public void add(PhraseDefinitionElementType phraseDefinitionElementType) {
 		format.add(phraseDefinitionElementType);
+	}
+
+	public Iterator<PhraseDefinitionElementType> elementTypes() {
+		return format.iterator();
 	}
 }

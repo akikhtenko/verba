@@ -1,11 +1,13 @@
 package org.verba.stardict;
 
+import static org.verba.stardict.IndexOffsetSize.BITS_32;
+
 public class DictionaryMetadata {
 	private String name;
 	private String description;
 	private String version;
 	private int wordCount;
-	private IndexOffsetSize indexOffsetSize;
+	private IndexOffsetSize indexOffsetSize = BITS_32;
 	private String date;
 	private PhraseDefinitionPartFormat phraseDefinitionPartFormat;
 

@@ -13,6 +13,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.LineIterator;
 
 public class DictionaryMetadataReader {
+	private static final String ERROR_MISSING_PROPERTY = "Mandatory property [%s] is missing";
 	private static final String PROPERTY_BOOKNAME = "bookname";
 	private static final String PROPERTY_WORDCOUNT = "wordcount";
 	private static final String PROPERTY_IDXOFFSETBITS = "idxoffsetbits";
@@ -78,30 +79,38 @@ public class DictionaryMetadataReader {
 		String wordCount = dictionaryProperties.getProperty(PROPERTY_WORDCOUNT);
 		if (isNotEmpty(wordCount)) {
 			dictionaryMetadata.setWordCount(parseInt(wordCount));
+		} else {
+			throw new RuntimeException(String.format(ERROR_MISSING_PROPERTY, PROPERTY_WORDCOUNT));
 		}
 	}
 
 	private void populateVersion() {
-		if (dictionaryProperties.contains(PROPERTY_VERSION)) {
-			dictionaryMetadata.setVersion(dictionaryProperties.getProperty(PROPERTY_VERSION));
+		String version = dictionaryProperties.getProperty(PROPERTY_VERSION);
+		if (isNotEmpty(version)) {
+			dictionaryMetadata.setVersion(version);
 		}
 	}
 
 	private void populateDate() {
-		if (dictionaryProperties.contains(PROPERTY_DATE)) {
-			dictionaryMetadata.setDate(dictionaryProperties.getProperty(PROPERTY_DATE));
+		String date = dictionaryProperties.getProperty(PROPERTY_DATE);
+		if (isNotEmpty(date)) {
+			dictionaryMetadata.setDate(date);
 		}
 	}
 
 	private void populateDescription() {
-		if (dictionaryProperties.contains(PROPERTY_DESCRIPTION)) {
-			dictionaryMetadata.setDescription(dictionaryProperties.getProperty(PROPERTY_DESCRIPTION));
+		String description = dictionaryProperties.getProperty(PROPERTY_DESCRIPTION);
+		if (isNotEmpty(description)) {
+			dictionaryMetadata.setDescription(description);
 		}
 	}
 
 	private void populateName() {
-		if (dictionaryProperties.contains(PROPERTY_BOOKNAME)) {
-			dictionaryMetadata.setName(dictionaryProperties.getProperty(PROPERTY_BOOKNAME));
+		String bookName = dictionaryProperties.getProperty(PROPERTY_BOOKNAME);
+		if (isNotEmpty(bookName)) {
+			dictionaryMetadata.setName(bookName);
+		} else {
+			throw new RuntimeException(String.format(ERROR_MISSING_PROPERTY, PROPERTY_BOOKNAME));
 		}
 	}
 
