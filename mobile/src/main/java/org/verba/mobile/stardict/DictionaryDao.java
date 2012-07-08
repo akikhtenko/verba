@@ -29,6 +29,12 @@ public class DictionaryDao {
 		return result;
 	}
 
+	public boolean dictionaryExists(String dictionaryName) {
+		Cursor dictionariesCursor = queryDictionaryByName(dictionaryName);
+
+		return dictionariesCursor.moveToFirst();
+	}
+
 	public int addDictionary(DictionaryDataObject dictionaryDataObject) {
 		database.execSQL(INSERT_DICTIONARY,
 				new String[] { dictionaryDataObject.getName(), dictionaryDataObject.getDescription() });

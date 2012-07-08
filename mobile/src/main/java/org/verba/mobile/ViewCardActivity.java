@@ -32,6 +32,11 @@ public class ViewCardActivity extends VerbaActivity implements ServiceConnection
 	}
 
 	@Override
+	protected boolean loadSystemMenu() {
+		return true;
+	}
+
+	@Override
 	protected int getContentLayout() {
 		return R.layout.view_card;
 	}

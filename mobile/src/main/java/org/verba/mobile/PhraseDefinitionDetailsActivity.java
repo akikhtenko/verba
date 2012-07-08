@@ -82,6 +82,11 @@ public class PhraseDefinitionDetailsActivity extends DictionaryActivity {
 	}
 
 	@Override
+	protected boolean loadSystemMenu() {
+		return true;
+	}
+
+	@Override
 	protected int getContentLayout() {
 		return R.layout.phrase_definition_details;
 	}

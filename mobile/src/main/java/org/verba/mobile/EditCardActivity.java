@@ -94,6 +94,11 @@ public class EditCardActivity extends VerbaActivity implements OnClickListener, 
 	}
 
 	@Override
+	protected boolean loadSystemMenu() {
+		return true;
+	}
+
+	@Override
 	protected int getContentLayout() {
 		return R.layout.edit_card;
 	}

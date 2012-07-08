@@ -15,6 +15,9 @@
     <string name="doAddCardSetNameButtonLabel">Save</string>
     <string name="cardSetAdded">A new card set has been created</string>
     <string name="cardAddedToCardSet">A new card has been created</string>
+    <string name="loadDictionariesDialogLabel">Choose dictionaries to load</string>
+    <string name="loadNewDictionariesButtonLabel">Load</string>
+    <string name="closeNewDictionariesDialogButtonLabel">Close</string>
     
     <string name="validationEmptyCardSetName">Card set name should not be empty</string>
     <string name="validationNoCardSetSelected">Please choose a card set</string>

@@ -31,6 +31,14 @@ public abstract class VerbaActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		if (loadSystemMenu()) {
+			inflateSystemMenu();
+		} else {
+			setContentView(getContentLayout());
+		}
+	}
+
+	private void inflateSystemMenu() {
 		setContentView(getContentViewWithMenu());
 
 		setupOpenDictionaryButton();
@@ -60,4 +68,6 @@ public abstract class VerbaActivity extends Activity {
 	}
 
 	protected abstract int getContentLayout();
+
+	protected abstract boolean loadSystemMenu();
 }

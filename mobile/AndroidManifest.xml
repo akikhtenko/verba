@@ -20,6 +20,9 @@
             </intent-filter>
         
         </activity>
+        <activity android:name="DictionariesLoaderActivity"
+            android:label="@string/loadDictionariesDialogLabel"
+            android:windowSoftInputMode="stateUnspecified|adjustPan"/>
         <activity android:name="PhraseDefinitionDetailsActivity"
             android:theme="@android:style/Theme.NoTitleBar"
             android:windowSoftInputMode="stateUnspecified|adjustPan"/>

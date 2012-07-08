@@ -1,5 +1,7 @@
 package org.verba.mobile.task;
 
+import static org.verba.mobile.Application.getVerbaDirectory;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -9,8 +11,6 @@ import java.io.InputStream;
 import org.verba.stardict.PhraseDefinition;
 import org.verba.stardict.PhraseDefinitionCoordinates;
 import org.verba.stardict.PhraseDefinitionRepository;
-
-import android.os.Environment;
 
 public class PhraseDefinitionLookup {
 	public PhraseDefinition lookupPhraseDefinition(PhraseDefinitionCoordinates phraseDefinitionCoordinates)
@@ -33,11 +33,11 @@ public class PhraseDefinitionLookup {
 	}
 
 	private InputStream getDictionaryInputStream() throws FileNotFoundException {
-		File dictionaryFile = new File(getVerbaDirectory(), "dictionary.dict");
+		File dictionaryFile = new File(getRootDirectory(), "dictionary.dict");
 		return new FileInputStream(dictionaryFile);
 	}
 
-	protected File getVerbaDirectory() {
-		return Environment.getExternalStoragePublicDirectory("verba");
+	protected File getRootDirectory() {
+		return getVerbaDirectory();
 	}
 }

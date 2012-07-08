@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="50dp"
+    android:background="@drawable/list_item_style">
+    
+    <TextView xmlns:android="http://schemas.android.com/apk/res/android" 
+          android:id="@+id/listItemTitle"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:gravity="center_vertical"
+          android:layout_gravity="bottom"
+          android:textStyle="normal"
+          android:textSize="18dp"
+          android:textColor="@color/phrase_definition_details_text"
+          android:layout_alignParentLeft="true"
+          android:layout_alignParentTop="true"
+          android:layout_marginLeft="3dip"
+          android:layout_marginTop="10dp"
+          android:layout_marginBottom="10dp"/>
+
+    <CheckBox
+        android:id="@+id/loadThisDictionaryCheck"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginLeft="4dp"
+        android:layout_marginRight="10dp">
+    </CheckBox>
+
+    <ProgressBar
+        android:id="@+id/loadingDictionaryProgress"
+        android:layout_width="fill_parent"
+        android:layout_height="5dp"
+        android:layout_alignParentBottom="true"
+        style="@android:style/Widget.ProgressBar.Horizontal" 
+        />
+    
+</RelativeLayout>

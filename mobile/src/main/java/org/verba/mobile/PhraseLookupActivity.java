@@ -1,18 +1,17 @@
 package org.verba.mobile;
 
+import static org.verba.mobile.Application.getVerbaDirectory;
+
+import java.util.ArrayList;
 import java.util.List;
 
-import org.verba.mobile.stardict.DictionaryDao.MoreThanOneDictionaryFoundException;
-import org.verba.mobile.stardict.DictionaryDao.NoDictionaryFoundException;
-import org.verba.mobile.stardict.DictionaryDataObject;
+import org.verba.mobile.dictionary.DictionariesManager;
 import org.verba.mobile.stardict.DictionaryEntryDataObject;
-import org.verba.mobile.task.DictionaryPopulatorTask;
 
-import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
@@ -25,8 +24,8 @@ import android.widget.ListView;
 
 public class PhraseLookupActivity extends DictionaryActivity implements OnClickListener, TextWatcher,
 		OnItemClickListener {
+	public static final String NEW_DICTIONARIES = "newDictionaries";
 	private static final int SUGGESTIONS_LIMIT = 100;
-	private static final int DICTIONARY_SIZE = 43041; // 706;
 	private EditText phraseToLookupField;
 	private ListView phraseSuggestionsList;
 
@@ -46,6 +45,11 @@ public class PhraseLookupActivity extends DictionaryActivity implements OnClickL
 		setupLookupButton();
 		setupPhraseToLookupField();
 		setupPhraseSuggestionsList();
+	}
+
+	@Override
+	protected boolean loadSystemMenu() {
+		return true;
 	}
 
 	@Override
@@ -79,38 +83,17 @@ public class PhraseLookupActivity extends DictionaryActivity implements OnClickL
 
 	@Override
 	protected void postDictionaryServiceConnected() {
-		checkDictionaryRegistration();
-	}
-	private void checkDictionaryRegistration() {
-
-		try {
-			DictionaryDataObject dictionaryDataObject = dictionaryDao.getDictionaryByName("dictionary");
-			Log.d("Verba", "Dictionary found");
-//			dictionaryDao.deleteDictionary(dictionaryDataObject);
-//			Log.d("Verba", "Dictionary deleted");
-		} catch (NoDictionaryFoundException e) {
-			Log.d("Verba", "Dictionary wasn't found in the database");
-
-			addNewDictionary();
-		} catch (MoreThanOneDictionaryFoundException e) {
-			throw new RuntimeException(e);
+		DictionariesManager dictionariesManager = new DictionariesManager(getVerbaDirectory(), dictionaryDao);
+		ArrayList<String> dictionaries = dictionariesManager.findNewDictionaries();
+		if (!dictionaries.isEmpty()) {
+			showLoadDictionariesDialog(dictionaries);
 		}
 	}
 
-	private void addNewDictionary() {
-		DictionaryDataObject dictionaryDataObject = new DictionaryDataObject();
-		dictionaryDataObject.setName("dictionary");
-		dictionaryDataObject.setDescription("dictionary description");
-
-		int dictionaryId = dictionaryDao.addDictionary(dictionaryDataObject);
-		populateDictionary(dictionaryId);
-	}
-
-	private void populateDictionary(int dictionaryId) {
-		ProgressDialog progressDialog = new ProgressDialog(this);
-		progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-		//ProgressBar progress = (ProgressBar) findViewById(R.id.dictionaryPopulationProgress);
-		new DictionaryPopulatorTask(progressDialog, dictionaryId, DICTIONARY_SIZE, dictionaryEntryDao).execute();
+	private void showLoadDictionariesDialog(ArrayList<String> dictionaries) {
+		Intent showDictionariesLoaderCommand = new Intent(this, DictionariesLoaderActivity.class);
+		showDictionariesLoaderCommand.putStringArrayListExtra(NEW_DICTIONARIES, dictionaries);
+		startActivity(showDictionariesLoaderCommand);
 	}
 
 	@Override

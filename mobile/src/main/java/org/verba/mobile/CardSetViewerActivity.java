@@ -34,6 +34,11 @@ public class CardSetViewerActivity extends VerbaActivity implements OnItemClickL
 	}
 
 	@Override
+	protected boolean loadSystemMenu() {
+		return true;
+	}
+
+	@Override
 	protected int getContentLayout() {
 		return R.layout.card_set_viewer;
 	}
