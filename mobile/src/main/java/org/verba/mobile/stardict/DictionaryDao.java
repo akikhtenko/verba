@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 
 public class DictionaryDao {
 	public static final String SELECT_DICTIONARY_BY_NAME = "select * from dictionary where name = ?";
+	public static final String SELECT_DICTIONARY_BY_ID = "select * from dictionary where _id = ?";
 	public static final String INSERT_DICTIONARY = "insert into dictionary (name, description) values (?, ?)";
 	public static final String DELETE_DICTIONARY = "delete from dictionary where _id = ?";
 
@@ -25,6 +26,19 @@ public class DictionaryDao {
 		DictionaryDataObject result = extractDictionaryFromCursor(dictionariesCursor);
 
 		ensureOnlyOneFound(dictionaryName, dictionariesCursor);
+
+		return result;
+	}
+
+	public DictionaryDataObject getDictionaryById(int dictionaryId) throws NoDictionaryFoundException,
+			MoreThanOneDictionaryFoundException {
+		Cursor dictionariesCursor = queryDictionaryById(dictionaryId);
+
+		ensureAtLeastOneFound(dictionaryId, dictionariesCursor);
+
+		DictionaryDataObject result = extractDictionaryFromCursor(dictionariesCursor);
+
+		ensureOnlyOneFound(dictionaryId, dictionariesCursor);
 
 		return result;
 	}
@@ -56,13 +70,6 @@ public class DictionaryDao {
 		database.execSQL(DELETE_DICTIONARY, new Object[] { dictionaryDataObject.getId() });
 	}
 
-	private void ensureOnlyOneFound(String dictionaryName, Cursor dictionariesCursor)
-			throws MoreThanOneDictionaryFoundException {
-		if (dictionariesCursor.moveToNext()) {
-			throw new MoreThanOneDictionaryFoundException(String.format(
-					"More than one dictionary was found in the database for the name [%s]", dictionaryName));
-		}
-	}
 
 	private DictionaryDataObject extractDictionaryFromCursor(Cursor dictionariesCursor) {
 		DictionaryDataObject dictionary = new DictionaryDataObject();
@@ -81,8 +88,36 @@ public class DictionaryDao {
 		}
 	}
 
+	private void ensureAtLeastOneFound(int dictionaryId, Cursor dictionariesCursor)
+			throws NoDictionaryFoundException {
+		if (!dictionariesCursor.moveToFirst()) {
+			throw new NoDictionaryFoundException(String.format(
+					"Dictionary wasn't found in the database for the id [%s]", dictionaryId));
+		}
+	}
+
+	private void ensureOnlyOneFound(String dictionaryName, Cursor dictionariesCursor)
+			throws MoreThanOneDictionaryFoundException {
+		if (dictionariesCursor.moveToNext()) {
+			throw new MoreThanOneDictionaryFoundException(String.format(
+					"More than one dictionary was found in the database for the name [%s]", dictionaryName));
+		}
+	}
+
+	private void ensureOnlyOneFound(int dictionaryId, Cursor dictionariesCursor)
+			throws MoreThanOneDictionaryFoundException {
+		if (dictionariesCursor.moveToNext()) {
+			throw new MoreThanOneDictionaryFoundException(String.format(
+					"More than one dictionary was found in the database for the id [%s]", dictionaryId));
+		}
+	}
+
 	private Cursor queryDictionaryByName(String dictionaryName) {
 		return database.rawQuery(SELECT_DICTIONARY_BY_NAME, new String[] { dictionaryName });
+	}
+
+	private Cursor queryDictionaryById(int dictionaryId) {
+		return database.rawQuery(SELECT_DICTIONARY_BY_ID, new String[] { String.valueOf(dictionaryId) });
 	}
 
 	public static class NoDictionaryFoundException extends Exception {

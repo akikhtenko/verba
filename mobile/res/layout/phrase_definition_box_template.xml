@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<org.verba.mobile.widget.PhraseDefinitionView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingTop="8dip"
+    android:paddingBottom="8dip"
+    android:paddingLeft="3dip"
+    android:paddingRight="3dip"
+    android:layout_margin="10dip"
+    android:cursorVisible="false"
+    android:focusableInTouchMode="true"
+    android:focusable="true"
+    android:textColor="@color/phrase_definition_details_text"
+    android:textSize="16sp"
+    android:lineSpacingMultiplier="1.2"
+    android:background="@drawable/phrase_definition_box_border"/>

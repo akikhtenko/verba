@@ -1,11 +1,19 @@
 package org.verba.mobile.task;
 
+import static org.apache.commons.io.FileUtils.listFiles;
+import static org.apache.commons.io.IOCase.INSENSITIVE;
+import static org.apache.commons.io.IOUtils.closeQuietly;
+import static org.verba.mobile.Application.getVerbaDirectory;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Collection;
 
+import org.apache.commons.io.filefilter.NameFileFilter;
+import org.apache.commons.io.filefilter.TrueFileFilter;
 import org.verba.mobile.stardict.DictionaryEntryDao;
 import org.verba.mobile.stardict.DictionaryEntryDao.DoInTransactionCallback;
 import org.verba.mobile.stardict.DictionaryEntryDataObject;
@@ -13,21 +21,23 @@ import org.verba.stardict.DictionaryIndexReader;
 import org.verba.stardict.PhraseDefinitionCoordinates;
 
 import android.os.AsyncTask;
-import android.os.Environment;
 import android.widget.ProgressBar;
 
 public class DictionaryPopulatorTask extends AsyncTask<Void, Integer, Void> {
 	private static final int TRANSACTION_BATCH_SIZE = 5000;
 	private static final int PROGRESS_DELTA = 100;
+	private static final String DICTIONARY_INDEXFILE_EXTENSION = "idx";
 	private ProgressBar progressBar;
 	private int dictionaryId;
 	private int dictionarySize;
 	private int countInserted;
+	private String dictionaryName;
 	private DictionaryEntryDao dictionaryEntryDao;
 
-	public DictionaryPopulatorTask(ProgressBar progressBar, int dictionaryId, int dictionarySize,
+	public DictionaryPopulatorTask(ProgressBar progressBar, String dictionaryName, int dictionaryId, int dictionarySize,
 			DictionaryEntryDao dictionaryEntryDao) {
 		this.progressBar = progressBar;
+		this.dictionaryName = dictionaryName;
 		this.dictionaryId = dictionaryId;
 		this.dictionarySize = dictionarySize;
 		this.dictionaryEntryDao = dictionaryEntryDao;
@@ -67,7 +77,7 @@ public class DictionaryPopulatorTask extends AsyncTask<Void, Integer, Void> {
 		} catch (Exception e) {
 			throw new RuntimeException("Unexpected error while iterating over index entries", e);
 		} finally {
-			indexReader.close();
+			closeQuietly(indexReader);
 		}
 	}
 
@@ -99,13 +109,31 @@ public class DictionaryPopulatorTask extends AsyncTask<Void, Integer, Void> {
 	}
 
 	private DictionaryIndexReader getIndexReader() throws FileNotFoundException {
-		File indexFile = new File(getVerbaDirectory(), "dictionary.idx");
-		InputStream indexStream = new FileInputStream(indexFile);
-
-		return new DictionaryIndexReader(indexStream);
+		return new DictionaryIndexReader(getDictionaryDataSource());
 	}
 
-	protected File getVerbaDirectory() {
-		return Environment.getExternalStoragePublicDirectory("verba");
+	private InputStream getDictionaryDataSource() throws FileNotFoundException {
+		Collection<File> filesFound = findAllFilesMatchingDictionaryName();
+
+		ensureAtLeastOneIndexFileFound(filesFound);
+
+		return new FileInputStream(filesFound.iterator().next());
 	}
+
+	private void ensureAtLeastOneIndexFileFound(Collection<File> filesFound) {
+		if (filesFound.isEmpty()) {
+			throw new RuntimeException("Dictionary index file not found");
+		}
+	}
+
+	private Collection<File> findAllFilesMatchingDictionaryName() {
+		String dictionaryMetadataFileName = dictionaryName + "." + DICTIONARY_INDEXFILE_EXTENSION;
+		NameFileFilter dictionaryMetadataFileFilter = new NameFileFilter(dictionaryMetadataFileName, INSENSITIVE);
+		return listFiles(getRootDirectory(), dictionaryMetadataFileFilter, TrueFileFilter.INSTANCE);
+	}
+
+	protected File getRootDirectory() {
+		return getVerbaDirectory();
+	}
+
 }

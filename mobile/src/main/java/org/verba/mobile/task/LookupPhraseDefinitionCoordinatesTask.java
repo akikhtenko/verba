@@ -1,41 +1,39 @@
 package org.verba.mobile.task;
 
-import org.verba.mobile.DictionaryActivity;
+import java.util.List;
+
+import org.verba.mobile.PhraseDefinitionDetailsActivity;
 import org.verba.mobile.stardict.DictionaryEntryDao;
 import org.verba.mobile.stardict.DictionaryEntryDao.NoDictionaryEntryFoundException;
 import org.verba.mobile.stardict.DictionaryEntryDataObject;
-import org.verba.stardict.PhraseDefinitionCoordinates;
 
 import android.os.AsyncTask;
 
-public class LookupPhraseDefinitionCoordinatesTask extends AsyncTask<String, Void, PhraseDefinitionCoordinates> {
-	private DictionaryActivity dictionaryActivity;
+public class LookupPhraseDefinitionCoordinatesTask extends AsyncTask<String, Void, List<DictionaryEntryDataObject>> {
+	private PhraseDefinitionDetailsActivity activity;
 	private DictionaryEntryDao dictionaryEntryDao;
 
-	public LookupPhraseDefinitionCoordinatesTask(DictionaryActivity phraseLookupActivity,
+	public LookupPhraseDefinitionCoordinatesTask(PhraseDefinitionDetailsActivity activity,
 			DictionaryEntryDao dictionaryEntryDao) {
-		this.dictionaryActivity = phraseLookupActivity;
+		this.activity = activity;
 		this.dictionaryEntryDao = dictionaryEntryDao;
 	}
 
 	@Override
-	protected PhraseDefinitionCoordinates doInBackground(String... wordsToLookup) {
+	protected List<DictionaryEntryDataObject> doInBackground(String... wordsToLookup) {
 		try {
-			DictionaryEntryDataObject dictionaryEntry = dictionaryEntryDao
-					.getDictionaryEntryByPhrasePattern(wordsToLookup[0]);
-
-			return dictionaryEntry.asPhraseDefinitionCoordinates();
+			return dictionaryEntryDao.getDictionaryEntriesByPhrase(wordsToLookup[0]);
 		} catch (NoDictionaryEntryFoundException e) {
 			return null;
 		}
 	}
 
 	@Override
-	protected void onPostExecute(PhraseDefinitionCoordinates phraseDefinitionCoordinatesFound) {
-		if (phraseDefinitionCoordinatesFound == null) {
-			dictionaryActivity.displayPhraseDefinitionNotFound();
+	protected void onPostExecute(List<DictionaryEntryDataObject> dictionaryEntriesFound) {
+		if (dictionaryEntriesFound == null) {
+			activity.displayPhraseDefinitionCoordinatesNotFound();
 		} else {
-			dictionaryActivity.displayPhraseDefinition(phraseDefinitionCoordinatesFound);
+			activity.lookupPhraseDefinition(dictionaryEntriesFound);
 		}
 	}
 }

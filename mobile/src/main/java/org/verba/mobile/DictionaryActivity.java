@@ -3,17 +3,13 @@ package org.verba.mobile;
 import org.verba.mobile.DictionaryDataService.DictionaryBinder;
 import org.verba.mobile.stardict.DictionaryDao;
 import org.verba.mobile.stardict.DictionaryEntryDao;
-import org.verba.mobile.task.LookupPhraseDefinitionCoordinatesTask;
-import org.verba.stardict.PhraseDefinitionCoordinates;
 
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.IBinder;
-import android.widget.Toast;
 
 public abstract class DictionaryActivity extends VerbaActivity implements ServiceConnection {
-	public static final String PHRASE_TO_LOOKUP = "wordToLookup";
 	protected DictionaryDao dictionaryDao;
 	protected DictionaryEntryDao dictionaryEntryDao;
 
@@ -51,21 +47,5 @@ public abstract class DictionaryActivity extends VerbaActivity implements Servic
 			dictionaryDao = null;
 			dictionaryEntryDao = null;
 		}
-	}
-
-
-	public void lookupPhrase(String pharaseToLookup) {
-		new LookupPhraseDefinitionCoordinatesTask(this, dictionaryEntryDao).execute(pharaseToLookup);
-	}
-
-	public void displayPhraseDefinition(PhraseDefinitionCoordinates phraseDefinitionCoordinates) {
-		Intent commandToOpenPhraseDefinitionDetails = new Intent(this, PhraseDefinitionDetailsActivity.class);
-		commandToOpenPhraseDefinitionDetails.putExtra(PHRASE_TO_LOOKUP, phraseDefinitionCoordinates);
-		startActivity(commandToOpenPhraseDefinitionDetails);
-	}
-
-	public void displayPhraseDefinitionNotFound() {
-		Toast.makeText(getApplicationContext(), R.string.validationNoPhraseDefinitionCoordinatesFound,
-				Toast.LENGTH_SHORT).show();
 	}
 }

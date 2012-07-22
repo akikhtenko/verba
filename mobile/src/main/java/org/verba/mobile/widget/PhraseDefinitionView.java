@@ -11,6 +11,7 @@ import android.text.method.ArrowKeyMovementMethod;
 import android.text.method.MovementMethod;
 import android.text.style.ClickableSpan;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.ViewTreeObserver;
@@ -82,13 +83,18 @@ public class PhraseDefinitionView extends TextView implements OnScrollChangedLis
 
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {
+//		Log.d("Verba", String.format("1. Touched definition box [isFocused=%s], [didTouchFocusSelect=%s]", isFocused(),
+//				didTouchFocusSelect()));
 		boolean result = super.onTouchEvent(event);
-
+//		Log.d("Verba",
+//				String.format("2. Touched definition box [action=%s, hasSelection=%s, areHandlesActive=%s]",
+//						event.getActionMasked(), hasSelection(), leftHandle.isActive() || rightHandle.isActive()));
 		if (event.getActionMasked() == MotionEvent.ACTION_DOWN) {
 			result |= gotoClickedLinkIfAny(event);
 		} else if (event.getActionMasked() == MotionEvent.ACTION_UP
 				&& !hasSelection()
 				&& (leftHandle.isActive() || rightHandle.isActive())) {
+			Log.d("Verba", "Hiding selection handles");
 			hideSelectionHandles();
 		}
 

@@ -119,8 +119,12 @@ public class DictionariesLoaderActivity extends DictionaryActivity {
 
 	private void populateDictionary(int dictionaryId, DictionaryCandidate dictionaryCandidate,
 			DictionaryMetadata dictionaryMetadata) {
-		new DictionaryPopulatorTask(dictionaryCandidate.getLoadingProgress(), dictionaryId,
-				dictionaryMetadata.getWordCount(), dictionaryEntryDao).execute();
+		new DictionaryPopulatorTask(
+				dictionaryCandidate.getLoadingProgress(),
+				dictionaryCandidate.getName(),
+				dictionaryId,
+				dictionaryMetadata.getWordCount(),
+				dictionaryEntryDao).execute();
 	}
 
 	private List<DictionaryCandidate> convertToDictionaryCandidatesList(ArrayList<String> dictionaries) {

@@ -1,18 +1,31 @@
 package org.verba.mobile.task;
 
-import static org.verba.mobile.Application.getVerbaDirectory;
+import static org.apache.commons.io.FileUtils.listFiles;
+import static org.apache.commons.io.IOCase.INSENSITIVE;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Collection;
 
+import org.apache.commons.io.filefilter.NameFileFilter;
+import org.apache.commons.io.filefilter.TrueFileFilter;
 import org.verba.stardict.PhraseDefinition;
 import org.verba.stardict.PhraseDefinitionCoordinates;
 import org.verba.stardict.PhraseDefinitionRepository;
 
 public class PhraseDefinitionLookup {
+	private static final String DICTIONARY_DATAFILE_EXTENSION = "dict";
+	private File rootDirectory;
+	private String dictionaryName;
+
+	public PhraseDefinitionLookup(File rootDirectory, String dictionaryName) {
+		this.rootDirectory = rootDirectory;
+		this.dictionaryName = dictionaryName;
+	}
+
 	public PhraseDefinition lookupPhraseDefinition(PhraseDefinitionCoordinates phraseDefinitionCoordinates)
 			throws IOException {
 		PhraseDefinitionRepository definitionsRepository = getPhraseDefinitionsRepository();
@@ -28,16 +41,27 @@ public class PhraseDefinitionLookup {
 	}
 
 	protected PhraseDefinitionRepository getPhraseDefinitionsRepository() throws FileNotFoundException {
-		InputStream dictionaryStream = getDictionaryInputStream();
+		InputStream dictionaryStream = getDictionaryDataSource();
 		return new PhraseDefinitionRepository(dictionaryStream);
 	}
 
-	private InputStream getDictionaryInputStream() throws FileNotFoundException {
-		File dictionaryFile = new File(getRootDirectory(), "dictionary.dict");
-		return new FileInputStream(dictionaryFile);
+	private InputStream getDictionaryDataSource() throws FileNotFoundException {
+		Collection<File> filesFound = findAllFilesMatchingDictionaryName();
+
+		ensureAtLeastOneDataFileFound(filesFound);
+
+		return new FileInputStream(filesFound.iterator().next());
 	}
 
-	protected File getRootDirectory() {
-		return getVerbaDirectory();
+	private void ensureAtLeastOneDataFileFound(Collection<File> filesFound) {
+		if (filesFound.isEmpty()) {
+			throw new RuntimeException("Dictionary data file not found");
+		}
+	}
+
+	private Collection<File> findAllFilesMatchingDictionaryName() {
+		String dictionaryMetadataFileName = dictionaryName + "." + DICTIONARY_DATAFILE_EXTENSION;
+		NameFileFilter dictionaryMetadataFileFilter = new NameFileFilter(dictionaryMetadataFileName, INSENSITIVE);
+		return listFiles(rootDirectory, dictionaryMetadataFileFilter, TrueFileFilter.INSTANCE);
 	}
 }

@@ -1,8 +1,10 @@
 package org.verba.mobile.xdxf;
 
+import static org.apache.commons.lang.StringUtils.isNotEmpty;
+
 import java.util.regex.Pattern;
 
-import org.verba.mobile.DictionaryActivity;
+import org.verba.mobile.PhraseDefinitionDetailsActivity;
 import org.verba.mobile.R;
 import org.verba.xdxf.XdxfNodeDisplay;
 import org.verba.xdxf.node.BoldPhrase;
@@ -26,11 +28,11 @@ import android.view.View;
 
 public class AndroidXdxfNodeDisplay implements XdxfNodeDisplay {
 	private SpannableStringBuilder spannable;
-	private DictionaryActivity dictionaryActivity;
+	private PhraseDefinitionDetailsActivity activity;
 	Pattern rgbColorPattern = Pattern.compile("^#\\d{6}$");
 
-	public AndroidXdxfNodeDisplay(DictionaryActivity aDictionaryActivity, SpannableStringBuilder aSpannable) {
-		dictionaryActivity = aDictionaryActivity;
+	public AndroidXdxfNodeDisplay(PhraseDefinitionDetailsActivity aDictionaryActivity, SpannableStringBuilder aSpannable) {
+		activity = aDictionaryActivity;
 		spannable = aSpannable;
 	}
 
@@ -41,14 +43,15 @@ public class AndroidXdxfNodeDisplay implements XdxfNodeDisplay {
 
 	@Override
 	public void print(KeyPhrase keyPhrase) {
-		applySpan(new TextAppearanceSpan(dictionaryActivity, R.style.KeyPhrase), keyPhrase);
+		applySpan(new TextAppearanceSpan(activity, R.style.KeyPhrase), keyPhrase);
 	}
 
 	@Override
 	public void print(ColoredPhrase coloredPhrase) {
-		int coloredPhraseStyle = getColoredPhraseStyleResource(coloredPhrase.getColorCode());
-
-		applySpan(new ForegroundColorSpan(coloredPhraseStyle), coloredPhrase);
+		if (isNotEmpty(coloredPhrase.getColorCode())) {
+			int coloredPhraseStyle = getColoredPhraseStyleResource(coloredPhrase.getColorCode());
+			applySpan(new ForegroundColorSpan(coloredPhraseStyle), coloredPhrase);
+		}
 	}
 
 	@Override
@@ -66,7 +69,7 @@ public class AndroidXdxfNodeDisplay implements XdxfNodeDisplay {
 		CharacterStyle linkToAnotherDefinition = new ClickableSpan() {
 			@Override
 			public void onClick(View widget) {
-				dictionaryActivity.lookupPhrase(phraseReference.asPlainText());
+				activity.lookupAnotherPhrase(phraseReference.asPlainText());
 			}
 		};
 
@@ -79,17 +82,17 @@ public class AndroidXdxfNodeDisplay implements XdxfNodeDisplay {
 	}
 
 	private int getColoredPhraseStyleResource(String colorCode) {
-		int coloredPhraseStyle = dictionaryActivity.getResources().getIdentifier(colorCode.toLowerCase(), "color",
-				dictionaryActivity.getApplicationInfo().packageName);
+		int coloredPhraseStyle = activity.getResources().getIdentifier(colorCode.toLowerCase(), "color",
+				activity.getApplicationInfo().packageName);
 
 		if (coloredPhraseStyle == 0) {
 			if (rgbColorPattern.matcher(colorCode).matches()) {
 				coloredPhraseStyle = Color.parseColor(colorCode);
 			} else {
-				coloredPhraseStyle = dictionaryActivity.getResources().getColor(R.color.default_colored_phrase);
+				coloredPhraseStyle = activity.getResources().getColor(R.color.default_colored_phrase);
 			}
 		} else {
-			coloredPhraseStyle = dictionaryActivity.getResources().getColor(coloredPhraseStyle);
+			coloredPhraseStyle = activity.getResources().getColor(coloredPhraseStyle);
 		}
 		return coloredPhraseStyle;
 	}

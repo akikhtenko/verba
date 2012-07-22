@@ -12,8 +12,8 @@ public class DictionaryEntryDao {
 	private static final String WILDCARD = "*";
 	public static final String SELECT_DICTIONARY_ENTRY_BY_ID =
 			"select rowid as _id, * from dictionary_entry where rowid = ?";
-	public static final String SELECT_DICTIONARY_ENTRY_BY_PATTERN =
-			"select rowid as _id, * from dictionary_entry where phrase = ? limit 1";
+	public static final String SELECT_DICTIONARY_ENTRIES_BY_PHRASE =
+			"select rowid as _id, * from dictionary_entry where phrase = ?";
 	public static final String INSERT_DICTIONARY_ENTRY = "insert into dictionary_entry "
 																		+ "(phrase, offset, length, dictionary_id) "
 																		+ "values "
@@ -36,13 +36,14 @@ public class DictionaryEntryDao {
 		return extractDictionaryEntryFromCursor(dictionaryEntriesCursor);
 	}
 
-	public DictionaryEntryDataObject getDictionaryEntryByPhrasePattern(String pattern)
+	public List<DictionaryEntryDataObject> getDictionaryEntriesByPhrase(String phrase)
 			throws NoDictionaryEntryFoundException {
-		Cursor dictionaryEntriesCursor = queryDictionaryEntryByPhrasePattern(pattern);
+		Cursor dictionaryEntriesCursor = queryDictionaryEntryByPhrase(phrase);
 
-		ensureAtLeastOneFound(pattern, dictionaryEntriesCursor);
+		List<DictionaryEntryDataObject> dictionaryEntries = extractDictionaryEntriesFromCursor(dictionaryEntriesCursor);
+		ensureAtLeastOneFound(phrase, dictionaryEntries);
 
-		return extractDictionaryEntryFromCursor(dictionaryEntriesCursor);
+		return dictionaryEntries;
 	}
 
 	public List<DictionaryEntryDataObject> getTopSuggestions(String pattern, int count) {
@@ -91,11 +92,11 @@ public class DictionaryEntryDao {
 		}
 	}
 
-	private void ensureAtLeastOneFound(String pattern, Cursor dictionaryEntriesCursor)
+	private void ensureAtLeastOneFound(String phrase, List<DictionaryEntryDataObject> dictionaryEntries)
 			throws NoDictionaryEntryFoundException {
-		if (!dictionaryEntriesCursor.moveToFirst()) {
+		if (dictionaryEntries.isEmpty()) {
 			throw new NoDictionaryEntryFoundException(String.format(
-					"Dictionary entry wasn't found in the database by phrase pattern [%s]", pattern));
+					"Dictionary entry wasn't found in the database by phrase pattern [%s]", phrase));
 		}
 	}
 
@@ -103,8 +104,8 @@ public class DictionaryEntryDao {
 		return database.rawQuery(SELECT_DICTIONARY_ENTRY_BY_ID, new String[] { String.valueOf(dictionaryEntryId) });
 	}
 
-	private Cursor queryDictionaryEntryByPhrasePattern(String pattern) {
-		return database.rawQuery(SELECT_DICTIONARY_ENTRY_BY_PATTERN, new String[] { pattern });
+	private Cursor queryDictionaryEntryByPhrase(String phrase) {
+		return database.rawQuery(SELECT_DICTIONARY_ENTRIES_BY_PHRASE, new String[] { phrase });
 	}
 
 	private Cursor querySuggestionsByPhrasePattern(String pattern, int count) {

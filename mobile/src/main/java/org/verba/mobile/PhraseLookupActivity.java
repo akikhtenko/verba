@@ -1,6 +1,7 @@
 package org.verba.mobile;
 
 import static org.verba.mobile.Application.getVerbaDirectory;
+import static org.verba.mobile.PhraseDefinitionDetailsActivity.PHRASE_TO_LOOKUP;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,6 +33,12 @@ public class PhraseLookupActivity extends DictionaryActivity implements OnClickL
 	@Override
 	public void onClick(View v) {
 		lookupPhrase(getPhraseToLookup());
+	}
+
+	private void lookupPhrase(String phraseToLookup) {
+		Intent commandToOpenPhraseDefinitionDetails = new Intent(this, PhraseDefinitionDetailsActivity.class);
+		commandToOpenPhraseDefinitionDetails.putExtra(PHRASE_TO_LOOKUP, phraseToLookup);
+		startActivity(commandToOpenPhraseDefinitionDetails);
 	}
 
 	private String getPhraseToLookup() {
