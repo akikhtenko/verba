@@ -7,6 +7,8 @@ import java.util.List;
 import org.verba.mobile.card.Card;
 import org.verba.mobile.card.CardDao;
 
+import roboguice.inject.InjectExtra;
+import roboguice.inject.InjectView;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -20,15 +22,14 @@ import com.google.inject.Inject;
 public class CardSetViewerActivity extends VerbaActivity implements OnItemClickListener {
 	public static final String CARD_ID_PARAMETER = "cardId";
 	@Inject private CardDao cardDao;
-	private ListView cardsList;
-	private int cardSetId;
+	@InjectView(R.id.cards) private ListView cardsList;
+	@InjectExtra(CARD_SET_ID_PARAMETER) private int cardSetId;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		cardSetId = getIntent().getIntExtra(CARD_SET_ID_PARAMETER, -1);
-		setupCardsList();
+		cardsList.setOnItemClickListener(this);
 		populateCardsList();
 	}
 
@@ -40,11 +41,6 @@ public class CardSetViewerActivity extends VerbaActivity implements OnItemClickL
 	@Override
 	protected int getContentLayout() {
 		return R.layout.card_set_viewer;
-	}
-
-	private void setupCardsList() {
-		cardsList = (ListView) findViewById(R.id.cards);
-		cardsList.setOnItemClickListener(this);
 	}
 
 	private void populateCardsList() {

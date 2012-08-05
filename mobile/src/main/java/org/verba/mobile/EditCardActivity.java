@@ -12,6 +12,7 @@ import org.verba.mobile.card.CardDao;
 import org.verba.mobile.card.CardSet;
 import org.verba.mobile.card.CardSetDao;
 
+import roboguice.inject.InjectView;
 import android.app.Dialog;
 import android.os.Bundle;
 import android.view.View;
@@ -27,10 +28,11 @@ public class EditCardActivity extends VerbaActivity implements OnClickListener {
 	private static final int DIALOG_ADD_CARD_SET = 0;
 	@Inject private CardSetDao cardSetDao;
 	@Inject private CardDao cardDao;
-	private EditText cardPhraseField;
-	private EditText cardDefinitionField;
+	@InjectView(R.id.cardPhrase) private EditText cardPhraseField;
+	@InjectView(R.id.cardDefinition) private EditText cardDefinitionField;
+	@InjectView(R.id.cardSetsList) private Spinner cardSetsList;
 	private EditText cardSetNameField;
-	private Spinner cardSetsList;
+
 	private OnClickListener addCardSetButtonListener = new OnClickListener() {
 		@Override
 		public void onClick(View v) {
@@ -83,11 +85,10 @@ public class EditCardActivity extends VerbaActivity implements OnClickListener {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		setupCardSetsList();
 		populateCardSetsList();
 		setupAddCardSetButton();
-		setupCardPhraseField();
-		setupCardDefinitionField();
+		cardPhraseField.setText(getIntent().getStringExtra(CARD_PHRASE_PARAMETER));
+		cardDefinitionField.setText(getIntent().getStringExtra(CARD_DEFINITION_PARAMETER));
 		setupSaveButton();
 	}
 
@@ -110,20 +111,6 @@ public class EditCardActivity extends VerbaActivity implements OnClickListener {
 	private void setupSaveButton() {
 		Button button = (Button) findViewById(R.id.saveCardButton);
 		button.setOnClickListener(this);
-	}
-
-	private void setupCardPhraseField() {
-		cardPhraseField = (EditText) findViewById(R.id.cardPhrase);
-		cardPhraseField.setText(getIntent().getStringExtra(CARD_PHRASE_PARAMETER));
-	}
-
-	private void setupCardDefinitionField() {
-		cardDefinitionField = (EditText) findViewById(R.id.cardDefinition);
-		cardDefinitionField.setText(getIntent().getStringExtra(CARD_DEFINITION_PARAMETER));
-	}
-
-	private void setupCardSetsList() {
-		cardSetsList = (Spinner) findViewById(R.id.cardSetsList);
 	}
 
 	private void populateCardSetsList() {

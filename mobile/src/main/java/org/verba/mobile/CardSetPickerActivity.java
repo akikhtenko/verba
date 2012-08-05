@@ -5,6 +5,7 @@ import java.util.List;
 import org.verba.mobile.card.CardSet;
 import org.verba.mobile.card.CardSetDao;
 
+import roboguice.inject.InjectView;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.ContextMenu;
@@ -21,7 +22,7 @@ import com.google.inject.Inject;
 
 public class CardSetPickerActivity extends VerbaActivity implements OnItemClickListener {
 	public static final String CARD_SET_ID_PARAMETER = "cardSetId";
-	private ListView cardSetsList;
+	@InjectView(R.id.cardSets) private ListView cardSetsList;
 	@Inject private CardSetDao cardSetDao;
 
 	@Override
@@ -43,7 +44,6 @@ public class CardSetPickerActivity extends VerbaActivity implements OnItemClickL
 	}
 
 	private void setupCardSetsList() {
-		cardSetsList = (ListView) findViewById(R.id.cardSets);
 		cardSetsList.setOnItemClickListener(this);
 		registerForContextMenu(cardSetsList);
 	}

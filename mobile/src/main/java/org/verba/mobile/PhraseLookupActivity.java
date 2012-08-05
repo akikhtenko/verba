@@ -32,7 +32,7 @@ public class PhraseLookupActivity extends VerbaActivity implements OnClickListen
 		OnItemClickListener {
 	public static final String NEW_DICTIONARIES = "newDictionaries";
 	private static final int SUGGESTIONS_LIMIT = 100;
-	private EditText phraseToLookupField;
+	@InjectView(R.id.wordToFindField) private EditText phraseToLookupField;
 	@InjectView(R.id.phraseSuggestions) private ListView phraseSuggestionsList;
 	@Inject private DictionaryDao dictionaryDao;
 	@Inject private DictionaryEntryDao dictionaryEntryDao;
@@ -57,7 +57,6 @@ public class PhraseLookupActivity extends VerbaActivity implements OnClickListen
 		super.onCreate(savedInstanceState);
 
 		setupLookupButton();
-		setupPhraseToLookupField();
 		phraseSuggestionsList.setOnItemClickListener(this);
 	}
 
@@ -74,10 +73,6 @@ public class PhraseLookupActivity extends VerbaActivity implements OnClickListen
 	private void setupLookupButton() {
 		Button button = (Button) findViewById(R.id.lookupButton);
 		button.setOnClickListener(this);
-	}
-
-	private void setupPhraseToLookupField() {
-		phraseToLookupField = (EditText) findViewById(R.id.wordToFindField);
 	}
 
 	@Override

@@ -22,6 +22,8 @@ import org.verba.stardict.PhraseDefinitionPart;
 import org.verba.xdxf.XdxfPhraseDefinitionElement;
 import org.verba.xdxf.node.XdxfElement;
 
+import roboguice.inject.InjectExtra;
+import roboguice.inject.InjectView;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -45,11 +47,12 @@ public class PhraseDefinitionDetailsActivity extends VerbaActivity {
 	public static final String PHRASE_TO_LOOKUP = "phraseToLookup";
 	public static final String CARD_PHRASE_PARAMETER = "cardPhrase";
 	public static final String CARD_DEFINITION_PARAMETER = "cardDefinition";
-	private WordUtils wordUtils;
+	private WordUtils wordUtils = new WordUtils();;
 	private int lastTapCharOffsetInItsBox;
-	private ViewGroup phraseDefinitionsShowcase;
+	@InjectView(R.id.phraseDefinitionsShowcase) private ViewGroup phraseDefinitionsShowcase;
 	@Inject private DictionaryDao dictionaryDao;
 	@Inject private DictionaryEntryDao dictionaryEntryDao;
+	@InjectExtra(PHRASE_TO_LOOKUP) private String phraseToLookup;
 
 	private OnLongClickListener phraseDefinitionDetailsViewLongClickListener = new OnLongClickListener() {
 		@Override
@@ -87,10 +90,6 @@ public class PhraseDefinitionDetailsActivity extends VerbaActivity {
 		}
 	};
 
-	public PhraseDefinitionDetailsActivity() {
-		wordUtils = new WordUtils();
-	}
-
 	private void hideAllSelectionHandles() {
 		for (int i = 0; i < phraseDefinitionsShowcase.getChildCount(); i++) {
 			PhraseDefinitionView phraseDefinitionBox = (PhraseDefinitionView) phraseDefinitionsShowcase.getChildAt(i);
@@ -103,7 +102,6 @@ public class PhraseDefinitionDetailsActivity extends VerbaActivity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		setupPhraseDefinitionShowcase();
 		showLookingForDefinitionProgress();
 		lookupPhraseDefinitionCoordinates();
 	}
@@ -122,13 +120,8 @@ public class PhraseDefinitionDetailsActivity extends VerbaActivity {
 		return R.layout.phrase_definition_details;
 	}
 
-	private void setupPhraseDefinitionShowcase() {
-		phraseDefinitionsShowcase = (ViewGroup) findViewById(R.id.phraseDefinitionsShowcase);
-	}
-
 	private void lookupPhraseDefinitionCoordinates() {
-		new LookupPhraseDefinitionCoordinatesTask(this, dictionaryEntryDao).execute(
-				getIntent().getStringExtra(PHRASE_TO_LOOKUP));
+		new LookupPhraseDefinitionCoordinatesTask(this, dictionaryEntryDao).execute(phraseToLookup);
 	}
 
 	private void displayText(CharSequence toDisplay) {
@@ -197,9 +190,9 @@ public class PhraseDefinitionDetailsActivity extends VerbaActivity {
 		displayText(asSpannableString(phraseDefinitionElement.asXdxfArticle()));
 	}
 
-	public void lookupAnotherPhrase(String phraseToLookup) {
+	public void lookupAnotherPhrase(String anotherPhraseToLookup) {
 		Intent commandToOpenPhraseDefinitionDetails = new Intent(this, PhraseDefinitionDetailsActivity.class);
-		commandToOpenPhraseDefinitionDetails.putExtra(PHRASE_TO_LOOKUP, phraseToLookup);
+		commandToOpenPhraseDefinitionDetails.putExtra(PHRASE_TO_LOOKUP, anotherPhraseToLookup);
 		startActivity(commandToOpenPhraseDefinitionDetails);
 	}
 

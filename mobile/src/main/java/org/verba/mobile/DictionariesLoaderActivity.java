@@ -16,6 +16,7 @@ import org.verba.mobile.stardict.DictionaryEntryDao;
 import org.verba.mobile.task.DictionaryPopulatorTask;
 import org.verba.stardict.DictionaryMetadata;
 
+import roboguice.inject.InjectExtra;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -29,6 +30,7 @@ public class DictionariesLoaderActivity extends VerbaActivity {
 	private DictionariesManager dictionariesManager;
 	@Inject private DictionaryDao dictionaryDao;
 	@Inject private DictionaryEntryDao dictionaryEntryDao;
+	@InjectExtra(NEW_DICTIONARIES) ArrayList<String> newDictionaries;
 
 	private OnClickListener loadNewDictionariesButtonListener = new OnClickListener() {
 		@Override
@@ -79,10 +81,8 @@ public class DictionariesLoaderActivity extends VerbaActivity {
 	}
 
 	private void setupNewDictionariesList() {
-		ArrayList<String> dictionaries = getIntent().getStringArrayListExtra(NEW_DICTIONARIES);
-
 		ListView newDictionariesList = (ListView) findViewById(R.id.newDictionaries);
-		dictionaryCandidates = convertToDictionaryCandidatesList(dictionaries);
+		dictionaryCandidates = convertToDictionaryCandidatesList(newDictionaries);
 		newDictionariesList.setAdapter(
 				new DictionaryCandidateArrayAdapter(this, dictionaryCandidates));
 	}
