@@ -1,6 +1,6 @@
 package org.verba.mobile;
 
-import android.app.Activity;
+import roboguice.activity.RoboActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -12,7 +12,7 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 
-public abstract class VerbaActivity extends Activity {
+public abstract class VerbaActivity extends RoboActivity {
 	private OnClickListener openDictionaryButtonListener = new OnClickListener() {
 		@Override
 		public void onClick(View v) {
@@ -31,6 +31,7 @@ public abstract class VerbaActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+
 		if (loadSystemMenu()) {
 			inflateSystemMenu();
 		} else {

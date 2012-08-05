@@ -1,44 +1,26 @@
 package org.verba.mobile;
 
+import java.io.File;
+
 import org.verba.mobile.card.CardDao;
 import org.verba.mobile.card.CardSetDao;
 import org.verba.mobile.stardict.DictionaryDao;
 import org.verba.mobile.stardict.DictionaryEntryDao;
 import org.verba.mobile.tools.VerbaDbManager;
 
-import android.app.Service;
-import android.content.Intent;
-import android.os.Binder;
-import android.os.IBinder;
+import android.app.Application;
+import android.os.Environment;
 
-public class DictionaryDataService extends Service {
+public class Verba extends Application {
 	private DictionaryDao dictionaryDao;
 	private DictionaryEntryDao dictionaryEntryDao;
 	private CardSetDao cardSetDao;
 	private CardDao cardDao;
-	private final IBinder mBinder = new DictionaryBinder();
-
-	public class DictionaryBinder extends Binder {
-		DictionaryDao getDictionaryDao() {
-			return dictionaryDao;
-		}
-
-		DictionaryEntryDao getDictionaryEntryDao() {
-			return dictionaryEntryDao;
-		}
-
-		CardSetDao getCardSetDao() {
-			return cardSetDao;
-		}
-
-		CardDao getCardDao() {
-			return cardDao;
-		}
-	}
 
 	@Override
 	public void onCreate() {
 		super.onCreate();
+
 		VerbaDbManager verbaDbManager = new VerbaDbManager(getApplicationContext());
 		dictionaryDao = new DictionaryDao(verbaDbManager);
 		dictionaryEntryDao = new DictionaryEntryDao(verbaDbManager);
@@ -47,16 +29,33 @@ public class DictionaryDataService extends Service {
 	}
 
 	@Override
-	public void onDestroy() {
-		super.onDestroy();
+	public void onTerminate() {
 		dictionaryDao.close();
 		dictionaryEntryDao.close();
 		cardSetDao.close();
 		cardDao.close();
+
+		super.onTerminate();
+	};
+
+	public DictionaryDao getDictionaryDao() {
+		return dictionaryDao;
 	}
 
-	@Override
-	public IBinder onBind(Intent intent) {
-		return mBinder;
+	public DictionaryEntryDao getDictionaryEntryDao() {
+		return dictionaryEntryDao;
 	}
+
+	public CardSetDao getCardSetDao() {
+		return cardSetDao;
+	}
+
+	public CardDao getCardDao() {
+		return cardDao;
+	}
+
+	public static File getVerbaDirectory() {
+		return Environment.getExternalStoragePublicDirectory("verba");
+	}
+
 }

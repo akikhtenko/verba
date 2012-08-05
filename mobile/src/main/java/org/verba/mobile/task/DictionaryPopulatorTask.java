@@ -3,7 +3,7 @@ package org.verba.mobile.task;
 import static org.apache.commons.io.FileUtils.listFiles;
 import static org.apache.commons.io.IOCase.INSENSITIVE;
 import static org.apache.commons.io.IOUtils.closeQuietly;
-import static org.verba.mobile.Application.getVerbaDirectory;
+import static org.verba.mobile.Verba.getVerbaDirectory;
 
 import java.io.File;
 import java.io.FileInputStream;

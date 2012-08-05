@@ -1,14 +1,17 @@
 package org.verba.mobile;
 
-import static org.verba.mobile.Application.getVerbaDirectory;
 import static org.verba.mobile.PhraseDefinitionDetailsActivity.PHRASE_TO_LOOKUP;
+import static org.verba.mobile.Verba.getVerbaDirectory;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import org.verba.mobile.dictionary.DictionariesManager;
+import org.verba.mobile.stardict.DictionaryDao;
+import org.verba.mobile.stardict.DictionaryEntryDao;
 import org.verba.mobile.stardict.DictionaryEntryDataObject;
 
+import roboguice.inject.InjectView;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
@@ -23,12 +26,16 @@ import android.widget.EditText;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 
-public class PhraseLookupActivity extends DictionaryActivity implements OnClickListener, TextWatcher,
+import com.google.inject.Inject;
+
+public class PhraseLookupActivity extends VerbaActivity implements OnClickListener, TextWatcher,
 		OnItemClickListener {
 	public static final String NEW_DICTIONARIES = "newDictionaries";
 	private static final int SUGGESTIONS_LIMIT = 100;
 	private EditText phraseToLookupField;
-	private ListView phraseSuggestionsList;
+	@InjectView(R.id.phraseSuggestions) private ListView phraseSuggestionsList;
+	@Inject private DictionaryDao dictionaryDao;
+	@Inject private DictionaryEntryDao dictionaryEntryDao;
 
 	@Override
 	public void onClick(View v) {
@@ -51,7 +58,7 @@ public class PhraseLookupActivity extends DictionaryActivity implements OnClickL
 
 		setupLookupButton();
 		setupPhraseToLookupField();
-		setupPhraseSuggestionsList();
+		phraseSuggestionsList.setOnItemClickListener(this);
 	}
 
 	@Override
@@ -62,11 +69,6 @@ public class PhraseLookupActivity extends DictionaryActivity implements OnClickL
 	@Override
 	protected int getContentLayout() {
 		return R.layout.phrase_definition_lookup;
-	}
-
-	private void setupPhraseSuggestionsList() {
-		phraseSuggestionsList = (ListView) findViewById(R.id.phraseSuggestions);
-		phraseSuggestionsList.setOnItemClickListener(this);
 	}
 
 	private void setupLookupButton() {
@@ -82,14 +84,14 @@ public class PhraseLookupActivity extends DictionaryActivity implements OnClickL
 	protected void onResume() {
 		super.onResume();
 		setupRestoreSafePhraseChangeListener();
+		checkForNewDictionaries();
 	}
 
 	private void setupRestoreSafePhraseChangeListener() {
 		phraseToLookupField.addTextChangedListener(this);
 	}
 
-	@Override
-	protected void postDictionaryServiceConnected() {
+	private void checkForNewDictionaries() {
 		DictionariesManager dictionariesManager = new DictionariesManager(getVerbaDirectory(), dictionaryDao);
 		ArrayList<String> dictionaries = dictionariesManager.findNewDictionaries();
 		if (!dictionaries.isEmpty()) {

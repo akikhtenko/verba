@@ -7,18 +7,13 @@ import static org.verba.mobile.PhraseDefinitionDetailsActivity.CARD_PHRASE_PARAM
 
 import java.util.List;
 
-import org.verba.mobile.DictionaryDataService.DictionaryBinder;
 import org.verba.mobile.card.Card;
 import org.verba.mobile.card.CardDao;
 import org.verba.mobile.card.CardSet;
 import org.verba.mobile.card.CardSetDao;
 
 import android.app.Dialog;
-import android.content.ComponentName;
-import android.content.Intent;
-import android.content.ServiceConnection;
 import android.os.Bundle;
-import android.os.IBinder;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ArrayAdapter;
@@ -26,10 +21,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 
-public class EditCardActivity extends VerbaActivity implements OnClickListener, ServiceConnection {
+import com.google.inject.Inject;
+
+public class EditCardActivity extends VerbaActivity implements OnClickListener {
 	private static final int DIALOG_ADD_CARD_SET = 0;
-	private CardSetDao cardSetDao;
-	private CardDao cardDao;
+	@Inject private CardSetDao cardSetDao;
+	@Inject private CardDao cardDao;
 	private EditText cardPhraseField;
 	private EditText cardDefinitionField;
 	private EditText cardSetNameField;
@@ -87,6 +84,7 @@ public class EditCardActivity extends VerbaActivity implements OnClickListener, 
 		super.onCreate(savedInstanceState);
 
 		setupCardSetsList();
+		populateCardSetsList();
 		setupAddCardSetButton();
 		setupCardPhraseField();
 		setupCardDefinitionField();
@@ -158,38 +156,5 @@ public class EditCardActivity extends VerbaActivity implements OnClickListener, 
 		dialog.setTitle(R.string.addCardSetDialogLabel);
 		dialog.setContentView(R.layout.add_card_set_dialog);
 		return dialog;
-	}
-
-	@Override
-	protected void onResume() {
-		super.onResume();
-
-		Intent intent = new Intent(this, DictionaryDataService.class);
-		bindService(intent, this, BIND_AUTO_CREATE);
-	}
-
-	@Override
-	protected void onPause() {
-		super.onPause();
-
-		if (cardSetDao != null || cardDao != null) {
-			unbindService(this);
-			cardSetDao = null;
-			cardDao = null;
-		}
-	}
-
-	@Override
-	public void onServiceConnected(ComponentName className, IBinder service) {
-		DictionaryBinder binder = (DictionaryBinder) service;
-		cardSetDao = binder.getCardSetDao();
-		cardDao = binder.getCardDao();
-		populateCardSetsList();
-	}
-
-	@Override
-	public void onServiceDisconnected(ComponentName arg0) {
-		cardSetDao = null;
-		cardDao = null;
 	}
 }

@@ -4,9 +4,11 @@ import static java.lang.String.format;
 
 import java.util.List;
 
+import org.verba.mobile.stardict.DictionaryDao;
 import org.verba.mobile.stardict.DictionaryDao.MoreThanOneDictionaryFoundException;
 import org.verba.mobile.stardict.DictionaryDao.NoDictionaryFoundException;
 import org.verba.mobile.stardict.DictionaryDataObject;
+import org.verba.mobile.stardict.DictionaryEntryDao;
 import org.verba.mobile.stardict.DictionaryEntryDataObject;
 import org.verba.mobile.task.LookupPhraseDefinitionCoordinatesTask;
 import org.verba.mobile.task.LookupPhraseDefinitionTask;
@@ -23,6 +25,8 @@ import org.verba.xdxf.node.XdxfElement;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Selection;
+import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -31,21 +35,26 @@ import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
 import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView.BufferType;
 import android.widget.Toast;
 
-public class PhraseDefinitionDetailsActivity extends DictionaryActivity {
+import com.google.inject.Inject;
+
+public class PhraseDefinitionDetailsActivity extends VerbaActivity {
 	public static final String PHRASE_TO_LOOKUP = "phraseToLookup";
 	public static final String CARD_PHRASE_PARAMETER = "cardPhrase";
 	public static final String CARD_DEFINITION_PARAMETER = "cardDefinition";
 	private WordUtils wordUtils;
 	private int lastTapCharOffsetInItsBox;
 	private ViewGroup phraseDefinitionsShowcase;
-	private boolean definitionsLookupRequested;
+	@Inject private DictionaryDao dictionaryDao;
+	@Inject private DictionaryEntryDao dictionaryEntryDao;
 
 	private OnLongClickListener phraseDefinitionDetailsViewLongClickListener = new OnLongClickListener() {
 		@Override
 		public boolean onLongClick(View eventView) {
+			hideAllSelectionHandles();
 			PhraseDefinitionView phraseDefinitionBox = (PhraseDefinitionView) eventView;
 			wordUtils.selectWordAtLastTapOffset(phraseDefinitionBox.getText(), lastTapCharOffsetInItsBox);
 			phraseDefinitionBox.showSelectionHandles();
@@ -82,24 +91,25 @@ public class PhraseDefinitionDetailsActivity extends DictionaryActivity {
 		wordUtils = new WordUtils();
 	}
 
+	private void hideAllSelectionHandles() {
+		for (int i = 0; i < phraseDefinitionsShowcase.getChildCount(); i++) {
+			PhraseDefinitionView phraseDefinitionBox = (PhraseDefinitionView) phraseDefinitionsShowcase.getChildAt(i);
+			phraseDefinitionBox.hideSelectionHandles();
+			Selection.removeSelection((Spannable) phraseDefinitionBox.getText());
+		}
+	}
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
 		setupPhraseDefinitionShowcase();
 		showLookingForDefinitionProgress();
+		lookupPhraseDefinitionCoordinates();
 	}
 
 	private void showLookingForDefinitionProgress() {
 		//displayText("Looking for definition...");
-	}
-
-	@Override
-	protected void postDictionaryServiceConnected() {
-		if (!definitionsLookupRequested) {
-			definitionsLookupRequested = true;
-			lookupPhraseDefinitionCoordinates();
-		}
 	}
 
 	@Override
@@ -128,7 +138,17 @@ public class PhraseDefinitionDetailsActivity extends DictionaryActivity {
 
 		setupPhraseDefinitionBoxListeners(phraseDefinitionBox);
 		phraseDefinitionBox.setText(toDisplay, BufferType.SPANNABLE);
-		phraseDefinitionsShowcase.addView(phraseDefinitionBox);
+
+		phraseDefinitionsShowcase.addView(phraseDefinitionBox, getMarginLayoutParams());
+	}
+
+	private LinearLayout.LayoutParams getMarginLayoutParams() {
+		LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
+				LinearLayout.LayoutParams.FILL_PARENT,
+				LinearLayout.LayoutParams.WRAP_CONTENT);
+
+		layoutParams.setMargins(5, 5, 5, 20);
+		return layoutParams;
 	}
 
 	private void setupPhraseDefinitionBoxListeners(PhraseDefinitionView phraseDefinitionBox) {

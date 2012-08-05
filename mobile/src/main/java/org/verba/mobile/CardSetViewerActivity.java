@@ -4,24 +4,22 @@ import static org.verba.mobile.CardSetPickerActivity.CARD_SET_ID_PARAMETER;
 
 import java.util.List;
 
-import org.verba.mobile.DictionaryDataService.DictionaryBinder;
 import org.verba.mobile.card.Card;
 import org.verba.mobile.card.CardDao;
 
-import android.content.ComponentName;
 import android.content.Intent;
-import android.content.ServiceConnection;
 import android.os.Bundle;
-import android.os.IBinder;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
-public class CardSetViewerActivity extends VerbaActivity implements OnItemClickListener, ServiceConnection {
+import com.google.inject.Inject;
+
+public class CardSetViewerActivity extends VerbaActivity implements OnItemClickListener {
 	public static final String CARD_ID_PARAMETER = "cardId";
-	private CardDao cardDao;
+	@Inject private CardDao cardDao;
 	private ListView cardsList;
 	private int cardSetId;
 
@@ -31,6 +29,7 @@ public class CardSetViewerActivity extends VerbaActivity implements OnItemClickL
 
 		cardSetId = getIntent().getIntExtra(CARD_SET_ID_PARAMETER, -1);
 		setupCardsList();
+		populateCardsList();
 	}
 
 	@Override
@@ -65,35 +64,5 @@ public class CardSetViewerActivity extends VerbaActivity implements OnItemClickL
 		Intent commandToOpenCardViewer = new Intent(this, ViewCardActivity.class);
 		commandToOpenCardViewer.putExtra(CARD_ID_PARAMETER, cardId);
 		startActivity(commandToOpenCardViewer);
-	}
-
-	@Override
-	protected void onResume() {
-		super.onResume();
-
-		Intent intent = new Intent(this, DictionaryDataService.class);
-		bindService(intent, this, BIND_AUTO_CREATE);
-	}
-
-	@Override
-	protected void onPause() {
-		super.onPause();
-
-		if (cardDao != null) {
-			unbindService(this);
-			cardDao = null;
-		}
-	}
-
-	@Override
-	public void onServiceConnected(ComponentName className, IBinder service) {
-		DictionaryBinder binder = (DictionaryBinder) service;
-		cardDao = binder.getCardDao();
-		populateCardsList();
-	}
-
-	@Override
-	public void onServiceDisconnected(ComponentName arg0) {
-		cardDao = null;
 	}
 }

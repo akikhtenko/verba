@@ -1,7 +1,7 @@
 package org.verba.mobile;
 
-import static org.verba.mobile.Application.getVerbaDirectory;
 import static org.verba.mobile.PhraseLookupActivity.NEW_DICTIONARIES;
+import static org.verba.mobile.Verba.getVerbaDirectory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,7 +10,9 @@ import org.verba.mobile.dictionary.DictionariesManager;
 import org.verba.mobile.dictionary.DictionaryCandidate;
 import org.verba.mobile.dictionary.DictionaryCandidateArrayAdapter;
 import org.verba.mobile.dictionary.DictionaryLookupException;
+import org.verba.mobile.stardict.DictionaryDao;
 import org.verba.mobile.stardict.DictionaryDataObject;
+import org.verba.mobile.stardict.DictionaryEntryDao;
 import org.verba.mobile.task.DictionaryPopulatorTask;
 import org.verba.stardict.DictionaryMetadata;
 
@@ -20,9 +22,13 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.ListView;
 
-public class DictionariesLoaderActivity extends DictionaryActivity {
+import com.google.inject.Inject;
+
+public class DictionariesLoaderActivity extends VerbaActivity {
 	private List<DictionaryCandidate> dictionaryCandidates;
 	private DictionariesManager dictionariesManager;
+	@Inject private DictionaryDao dictionaryDao;
+	@Inject private DictionaryEntryDao dictionaryEntryDao;
 
 	private OnClickListener loadNewDictionariesButtonListener = new OnClickListener() {
 		@Override

@@ -2,15 +2,11 @@ package org.verba.mobile;
 
 import java.util.List;
 
-import org.verba.mobile.DictionaryDataService.DictionaryBinder;
 import org.verba.mobile.card.CardSet;
 import org.verba.mobile.card.CardSetDao;
 
-import android.content.ComponentName;
 import android.content.Intent;
-import android.content.ServiceConnection;
 import android.os.Bundle;
-import android.os.IBinder;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.MenuInflater;
@@ -21,16 +17,19 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
-public class CardSetPickerActivity extends VerbaActivity implements OnItemClickListener, ServiceConnection {
+import com.google.inject.Inject;
+
+public class CardSetPickerActivity extends VerbaActivity implements OnItemClickListener {
 	public static final String CARD_SET_ID_PARAMETER = "cardSetId";
-	private CardSetDao cardSetDao;
 	private ListView cardSetsList;
+	@Inject private CardSetDao cardSetDao;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
 		setupCardSetsList();
+		populateCardSetsList();
 	}
 
 	@Override
@@ -82,33 +81,4 @@ public class CardSetPickerActivity extends VerbaActivity implements OnItemClickL
 		startActivity(commandToOpenCardSetViewer);
 	}
 
-	@Override
-	protected void onResume() {
-		super.onResume();
-
-		Intent intent = new Intent(this, DictionaryDataService.class);
-		bindService(intent, this, BIND_AUTO_CREATE);
-	}
-
-	@Override
-	protected void onPause() {
-		super.onPause();
-
-		if (cardSetDao != null) {
-			unbindService(this);
-			cardSetDao = null;
-		}
-	}
-
-	@Override
-	public void onServiceConnected(ComponentName className, IBinder service) {
-		DictionaryBinder binder = (DictionaryBinder) service;
-		cardSetDao = binder.getCardSetDao();
-		populateCardSetsList();
-	}
-
-	@Override
-	public void onServiceDisconnected(ComponentName arg0) {
-		cardSetDao = null;
-	}
 }

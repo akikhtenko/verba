@@ -1,6 +1,6 @@
 package org.verba.mobile.task;
 
-import static org.verba.mobile.Application.getVerbaDirectory;
+import static org.verba.mobile.Verba.getVerbaDirectory;
 
 import java.io.IOException;
 
