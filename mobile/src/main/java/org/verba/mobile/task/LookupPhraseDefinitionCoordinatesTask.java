@@ -4,36 +4,35 @@ import java.util.List;
 
 import org.verba.mobile.PhraseDefinitionDetailsActivity;
 import org.verba.mobile.stardict.DictionaryEntryDao;
-import org.verba.mobile.stardict.DictionaryEntryDao.NoDictionaryEntryFoundException;
 import org.verba.mobile.stardict.DictionaryEntryDataObject;
 
-import android.os.AsyncTask;
+import roboguice.util.RoboAsyncTask;
 
-public class LookupPhraseDefinitionCoordinatesTask extends AsyncTask<String, Void, List<DictionaryEntryDataObject>> {
+public class LookupPhraseDefinitionCoordinatesTask extends RoboAsyncTask<List<DictionaryEntryDataObject>> {
 	private PhraseDefinitionDetailsActivity activity;
 	private DictionaryEntryDao dictionaryEntryDao;
+	private String phraseToLookup;
 
 	public LookupPhraseDefinitionCoordinatesTask(PhraseDefinitionDetailsActivity activity,
-			DictionaryEntryDao dictionaryEntryDao) {
+			DictionaryEntryDao dictionaryEntryDao, String wordToLookup) {
+		super(activity);
 		this.activity = activity;
 		this.dictionaryEntryDao = dictionaryEntryDao;
+		this.phraseToLookup = wordToLookup;
 	}
 
 	@Override
-	protected List<DictionaryEntryDataObject> doInBackground(String... wordsToLookup) {
-		try {
-			return dictionaryEntryDao.getDictionaryEntriesByPhrase(wordsToLookup[0]);
-		} catch (NoDictionaryEntryFoundException e) {
-			return null;
-		}
+	public List<DictionaryEntryDataObject> call() throws Exception {
+		return dictionaryEntryDao.getDictionaryEntriesByPhrase(phraseToLookup);
 	}
 
 	@Override
-	protected void onPostExecute(List<DictionaryEntryDataObject> dictionaryEntriesFound) {
-		if (dictionaryEntriesFound == null) {
-			activity.displayPhraseDefinitionCoordinatesNotFound();
-		} else {
-			activity.lookupPhraseDefinition(dictionaryEntriesFound);
-		}
+	protected void onSuccess(List<DictionaryEntryDataObject> dictionaryEntriesFound) throws Exception {
+		activity.lookupPhraseDefinition(dictionaryEntriesFound);
+	}
+
+	@Override
+	protected void onException(Exception e) {
+		activity.displayPhraseDefinitionCoordinatesNotFound();
 	}
 }

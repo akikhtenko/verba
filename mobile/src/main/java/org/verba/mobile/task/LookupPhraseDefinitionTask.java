@@ -2,41 +2,42 @@ package org.verba.mobile.task;
 
 import static org.verba.mobile.Verba.getVerbaDirectory;
 
-import java.io.IOException;
-
 import org.verba.mobile.PhraseDefinitionDetailsActivity;
-import org.verba.mobile.task.LookupPhraseDefinitionTask.Request;
 import org.verba.mobile.task.LookupPhraseDefinitionTask.Response;
 import org.verba.stardict.PhraseDefinition;
 import org.verba.stardict.PhraseDefinitionCoordinates;
 
-import android.os.AsyncTask;
+import roboguice.util.RoboAsyncTask;
 
-public class LookupPhraseDefinitionTask extends AsyncTask<Request, Void, Response> {
+public class LookupPhraseDefinitionTask extends RoboAsyncTask<Response> {
 	private PhraseDefinitionDetailsActivity activity;
+	private Request request;
 
-	public LookupPhraseDefinitionTask(PhraseDefinitionDetailsActivity activity) {
+	public LookupPhraseDefinitionTask(PhraseDefinitionDetailsActivity activity, Request request) {
+		super(activity);
 		this.activity = activity;
+		this.request = request;
 	}
 
 	@Override
-	protected Response doInBackground(Request... requests) {
-		try {
-			PhraseDefinitionLookup phraseDefinitionLookup =
-									new PhraseDefinitionLookup(getVerbaDirectory(), requests[0].getDictionaryName());
-			PhraseDefinition phraseDefinition =
-									phraseDefinitionLookup.lookupPhraseDefinition(requests[0].getPhraseDefinitionCoordinates());
+	public Response call() throws Exception {
+		PhraseDefinitionLookup phraseDefinitionLookup =
+								new PhraseDefinitionLookup(getVerbaDirectory(), request.getDictionaryName());
+		PhraseDefinition phraseDefinition =
+								phraseDefinitionLookup.lookupPhraseDefinition(request.getPhraseDefinitionCoordinates());
 
-			return new Response(requests[0].getDictionaryName(), phraseDefinition);
-		} catch (IOException e) {
-			throw new RuntimeException(String.format("Unexpected error while looking up [%s]",
-					requests[0].getPhraseDefinitionCoordinates().getTargetPhrase()), e);
-		}
+		return new Response(request.getDictionaryName(), phraseDefinition);
 	}
 
 	@Override
-	protected void onPostExecute(Response response) {
+	protected void onSuccess(Response response) throws Exception {
 		activity.displayPhraseDefinition(response);
+	}
+
+	@Override
+	protected void onException(Exception e) {
+		throw new RuntimeException(String.format("Unexpected error while looking up [%s]",
+										request.getPhraseDefinitionCoordinates().getTargetPhrase()), e);
 	}
 
 	public static class Request {

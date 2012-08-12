@@ -121,7 +121,7 @@ public class PhraseDefinitionDetailsActivity extends VerbaActivity {
 	}
 
 	private void lookupPhraseDefinitionCoordinates() {
-		new LookupPhraseDefinitionCoordinatesTask(this, dictionaryEntryDao).execute(phraseToLookup);
+		new LookupPhraseDefinitionCoordinatesTask(this, dictionaryEntryDao, phraseToLookup).execute();
 	}
 
 	private void displayText(CharSequence toDisplay) {
@@ -164,7 +164,7 @@ public class PhraseDefinitionDetailsActivity extends VerbaActivity {
 			DictionaryDataObject dictionary = getDictionaryFor(dictionaryEntry);
 			Request phraseDefinitionLookupRequest =
 							new Request(dictionary.getName(), dictionaryEntry.asPhraseDefinitionCoordinates());
-			new LookupPhraseDefinitionTask(this).execute(phraseDefinitionLookupRequest);
+			new LookupPhraseDefinitionTask(this, phraseDefinitionLookupRequest).execute();
 		}
 	}
 

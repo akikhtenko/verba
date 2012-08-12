@@ -23,7 +23,9 @@
         </activity>
         <activity android:name="DictionariesLoaderActivity"
             android:label="@string/loadDictionariesDialogLabel"
-            android:windowSoftInputMode="stateUnspecified|adjustPan"/>
+            android:windowSoftInputMode="stateUnspecified|adjustPan"
+            android:screenOrientation="nosensor"
+            android:configChanges="keyboardHidden|orientation"/>
         <activity android:name="PhraseDefinitionDetailsActivity"
             android:theme="@android:style/Theme.NoTitleBar"
             android:windowSoftInputMode="stateUnspecified|adjustPan"/>
@@ -39,7 +41,6 @@
         <activity android:name="CardSetViewerActivity"
             android:label="@string/pickCardLabel"
             android:windowSoftInputMode="stateUnspecified|adjustPan"/>
-        <service android:name="DictionaryDataService" android:exported="false"/>
     </application>
 
 </manifest>
