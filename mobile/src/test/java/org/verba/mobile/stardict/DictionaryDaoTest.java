@@ -15,6 +15,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.verba.DictionaryDataObject;
 import org.verba.mobile.stardict.DictionaryDao.MoreThanOneDictionaryFoundException;
 import org.verba.mobile.stardict.DictionaryDao.NoDictionaryFoundException;
 import org.verba.mobile.tools.VerbaDbManager;

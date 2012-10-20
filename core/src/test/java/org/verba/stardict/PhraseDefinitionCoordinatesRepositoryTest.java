@@ -15,12 +15,13 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.verba.stardict.index.DictionaryIndex;
 
 @RunWith(MockitoJUnitRunner.class)
 public class PhraseDefinitionCoordinatesRepositoryTest {
 	private static final String WORD_TO_LOOK_FOR = "verba";
 	@Mock
-	private DictionaryIndexReader indexReader;
+	private DictionaryIndex indexReader;
 	@Mock
 	private PhraseDefinitionCoordinates phraseCoordinates;
 

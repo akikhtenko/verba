@@ -3,12 +3,14 @@ package org.verba.mobile.stardict;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.verba.DictionaryEntryDataObject;
+import org.verba.DictionaryEntryRepository;
 import org.verba.mobile.tools.VerbaDbManager;
 
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
-public class DictionaryEntryDao {
+public class DictionaryEntryDao implements DictionaryEntryRepository {
 	private static final String WILDCARD = "*";
 	public static final String SELECT_DICTIONARY_ENTRY_BY_ID =
 			"select rowid as _id, * from dictionary_entry where rowid = ?";
@@ -52,6 +54,7 @@ public class DictionaryEntryDao {
 		return extractDictionaryEntriesFromCursor(dictionaryEntriesCursor);
 	}
 
+	@Override
 	public void addDictionaryEntry(DictionaryEntryDataObject dictionaryEntryDataObject) {
 		database.execSQL(INSERT_DICTIONARY_ENTRY,
 				new Object[] {
@@ -124,17 +127,14 @@ public class DictionaryEntryDao {
 		database.close();
 	}
 
-	public void doInTransaction(DoInTransactionCallback callback) throws Exception {
+	@Override
+	public void doInOneGo(Operation operation) throws Exception {
 		database.beginTransaction();
 		try {
-			callback.doInTransaction();
+			operation.doInOneGo();
 			database.setTransactionSuccessful();
 		} finally {
 			database.endTransaction();
 		}
-	}
-
-	public interface DoInTransactionCallback {
-		void doInTransaction() throws Exception;
 	}
 }

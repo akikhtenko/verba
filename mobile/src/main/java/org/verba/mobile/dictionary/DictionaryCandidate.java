@@ -4,16 +4,16 @@ import android.widget.CheckBox;
 import android.widget.ProgressBar;
 
 public class DictionaryCandidate {
-	private String name;
-	private CheckBox checkBox;
+	private String title;
+	private CheckBox selector;
 	private ProgressBar loadingProgress;
 
-	public DictionaryCandidate(String name) {
-		this.name = name;
+	public DictionaryCandidate(String title) {
+		this.title = title;
 	}
 
-	public String getName() {
-		return name;
+	public String getTitle() {
+		return title;
 	}
 	public ProgressBar getLoadingProgress() {
 		return loadingProgress;
@@ -21,14 +21,14 @@ public class DictionaryCandidate {
 	public void setLoadingProgress(ProgressBar loadingProgress) {
 		this.loadingProgress = loadingProgress;
 	}
-	public CheckBox getCheckBox() {
-		return checkBox;
+	public CheckBox getSelector() {
+		return selector;
 	}
-	public void setCheckBox(CheckBox checkBox) {
-		this.checkBox = checkBox;
+	public void setSelector(CheckBox selector) {
+		this.selector = selector;
 	}
 
 	public boolean isSelected() {
-		return checkBox != null && checkBox.isChecked() ? true : false;
+		return selector != null && selector.isChecked() ? true : false;
 	}
 }

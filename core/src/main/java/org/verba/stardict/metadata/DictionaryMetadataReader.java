@@ -1,4 +1,4 @@
-package org.verba.stardict;
+package org.verba.stardict.metadata;
 
 import static java.lang.Integer.parseInt;
 import static org.apache.commons.io.Charsets.UTF_8;
@@ -11,6 +11,7 @@ import java.util.Properties;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.LineIterator;
+import org.verba.stardict.PhraseDefinitionPartFormat;
 
 public class DictionaryMetadataReader {
 	private static final String ERROR_MISSING_PROPERTY = "Mandatory property [%s] is missing";

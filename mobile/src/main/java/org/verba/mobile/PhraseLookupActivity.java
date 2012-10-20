@@ -6,10 +6,10 @@ import static org.verba.mobile.Verba.getVerbaDirectory;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.verba.DictionaryEntryDataObject;
 import org.verba.mobile.dictionary.DictionariesManager;
 import org.verba.mobile.stardict.DictionaryDao;
 import org.verba.mobile.stardict.DictionaryEntryDao;
-import org.verba.mobile.stardict.DictionaryEntryDataObject;
 
 import roboguice.inject.InjectView;
 import android.content.Intent;

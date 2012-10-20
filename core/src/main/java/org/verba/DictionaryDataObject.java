@@ -1,4 +1,4 @@
-package org.verba.mobile.stardict;
+package org.verba;
 
 public class DictionaryDataObject {
 	private int id;

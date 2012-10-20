@@ -2,9 +2,9 @@ package org.verba.mobile.task;
 
 import java.util.List;
 
+import org.verba.DictionaryEntryDataObject;
 import org.verba.mobile.PhraseDefinitionDetailsActivity;
 import org.verba.mobile.stardict.DictionaryEntryDao;
-import org.verba.mobile.stardict.DictionaryEntryDataObject;
 
 import roboguice.util.RoboAsyncTask;
 

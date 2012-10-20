@@ -1,6 +1,9 @@
-package org.verba.stardict;
+package org.verba.stardict.metadata;
 
 import static org.verba.stardict.IndexOffsetSize.BITS_32;
+
+import org.verba.stardict.IndexOffsetSize;
+import org.verba.stardict.PhraseDefinitionPartFormat;
 
 public class DictionaryMetadata {
 	private String name;

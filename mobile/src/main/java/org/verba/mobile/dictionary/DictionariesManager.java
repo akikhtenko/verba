@@ -15,9 +15,13 @@ import java.util.Collection;
 import org.apache.commons.io.filefilter.NameFileFilter;
 import org.apache.commons.io.filefilter.TrueFileFilter;
 import org.verba.mobile.stardict.DictionaryDao;
-import org.verba.stardict.DictionaryMetadata;
-import org.verba.stardict.DictionaryMetadataReader;
+import org.verba.stardict.metadata.DictionaryMetadata;
+import org.verba.stardict.metadata.DictionaryMetadataReader;
 
+/**
+ * @deprecated to be removed ASAP
+ */
+@Deprecated
 public class DictionariesManager {
 	private static final String DICTIONARY_METADATA_EXTENSION = "ifo";
 	private File rootDirectory;

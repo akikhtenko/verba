@@ -1,11 +1,13 @@
 package org.verba.mobile.stardict;
 
+import org.verba.DictionaryDataObject;
+import org.verba.DictionaryRepository;
 import org.verba.mobile.tools.VerbaDbManager;
 
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
-public class DictionaryDao {
+public class DictionaryDao implements DictionaryRepository {
 	public static final String SELECT_DICTIONARY_BY_NAME = "select * from dictionary where name = ?";
 	public static final String SELECT_DICTIONARY_BY_ID = "select * from dictionary where _id = ?";
 	public static final String INSERT_DICTIONARY = "insert into dictionary (name, description) values (?, ?)";
@@ -49,6 +51,7 @@ public class DictionaryDao {
 		return dictionariesCursor.moveToFirst();
 	}
 
+	@Override
 	public int addDictionary(DictionaryDataObject dictionaryDataObject) {
 		database.execSQL(INSERT_DICTIONARY,
 				new String[] { dictionaryDataObject.getName(), dictionaryDataObject.getDescription() });

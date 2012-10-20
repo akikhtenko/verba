@@ -1,13 +1,14 @@
-package org.verba.stardict;
+package org.verba.stardict.index;
 
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
 
+import org.verba.stardict.PhraseDefinitionCoordinates;
 import org.verba.util.InputStreamReader;
 
-public class DictionaryIndexReader implements Closeable {
+public class DictionaryIndex implements Closeable {
 	private static final int BITS_PER_BYTE = 8;
 	private static final int MAX_WORD_LENGTH = 256;
 	private InputStreamReader streamReader;
@@ -15,7 +16,7 @@ public class DictionaryIndexReader implements Closeable {
 
 	int nextByte = 0;
 
-	public DictionaryIndexReader(InputStream aDictionaryIndexPayloadStream) {
+	public DictionaryIndex(InputStream aDictionaryIndexPayloadStream) {
 		streamReader = new InputStreamReader(aDictionaryIndexPayloadStream);
 		targetWordBuffer = ByteBuffer.allocate(MAX_WORD_LENGTH);
 	}

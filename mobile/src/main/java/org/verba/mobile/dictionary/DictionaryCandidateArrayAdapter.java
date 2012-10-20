@@ -16,35 +16,50 @@ import android.widget.TextView;
 
 public class DictionaryCandidateArrayAdapter extends ArrayAdapter<DictionaryCandidate> {
 	private Activity context;
+
 	public DictionaryCandidateArrayAdapter(Activity context, List<DictionaryCandidate> dictionaries) {
-		super(context, R.layout.new_dictionary_list_item, R.id.listItemTitle, dictionaries);
+		super(context, R.layout.dictionary_candidates_list_item, R.id.listItemTitle, dictionaries);
 		this.context = context;
 	}
 
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
 		final DictionaryCandidate dictionaryCandidate = getItem(position);
-		View view = convertView;
-		if (view == null) {
-			LayoutInflater inflator = context.getLayoutInflater();
-			view = inflator.inflate(R.layout.new_dictionary_list_item, null);
+		View dictionaryCandidateView = convertView;
 
-			final TextView textView = (TextView) view.findViewById(R.id.listItemTitle);
-			textView.setText(dictionaryCandidate.getName());
+		if (dictionaryCandidateView == null) {
+			dictionaryCandidateView = inflateNewDictionaryCandidateView();
 
-			final CheckBox checkbox = (CheckBox) view.findViewById(R.id.loadThisDictionaryCheck);
-			dictionaryCandidate.setCheckBox(checkbox);
+			setDictinaryCandidateTitle(dictionaryCandidateView, dictionaryCandidate.getTitle());
+			setLoadingProgress(dictionaryCandidate, dictionaryCandidateView);
 
-			dictionaryCandidate.setLoadingProgress((ProgressBar) view.findViewById(R.id.loadingDictionaryProgress));
+			final CheckBox dictionaryCandidateSelector =
+					(CheckBox) dictionaryCandidateView.findViewById(R.id.dictionaryCandidateSelector);
+			dictionaryCandidate.setSelector(dictionaryCandidateSelector);
 
-			view.setOnClickListener(new OnClickListener() {
+			dictionaryCandidateView.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) {
-					checkbox.toggle();
+					dictionaryCandidateSelector.toggle();
 				}
 			});
 		}
 
-		return view;
+		return dictionaryCandidateView;
+	}
+
+	private void setLoadingProgress(final DictionaryCandidate dictionaryCandidate, View dictionaryCandidateView) {
+		dictionaryCandidate.setLoadingProgress(
+				(ProgressBar) dictionaryCandidateView.findViewById(R.id.loadingDictionaryProgress));
+	}
+
+	private void setDictinaryCandidateTitle(View dictionaryCandidateView, String dictionaryCandidateTitle) {
+		final TextView textView = (TextView) dictionaryCandidateView.findViewById(R.id.listItemTitle);
+		textView.setText(dictionaryCandidateTitle);
+	}
+
+	private View inflateNewDictionaryCandidateView() {
+		LayoutInflater inflator = context.getLayoutInflater();
+		return inflator.inflate(R.layout.dictionary_candidates_list_item, null);
 	}
 }

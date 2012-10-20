@@ -11,6 +11,8 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import org.junit.Test;
+import org.verba.stardict.metadata.DictionaryMetadata;
+import org.verba.stardict.metadata.DictionaryMetadataReader;
 
 public class DictionaryMetadataReaderTest {
 	@Test

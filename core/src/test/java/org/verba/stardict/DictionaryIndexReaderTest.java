@@ -13,6 +13,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.verba.stardict.index.DictionaryIndex;
 
 @RunWith(MockitoJUnitRunner.class)
 public class DictionaryIndexReaderTest {
@@ -22,7 +23,7 @@ public class DictionaryIndexReaderTest {
 
 	@Test
 	public void canReadTargetWordThreeTimesInARow() throws IOException {
-		DictionaryIndexReader indexReader = new DictionaryIndexReader(new ByteArrayInputStream(
+		DictionaryIndex indexReader = new DictionaryIndex(new ByteArrayInputStream(
 				DUMMY_INDEX_CONTENT.getBytes()));
 		PhraseDefinitionCoordinates wordCoordinates = indexReader.readPhraseDefinitionCoordinates();
 		assertThat(wordCoordinates.getTargetPhrase(), is(equalTo("abc")));
@@ -34,7 +35,7 @@ public class DictionaryIndexReaderTest {
 
 	@Test
 	public void canReadPhraseDefinitionOffsetThreeTimesInARow() throws IOException {
-		DictionaryIndexReader indexReader = new DictionaryIndexReader(new ByteArrayInputStream(
+		DictionaryIndex indexReader = new DictionaryIndex(new ByteArrayInputStream(
 				DUMMY_INDEX_CONTENT.getBytes()));
 		PhraseDefinitionCoordinates wordCoordinates = indexReader.readPhraseDefinitionCoordinates();
 		assertThat(wordCoordinates.getPhraseDefinitionOffset(), is(1633771873L));
@@ -46,7 +47,7 @@ public class DictionaryIndexReaderTest {
 
 	@Test
 	public void canReadPhraseDefinitionLengthThreeTimesInARow() throws IOException {
-		DictionaryIndexReader indexReader = new DictionaryIndexReader(new ByteArrayInputStream(
+		DictionaryIndex indexReader = new DictionaryIndex(new ByteArrayInputStream(
 				DUMMY_INDEX_CONTENT.getBytes()));
 		PhraseDefinitionCoordinates wordCoordinates = indexReader.readPhraseDefinitionCoordinates();
 		assertThat(wordCoordinates.getPhraseDefinitionLength(), is(1650614882));
@@ -58,25 +59,25 @@ public class DictionaryIndexReaderTest {
 
 	@Test(expected = RuntimeException.class)
 	public void shouldFailWhenEndOfStreamReachedWhileReadingATargetWord() throws IOException {
-		DictionaryIndexReader indexReader = new DictionaryIndexReader(new ByteArrayInputStream("abc".getBytes()));
+		DictionaryIndex indexReader = new DictionaryIndex(new ByteArrayInputStream("abc".getBytes()));
 		indexReader.readPhraseDefinitionCoordinates();
 	}
 
 	@Test(expected = RuntimeException.class)
 	public void shouldFailWhenEndOfStreamReachedWhileReadingAPhraseDefinitionOffset() throws IOException {
-		DictionaryIndexReader indexReader = new DictionaryIndexReader(new ByteArrayInputStream("abc\0a".getBytes()));
+		DictionaryIndex indexReader = new DictionaryIndex(new ByteArrayInputStream("abc\0a".getBytes()));
 		indexReader.readPhraseDefinitionCoordinates();
 	}
 
 	@Test(expected = RuntimeException.class)
 	public void shouldFailWhenEndOfStreamReachedWhileReadingAPhraseDefinitionLength() throws IOException {
-		DictionaryIndexReader indexReader = new DictionaryIndexReader(new ByteArrayInputStream("abc\0aaaab".getBytes()));
+		DictionaryIndex indexReader = new DictionaryIndex(new ByteArrayInputStream("abc\0aaaab".getBytes()));
 		indexReader.readPhraseDefinitionCoordinates();
 	}
 
 	@Test
 	public void showsWhenThereIsMorePhraseDefinitionsToRead() throws IOException {
-		DictionaryIndexReader indexReader = new DictionaryIndexReader(new ByteArrayInputStream(
+		DictionaryIndex indexReader = new DictionaryIndex(new ByteArrayInputStream(
 				"abc\0aaaabbbb".getBytes()));
 		assertThat(indexReader.hasNextPhraseDefinitionCoordinates(), is(true));
 		indexReader.readPhraseDefinitionCoordinates();
@@ -86,7 +87,7 @@ public class DictionaryIndexReaderTest {
 	@Test
 	public void repetativeCheckingIfThereIsMorePhraseDefinitionsToReadShouldNotCauseTroubleForNextPhraseDefinitionRead()
 			throws IOException {
-		DictionaryIndexReader indexReader = new DictionaryIndexReader(new ByteArrayInputStream(
+		DictionaryIndex indexReader = new DictionaryIndex(new ByteArrayInputStream(
 				"abc\0aaaabbbb".getBytes()));
 
 		indexReader.hasNextPhraseDefinitionCoordinates();
@@ -101,7 +102,7 @@ public class DictionaryIndexReaderTest {
 
 	@Test
 	public void closesInputStream() throws IOException {
-		DictionaryIndexReader indexReader = new DictionaryIndexReader(mockedInputStream);
+		DictionaryIndex indexReader = new DictionaryIndex(mockedInputStream);
 
 		indexReader.close();
 

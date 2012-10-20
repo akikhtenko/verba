@@ -1,4 +1,4 @@
-package org.verba.mobile.stardict;
+package org.verba;
 
 import org.verba.stardict.PhraseDefinitionCoordinates;
 

@@ -6,6 +6,7 @@ import java.io.InputStream;
 
 import org.junit.Ignore;
 import org.junit.Test;
+import org.verba.stardict.index.DictionaryIndex;
 
 public class DictionaryIndexReaderIntegrationTest {
 	private static final int MILLIS_IN_SECOND = 1000;
@@ -15,7 +16,7 @@ public class DictionaryIndexReaderIntegrationTest {
 	public void shouldParseDictionaryIndexFile() throws IOException {
 		InputStream indexStream = getClass().getClassLoader().getResourceAsStream("org/verba/stardict/dictionary.idx");
 
-		DictionaryIndexReader indexReader = new DictionaryIndexReader(new BufferedInputStream(indexStream));
+		DictionaryIndex indexReader = new DictionaryIndex(new BufferedInputStream(indexStream));
 		long timeStarted = System.currentTimeMillis();
 
 		try {

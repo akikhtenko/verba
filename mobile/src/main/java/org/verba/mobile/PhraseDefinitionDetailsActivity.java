@@ -4,12 +4,12 @@ import static java.lang.String.format;
 
 import java.util.List;
 
+import org.verba.DictionaryDataObject;
+import org.verba.DictionaryEntryDataObject;
 import org.verba.mobile.stardict.DictionaryDao;
 import org.verba.mobile.stardict.DictionaryDao.MoreThanOneDictionaryFoundException;
 import org.verba.mobile.stardict.DictionaryDao.NoDictionaryFoundException;
-import org.verba.mobile.stardict.DictionaryDataObject;
 import org.verba.mobile.stardict.DictionaryEntryDao;
-import org.verba.mobile.stardict.DictionaryEntryDataObject;
 import org.verba.mobile.task.LookupPhraseDefinitionCoordinatesTask;
 import org.verba.mobile.task.LookupPhraseDefinitionTask;
 import org.verba.mobile.task.LookupPhraseDefinitionTask.Request;

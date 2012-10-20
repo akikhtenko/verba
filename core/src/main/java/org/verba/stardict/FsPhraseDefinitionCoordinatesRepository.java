@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import org.apache.commons.io.IOUtils;
+import org.verba.stardict.index.DictionaryIndex;
 
 public class FsPhraseDefinitionCoordinatesRepository implements PhraseDefinitionCoordinatesRepository {
 	private File indexFile;
@@ -17,7 +18,7 @@ public class FsPhraseDefinitionCoordinatesRepository implements PhraseDefinition
 
 	@Override
 	public PhraseDefinitionCoordinates find(String targetWord) throws PhraseDefinitionCoordinatesNotFoundException {
-		DictionaryIndexReader indexReader = getIndexReader();
+		DictionaryIndex indexReader = getIndexReader();
 		try {
 			PhraseDefinitionCoordinates phraseDefinitionCoordinates = getPhraseDefinitionCoordinates(targetWord, indexReader);
 			ensurePhraseDefinitionCoordinatesFound(phraseDefinitionCoordinates, targetWord);
@@ -30,17 +31,17 @@ public class FsPhraseDefinitionCoordinatesRepository implements PhraseDefinition
 		}
 	}
 
-	protected DictionaryIndexReader getIndexReader() {
+	protected DictionaryIndex getIndexReader() {
 		try {
 			InputStream indexStream = new FileInputStream(indexFile);
-			return new DictionaryIndexReader(indexStream);
+			return new DictionaryIndex(indexStream);
 		} catch (FileNotFoundException e) {
 			throw new RuntimeException(e);
 		}
 	}
 
 	private PhraseDefinitionCoordinates getPhraseDefinitionCoordinates(String targetWord,
-			DictionaryIndexReader indexReader) throws IOException {
+			DictionaryIndex indexReader) throws IOException {
 		PhraseDefinitionCoordinates phraseDefinitionCoordinates = null;
 
 		while (indexReader.hasNextPhraseDefinitionCoordinates()) {
