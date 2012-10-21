@@ -4,22 +4,16 @@ import static org.verba.mobile.Verba.getVerbaDirectory;
 
 import org.verba.DictionaryEntryRepository;
 import org.verba.DictionaryRepository;
-import org.verba.boundary.CardAddition;
-import org.verba.boundary.CardRetrieval;
-import org.verba.boundary.CardSetAddition;
-import org.verba.boundary.CardSetRetrieval;
-import org.verba.boundary.NewDictionariesScanner;
-import org.verba.boundary.PhraseLookup;
-import org.verba.boundary.SuggestionAdviser;
 import org.verba.card.CardRepository;
 import org.verba.cardset.CardSetRepository;
-import org.verba.interactors.NewStardictDictionariesScanner;
-import org.verba.interactors.SimpleCardAddition;
-import org.verba.interactors.SimpleCardRetrieval;
-import org.verba.interactors.SimpleCardSetAddition;
-import org.verba.interactors.SimpleCardSetRetrieval;
-import org.verba.interactors.SimpleSuggestionAdviser;
-import org.verba.interactors.StardictPhraseLookup;
+import org.verba.interactors.AddCard;
+import org.verba.interactors.AddCardSet;
+import org.verba.interactors.GetCard;
+import org.verba.interactors.GetCardSet;
+import org.verba.interactors.GetCards;
+import org.verba.interactors.GetNewDictionaries;
+import org.verba.interactors.GetSuggestions;
+import org.verba.interactors.LookupPhrase;
 import org.verba.mobile.Verba;
 import org.verba.stardict.definitions.StardictDictionaryDefinitionsGateway;
 import org.verba.stardict.index.DictionaryIndexGateway;
@@ -56,15 +50,15 @@ public class VerbaInjectionModule extends AbstractModule {
 		bind(CardSetRepository.class).toInstance(cardSetRepository);
 		bind(CardRepository.class).toInstance(cardRepository);
 
-		bind(NewDictionariesScanner.class).toInstance(
-				new NewStardictDictionariesScanner(getVerbaDirectory(), dictionaryRepository));
-		bind(SuggestionAdviser.class).toInstance(new SimpleSuggestionAdviser(dictionaryEntryRepository));
-		bind(PhraseLookup.class).toInstance(new StardictPhraseLookup(
+		bind(GetNewDictionaries.class).toInstance(new GetNewDictionaries(getVerbaDirectory(), dictionaryRepository));
+		bind(GetSuggestions.class).toInstance(new GetSuggestions(dictionaryEntryRepository));
+		bind(LookupPhrase.class).toInstance(new LookupPhrase(
 				dictionaryRepository, dictionaryEntryRepository, new StardictDictionaryDefinitionsGateway(dictionaryFileFinder)));
-		bind(CardSetRetrieval.class).toInstance(new SimpleCardSetRetrieval(cardSetRepository));
-		bind(CardSetAddition.class).toInstance(new SimpleCardSetAddition(cardSetRepository));
-		bind(CardRetrieval.class).toInstance(new SimpleCardRetrieval(cardRepository));
-		bind(CardAddition.class).toInstance(new SimpleCardAddition(cardRepository));
+		bind(GetCardSet.class).toInstance(new GetCardSet(cardSetRepository));
+		bind(AddCardSet.class).toInstance(new AddCardSet(cardSetRepository));
+		bind(GetCard.class).toInstance(new GetCard(cardRepository));
+		bind(GetCards.class).toInstance(new GetCards(cardRepository));
+		bind(AddCard.class).toInstance(new AddCard(cardRepository));
 	}
 
 }

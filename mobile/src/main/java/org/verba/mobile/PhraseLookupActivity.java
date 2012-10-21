@@ -5,8 +5,8 @@ import static org.verba.mobile.PhraseDefinitionDetailsActivity.PHRASE_TO_LOOKUP;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.verba.boundary.NewDictionariesScanner;
-import org.verba.boundary.SuggestionAdviser;
+import org.verba.interactors.GetNewDictionaries;
+import org.verba.interactors.GetSuggestions;
 
 import roboguice.inject.InjectView;
 import android.content.Intent;
@@ -31,8 +31,8 @@ public class PhraseLookupActivity extends VerbaActivity implements OnClickListen
 	private static final int SUGGESTIONS_LIMIT = 100;
 	@InjectView(R.id.wordToFindField) private EditText phraseToLookupField;
 	@InjectView(R.id.phraseSuggestions) private ListView phraseSuggestionsList;
-	@Inject private NewDictionariesScanner newDictionariesScanner;
-	@Inject private SuggestionAdviser suggestionAdviser;
+	@Inject private GetNewDictionaries getNewDictionaries;
+	@Inject private GetSuggestions getSuggestions;
 
 	@Override
 	public void onClick(View v) {
@@ -84,7 +84,7 @@ public class PhraseLookupActivity extends VerbaActivity implements OnClickListen
 	}
 
 	private void checkForNewDictionaries() {
-		ArrayList<String> newDictionaries = newDictionariesScanner.findNewDictionaries();
+		ArrayList<String> newDictionaries = getNewDictionaries.all();
 		if (!newDictionaries.isEmpty()) {
 			showLoadDictionariesDialog(newDictionaries);
 		}
@@ -106,7 +106,7 @@ public class PhraseLookupActivity extends VerbaActivity implements OnClickListen
 	}
 
 	private void displaySuggestions(Editable text) {
-		List<String> suggestions = suggestionAdviser.getTopSuggestions(text.toString(), SUGGESTIONS_LIMIT);
+		List<String> suggestions = getSuggestions.top(SUGGESTIONS_LIMIT).with(text.toString());
 
 		ListAdapter suggestionsListDatasource =
 				new ArrayAdapter<String>(this, R.layout.list_item, R.id.listItemTitle, suggestions);

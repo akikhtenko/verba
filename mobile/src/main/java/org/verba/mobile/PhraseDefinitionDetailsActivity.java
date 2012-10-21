@@ -1,6 +1,6 @@
 package org.verba.mobile;
 
-import org.verba.boundary.PhraseLookup;
+import org.verba.interactors.LookupPhrase;
 import org.verba.mobile.task.LookupPhraseTask;
 import org.verba.mobile.utils.WordUtils;
 import org.verba.mobile.widget.PhraseDefinitionView;
@@ -40,7 +40,7 @@ public class PhraseDefinitionDetailsActivity extends VerbaActivity {
 	private WordUtils wordUtils = new WordUtils();
 	private int lastTapCharOffsetInItsBox;
 	@InjectView(R.id.phraseDefinitionsShowcase) private ViewGroup phraseDefinitionsShowcase;
-	@Inject private PhraseLookup phraseLookup;
+	@Inject private LookupPhrase lookupPhrase;
 	@InjectExtra(PHRASE_TO_LOOKUP) private String phraseToLookup;
 
 	private OnLongClickListener phraseDefinitionDetailsViewLongClickListener = new OnLongClickListener() {
@@ -110,7 +110,7 @@ public class PhraseDefinitionDetailsActivity extends VerbaActivity {
 	}
 
 	private void lookupPhraseDefinitions() {
-		new LookupPhraseTask(this, phraseLookup, phraseToLookup).execute();
+		new LookupPhraseTask(this, lookupPhrase, phraseToLookup).execute();
 	}
 
 	public void displayPhraseLookupFailure() {

@@ -7,8 +7,8 @@ import java.util.List;
 
 import org.verba.DictionaryEntryRepository;
 import org.verba.DictionaryRepository;
-import org.verba.interactors.StardictDictionaryPopulator;
-import org.verba.interactors.StardictDictionarySizeFinder;
+import org.verba.interactors.PopulateDictionary;
+import org.verba.interactors.GetDictionarySize;
 import org.verba.mobile.dictionarycandidate.DictionaryCandidate;
 import org.verba.mobile.dictionarycandidate.DictionaryCandidateArrayAdapter;
 import org.verba.mobile.dictionarycandidate.ToDictionaryCandidateConverter;
@@ -98,20 +98,20 @@ public class DictionariesLoaderActivity extends VerbaActivity {
 	}
 
 	private void populateDictionary(DictionaryCandidate dictionaryCandidate) {
-		StardictDictionaryPopulator stardictDictionaryPopulator =
-				new StardictDictionaryPopulator(metadataGateway, indexGateway, dictionaryRepository, dictionaryEntryRepository);
+		PopulateDictionary populateDictionary =
+				new PopulateDictionary(metadataGateway, indexGateway, dictionaryRepository, dictionaryEntryRepository);
 
-		StardictDictionarySizeFinder dictionarySizeFinder = new StardictDictionarySizeFinder(metadataGateway);
+		GetDictionarySize dictionarySizeFinder = new GetDictionarySize(metadataGateway);
 
 		DictionaryPopulatorTask dictionaryPopulator = new DictionaryPopulatorTask(
 				dictionaryCandidate.getLoadingProgress(),
-				dictionarySizeFinder.getDictionarySize(dictionaryCandidate.getTitle()),
-				stardictDictionaryPopulator);
+				dictionarySizeFinder.with(dictionaryCandidate.getTitle()),
+				populateDictionary);
 
-		stardictDictionaryPopulator.setProgressNotificationDelta(POPULATION_PROGRESS_DELTA);
+		populateDictionary.setProgressNotificationDelta(POPULATION_PROGRESS_DELTA);
 		dictionaryPopulator.setProgressDelta(POPULATION_PROGRESS_DELTA);
 
-		stardictDictionaryPopulator.registerProgressListener(dictionaryPopulator);
+		populateDictionary.registerProgressListener(dictionaryPopulator);
 		dictionaryPopulator.execute(dictionaryCandidate.getTitle());
 	}
 }

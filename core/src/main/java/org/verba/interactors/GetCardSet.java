@@ -3,18 +3,16 @@ package org.verba.interactors;
 import java.util.List;
 
 import org.verba.CardSet;
-import org.verba.boundary.CardSetRetrieval;
 import org.verba.cardset.CardSetRepository;
 
-public class SimpleCardSetRetrieval implements CardSetRetrieval {
+public class GetCardSet {
 	private CardSetRepository cardSetRepository;
 
-	public SimpleCardSetRetrieval(CardSetRepository cardSetRepository) {
+	public GetCardSet(CardSetRepository cardSetRepository) {
 		this.cardSetRepository = cardSetRepository;
 	}
 
-	@Override
-	public List<CardSet> getAllCardSets() {
+	public List<CardSet> all() {
 		return cardSetRepository.getAllCardSets();
 	}
 

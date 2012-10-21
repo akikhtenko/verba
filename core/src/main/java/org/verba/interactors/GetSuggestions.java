@@ -1,21 +1,27 @@
 package org.verba.interactors;
 
+import static java.lang.Integer.MAX_VALUE;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import org.verba.DictionaryEntryDataObject;
 import org.verba.DictionaryEntryRepository;
-import org.verba.boundary.SuggestionAdviser;
 
-public class SimpleSuggestionAdviser implements SuggestionAdviser {
+public class GetSuggestions {
 	private DictionaryEntryRepository dictionaryEntryRepository;
+	private int limit = MAX_VALUE;
 
-	public SimpleSuggestionAdviser(DictionaryEntryRepository dictionaryEntryRepository) {
+	public GetSuggestions(DictionaryEntryRepository dictionaryEntryRepository) {
 		this.dictionaryEntryRepository = dictionaryEntryRepository;
 	}
 
-	@Override
-	public List<String> getTopSuggestions(String phrasePattern, int limit) {
+	public GetSuggestions top(int newLimit) {
+		limit = newLimit;
+		return this;
+	}
+
+	public List<String> with(String phrasePattern) {
 		List<DictionaryEntryDataObject> suggestedDictionaryEntries =
 				dictionaryEntryRepository.getTopSuggestions(phrasePattern, limit);
 

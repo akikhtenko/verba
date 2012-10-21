@@ -7,15 +7,13 @@ import org.verba.DictionaryEntryDataObject;
 import org.verba.DictionaryEntryRepository;
 import org.verba.DictionaryEntryRepository.Operation;
 import org.verba.DictionaryRepository;
-import org.verba.boundary.DictionaryPopulationProgressListener;
-import org.verba.boundary.DictionaryPopulator;
 import org.verba.stardict.PhraseDefinitionCoordinates;
 import org.verba.stardict.index.DictionaryIndex;
 import org.verba.stardict.index.DictionaryIndexGateway;
 import org.verba.stardict.metadata.DictionaryMetadata;
 import org.verba.stardict.metadata.DictionaryMetadataGateway;
 
-public class StardictDictionaryPopulator implements DictionaryPopulator {
+public class PopulateDictionary {
 	private static final int DEFAULT_PROGRESS_NOTIFICATION_DELTA = 100;
 	private static final int ENTRIES_BATCH_SIZE = 5000;
 	private DictionaryMetadataGateway metadataGateway;
@@ -26,7 +24,7 @@ public class StardictDictionaryPopulator implements DictionaryPopulator {
 	private DictionaryPopulationProgressListener progressListener;
 	private int progressNotificationDelta;
 
-	public StardictDictionaryPopulator(DictionaryMetadataGateway metadataGateway,
+	public PopulateDictionary(DictionaryMetadataGateway metadataGateway,
 										DictionaryIndexGateway indexGateway,
 										DictionaryRepository dictionaryRepository,
 										DictionaryEntryRepository dictionaryEntryRepository) {
@@ -37,8 +35,7 @@ public class StardictDictionaryPopulator implements DictionaryPopulator {
 		this.progressNotificationDelta = DEFAULT_PROGRESS_NOTIFICATION_DELTA;
 	}
 
-	@Override
-	public void populate(String dictionaryName) {
+	public void with(String dictionaryName) {
 		int dictionaryId = createNewDictinary(dictionaryName);
 		populateDictionaryEntriesFor(dictionaryId, dictionaryName);
 	}

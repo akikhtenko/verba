@@ -8,9 +8,9 @@ import static org.verba.mobile.PhraseDefinitionDetailsActivity.CARD_PHRASE_PARAM
 import java.util.List;
 
 import org.verba.CardSet;
-import org.verba.boundary.CardAddition;
-import org.verba.boundary.CardSetAddition;
-import org.verba.boundary.CardSetRetrieval;
+import org.verba.interactors.AddCard;
+import org.verba.interactors.AddCardSet;
+import org.verba.interactors.GetCardSet;
 
 import roboguice.inject.InjectView;
 import android.app.Dialog;
@@ -26,9 +26,9 @@ import com.google.inject.Inject;
 
 public class EditCardActivity extends VerbaActivity implements OnClickListener {
 	private static final int DIALOG_ADD_CARD_SET = 0;
-	@Inject private CardSetRetrieval cardSetRetrieval;
-	@Inject private CardSetAddition cardSetAddition;
-	@Inject private CardAddition cardAddition;
+	@Inject private GetCardSet getCardSet;
+	@Inject private AddCardSet addCardSet;
+	@Inject private AddCard addCard;
 	@InjectView(R.id.cardPhrase) private EditText cardPhraseField;
 	@InjectView(R.id.cardDefinition) private EditText cardDefinitionField;
 	@InjectView(R.id.cardSetsList) private Spinner cardSetsList;
@@ -47,7 +47,7 @@ public class EditCardActivity extends VerbaActivity implements OnClickListener {
 			if (cardSetName == null || cardSetName.equalsIgnoreCase("")) {
 				makeText(EditCardActivity.this, R.string.validationEmptyCardSetName, LENGTH_SHORT).show();
 			} else {
-				cardSetAddition.addCardSet(cardSetName);
+				addCardSet.with(cardSetName);
 				populateCardSetsList();
 				makeText(EditCardActivity.this, R.string.cardSetAdded, LENGTH_SHORT).show();
 				dismissDialog(DIALOG_ADD_CARD_SET);
@@ -66,7 +66,7 @@ public class EditCardActivity extends VerbaActivity implements OnClickListener {
 	}
 
 	private void createCardIn(CardSet cardSet) {
-		cardAddition.addCard(
+		addCard.with(
 				cardSet.getId(),
 				cardPhraseField.getText().toString(),
 				cardDefinitionField.getText().toString());
@@ -107,7 +107,7 @@ public class EditCardActivity extends VerbaActivity implements OnClickListener {
 	}
 
 	private void populateCardSetsList() {
-		List<CardSet> cardSets = cardSetRetrieval.getAllCardSets();
+		List<CardSet> cardSets = getCardSet.all();
 		ArrayAdapter<CardSet> cardSetsDatasource = new ArrayAdapter<CardSet>(this, R.layout.card_set_item,
 				R.id.cardSetTitle, cardSets);
 		cardSetsList.setAdapter(cardSetsDatasource);

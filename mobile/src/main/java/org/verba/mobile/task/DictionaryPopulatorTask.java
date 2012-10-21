@@ -1,7 +1,7 @@
 package org.verba.mobile.task;
 
-import org.verba.boundary.DictionaryPopulationProgressListener;
-import org.verba.boundary.DictionaryPopulator;
+import org.verba.interactors.DictionaryPopulationProgressListener;
+import org.verba.interactors.PopulateDictionary;
 
 import android.os.AsyncTask;
 import android.widget.ProgressBar;
@@ -11,14 +11,14 @@ public class DictionaryPopulatorTask extends AsyncTask<String, Integer, Void> im
 	private static final int DEFAULT_PROGRESS_DELTA = 100;
 	private ProgressBar progressBar;
 	private int dictionarySize;
-	private DictionaryPopulator dictionaryPopulator;
+	private PopulateDictionary populateDictionary;
 	private int progressDelta;
 
 	public DictionaryPopulatorTask(ProgressBar progressBar, int dictionarySize,
-			DictionaryPopulator dictionaryPopulator) {
+			PopulateDictionary populateDictionary) {
 		this.progressBar = progressBar;
 		this.dictionarySize = dictionarySize;
-		this.dictionaryPopulator = dictionaryPopulator;
+		this.populateDictionary = populateDictionary;
 		this.progressDelta = DEFAULT_PROGRESS_DELTA;
 	}
 
@@ -29,7 +29,7 @@ public class DictionaryPopulatorTask extends AsyncTask<String, Integer, Void> im
 
 	@Override
 	protected Void doInBackground(String... dictionaryNames) {
-		dictionaryPopulator.populate(dictionaryNames[0]);
+		populateDictionary.with(dictionaryNames[0]);
 
 		return null;
 	}

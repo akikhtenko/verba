@@ -9,19 +9,17 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import org.verba.DictionaryRepository;
-import org.verba.boundary.NewDictionariesScanner;
 
-public class NewStardictDictionariesScanner implements NewDictionariesScanner {
+public class GetNewDictionaries {
 	private File rootDirectory;
 	private DictionaryRepository dictionaryRepository;
 
-	public NewStardictDictionariesScanner(File rootDirectory, DictionaryRepository dictionaryRepository) {
+	public GetNewDictionaries(File rootDirectory, DictionaryRepository dictionaryRepository) {
 		this.rootDirectory = rootDirectory;
 		this.dictionaryRepository = dictionaryRepository;
 	}
 
-	@Override
-	public ArrayList<String> findNewDictionaries() {
+	public ArrayList<String> all() {
 		ArrayList<String> newDictionaries = new ArrayList<String>();
 		for (File metadataFile : getAllMetadataFiles()) {
 			String dictionaryName = getBaseName(metadataFile.getName());

@@ -1,18 +1,16 @@
 package org.verba.interactors;
 
 import org.verba.CardSet;
-import org.verba.boundary.CardSetAddition;
 import org.verba.cardset.CardSetRepository;
 
-public class SimpleCardSetAddition implements CardSetAddition {
+public class AddCardSet {
 	private CardSetRepository cardSetRepository;
 
-	public SimpleCardSetAddition(CardSetRepository cardSetRepository) {
+	public AddCardSet(CardSetRepository cardSetRepository) {
 		this.cardSetRepository = cardSetRepository;
 	}
 
-	@Override
-	public void addCardSet(String cardSetName) {
+	public void with(String cardSetName) {
 		//TODO: add check for existing card set with the same name
 		CardSet cardSet = new CardSet();
 		cardSet.setName(cardSetName);

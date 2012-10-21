@@ -10,17 +10,16 @@ import org.verba.DictionaryDataObject;
 import org.verba.DictionaryEntryDataObject;
 import org.verba.DictionaryEntryRepository;
 import org.verba.DictionaryRepository;
-import org.verba.boundary.PhraseLookup;
 import org.verba.stardict.PhraseDefinition;
 import org.verba.stardict.PhraseDefinitionRepository;
 import org.verba.stardict.definitions.DictionaryDefinitionsGateway;
 
-public class StardictPhraseLookup implements PhraseLookup {
+public class LookupPhrase {
 	private DictionaryRepository dictionaryRepository;
 	private DictionaryEntryRepository dictionaryEntryRepository;
 	private DictionaryDefinitionsGateway definitionsGateway;
 
-	public StardictPhraseLookup(DictionaryRepository dictionaryRepository,
+	public LookupPhrase(DictionaryRepository dictionaryRepository,
 			DictionaryEntryRepository dictionaryEntryRepository,
 			DictionaryDefinitionsGateway definitionsGateway) {
 		this.dictionaryRepository = dictionaryRepository;
@@ -28,8 +27,7 @@ public class StardictPhraseLookup implements PhraseLookup {
 		this.definitionsGateway = definitionsGateway;
 	}
 
-	@Override
-	public List<PhraseDefinition> lookup(String phrase) {
+	public List<PhraseDefinition> with(String phrase) {
 		List<DictionaryEntryDataObject> entriesFound = dictionaryEntryRepository.getEntriesByPhrase(phrase);
 		List<PhraseDefinition> foundDefinitions = new ArrayList<PhraseDefinition>();
 		for (DictionaryEntryDataObject dictionaryEntry : entriesFound) {

@@ -1,4 +1,4 @@
-package org.verba.boundary;
+package org.verba.interactors;
 
 public interface DictionaryPopulationProgressListener {
 	void onChunkPopulated();
