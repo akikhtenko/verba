@@ -1,4 +1,4 @@
-package org.verba.mobile.card;
+package org.verba;
 
 public class CardSet {
 	private int id;

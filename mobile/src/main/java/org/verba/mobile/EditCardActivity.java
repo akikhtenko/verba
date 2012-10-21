@@ -7,10 +7,10 @@ import static org.verba.mobile.PhraseDefinitionDetailsActivity.CARD_PHRASE_PARAM
 
 import java.util.List;
 
-import org.verba.mobile.card.Card;
-import org.verba.mobile.card.CardDao;
-import org.verba.mobile.card.CardSet;
-import org.verba.mobile.card.CardSetDao;
+import org.verba.CardSet;
+import org.verba.boundary.CardAddition;
+import org.verba.boundary.CardSetAddition;
+import org.verba.boundary.CardSetRetrieval;
 
 import roboguice.inject.InjectView;
 import android.app.Dialog;
@@ -26,8 +26,9 @@ import com.google.inject.Inject;
 
 public class EditCardActivity extends VerbaActivity implements OnClickListener {
 	private static final int DIALOG_ADD_CARD_SET = 0;
-	@Inject private CardSetDao cardSetDao;
-	@Inject private CardDao cardDao;
+	@Inject private CardSetRetrieval cardSetRetrieval;
+	@Inject private CardSetAddition cardSetAddition;
+	@Inject private CardAddition cardAddition;
 	@InjectView(R.id.cardPhrase) private EditText cardPhraseField;
 	@InjectView(R.id.cardDefinition) private EditText cardDefinitionField;
 	@InjectView(R.id.cardSetsList) private Spinner cardSetsList;
@@ -46,18 +47,11 @@ public class EditCardActivity extends VerbaActivity implements OnClickListener {
 			if (cardSetName == null || cardSetName.equalsIgnoreCase("")) {
 				makeText(EditCardActivity.this, R.string.validationEmptyCardSetName, LENGTH_SHORT).show();
 			} else {
-				addCardSet(cardSetName);
+				cardSetAddition.addCardSet(cardSetName);
 				populateCardSetsList();
 				makeText(EditCardActivity.this, R.string.cardSetAdded, LENGTH_SHORT).show();
 				dismissDialog(DIALOG_ADD_CARD_SET);
 			}
-		}
-
-		private void addCardSet(String cardSetName) {
-			//TODO: add check for existing card set with the same name
-			CardSet cardSet = new CardSet();
-			cardSet.setName(cardSetName);
-			cardSetDao.addCardSet(cardSet);
 		}
 	};
 
@@ -67,18 +61,17 @@ public class EditCardActivity extends VerbaActivity implements OnClickListener {
 		if (cardSet == null) {
 			makeText(this, R.string.validationNoCardSetSelected, LENGTH_SHORT).show();
 		} else {
-			addCardToCardSet(cardSet);
-			makeText(this, R.string.cardAddedToCardSet, LENGTH_SHORT).show();
-			finish();
+			createCardIn(cardSet);
 		}
 	}
 
-	private void addCardToCardSet(CardSet cardSet) {
-		Card card = new Card();
-		card.setCardSetId(cardSet.getId());
-		card.setPhrase(cardPhraseField.getText().toString());
-		card.setDefinition(cardDefinitionField.getText().toString());
-		cardDao.addCard(card);
+	private void createCardIn(CardSet cardSet) {
+		cardAddition.addCard(
+				cardSet.getId(),
+				cardPhraseField.getText().toString(),
+				cardDefinitionField.getText().toString());
+		makeText(this, R.string.cardAddedToCardSet, LENGTH_SHORT).show();
+		finish();
 	}
 
 	@Override
@@ -114,7 +107,7 @@ public class EditCardActivity extends VerbaActivity implements OnClickListener {
 	}
 
 	private void populateCardSetsList() {
-		List<CardSet> cardSets = cardSetDao.getAllCardSets();
+		List<CardSet> cardSets = cardSetRetrieval.getAllCardSets();
 		ArrayAdapter<CardSet> cardSetsDatasource = new ArrayAdapter<CardSet>(this, R.layout.card_set_item,
 				R.id.cardSetTitle, cardSets);
 		cardSetsList.setAdapter(cardSetsDatasource);

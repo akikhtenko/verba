@@ -32,6 +32,8 @@ import android.widget.Toast;
 import com.google.inject.Inject;
 
 public class PhraseDefinitionDetailsActivity extends VerbaActivity {
+	private static final int MARGIN_5_IN_DIP = 5;
+	private static final int MARGIN_20_IN_DIP = 20;
 	public static final String PHRASE_TO_LOOKUP = "phraseToLookup";
 	public static final String CARD_PHRASE_PARAMETER = "cardPhrase";
 	public static final String CARD_DEFINITION_PARAMETER = "cardDefinition";
@@ -131,7 +133,7 @@ public class PhraseDefinitionDetailsActivity extends VerbaActivity {
 				LinearLayout.LayoutParams.FILL_PARENT,
 				LinearLayout.LayoutParams.WRAP_CONTENT);
 
-		layoutParams.setMargins(5, 5, 5, 20);
+		layoutParams.setMargins(MARGIN_5_IN_DIP, MARGIN_5_IN_DIP, MARGIN_5_IN_DIP, MARGIN_20_IN_DIP);
 		return layoutParams;
 	}
 

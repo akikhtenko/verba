@@ -4,17 +4,23 @@ import static org.verba.mobile.Verba.getVerbaDirectory;
 
 import org.verba.DictionaryEntryRepository;
 import org.verba.DictionaryRepository;
+import org.verba.boundary.CardAddition;
+import org.verba.boundary.CardRetrieval;
+import org.verba.boundary.CardSetAddition;
+import org.verba.boundary.CardSetRetrieval;
 import org.verba.boundary.NewDictionariesScanner;
 import org.verba.boundary.PhraseLookup;
 import org.verba.boundary.SuggestionAdviser;
+import org.verba.card.CardRepository;
+import org.verba.cardset.CardSetRepository;
 import org.verba.interactors.NewStardictDictionariesScanner;
+import org.verba.interactors.SimpleCardAddition;
+import org.verba.interactors.SimpleCardRetrieval;
+import org.verba.interactors.SimpleCardSetAddition;
+import org.verba.interactors.SimpleCardSetRetrieval;
 import org.verba.interactors.SimpleSuggestionAdviser;
 import org.verba.interactors.StardictPhraseLookup;
 import org.verba.mobile.Verba;
-import org.verba.mobile.card.CardDao;
-import org.verba.mobile.card.CardSetDao;
-import org.verba.mobile.repository.SqliteDictionaryEntryRepository;
-import org.verba.mobile.repository.SqliteDictionaryRepository;
 import org.verba.stardict.definitions.StardictDictionaryDefinitionsGateway;
 import org.verba.stardict.index.DictionaryIndexGateway;
 import org.verba.stardict.index.StardictDictionaryIndexGateway;
@@ -37,22 +43,28 @@ public class VerbaInjectionModule extends AbstractModule {
 	protected void configure() {
 		DictionaryFileFinder dictionaryFileFinder = new DictionaryFileFinder(getVerbaDirectory());
 
-		SqliteDictionaryRepository dictionaryRepository = verbaApplication.getDictionaryRepository();
-		SqliteDictionaryEntryRepository entryRepository = verbaApplication.getDictionaryEntryRepository();
+		DictionaryRepository dictionaryRepository = verbaApplication.getDictionaryRepository();
+		DictionaryEntryRepository dictionaryEntryRepository = verbaApplication.getDictionaryEntryRepository();
+		CardSetRepository cardSetRepository = verbaApplication.getCardSetRepository();
+		CardRepository cardRepository = verbaApplication.getCardRepository();
 
 		bind(DictionaryMetadataGateway.class).toInstance(new StardictDictionaryMetadataGateway(dictionaryFileFinder));
 		bind(DictionaryIndexGateway.class).toInstance(new StardictDictionaryIndexGateway(dictionaryFileFinder));
 
 		bind(DictionaryRepository.class).toInstance(dictionaryRepository);
-		bind(DictionaryEntryRepository.class).toInstance(verbaApplication.getDictionaryEntryRepository());
-		bind(CardSetDao.class).toInstance(verbaApplication.getCardSetDao());
-		bind(CardDao.class).toInstance(verbaApplication.getCardDao());
+		bind(DictionaryEntryRepository.class).toInstance(dictionaryEntryRepository);
+		bind(CardSetRepository.class).toInstance(cardSetRepository);
+		bind(CardRepository.class).toInstance(cardRepository);
 
 		bind(NewDictionariesScanner.class).toInstance(
 				new NewStardictDictionariesScanner(getVerbaDirectory(), dictionaryRepository));
-		bind(SuggestionAdviser.class).toInstance(new SimpleSuggestionAdviser(entryRepository));
+		bind(SuggestionAdviser.class).toInstance(new SimpleSuggestionAdviser(dictionaryEntryRepository));
 		bind(PhraseLookup.class).toInstance(new StardictPhraseLookup(
-				dictionaryRepository, entryRepository, new StardictDictionaryDefinitionsGateway(dictionaryFileFinder)));
+				dictionaryRepository, dictionaryEntryRepository, new StardictDictionaryDefinitionsGateway(dictionaryFileFinder)));
+		bind(CardSetRetrieval.class).toInstance(new SimpleCardSetRetrieval(cardSetRepository));
+		bind(CardSetAddition.class).toInstance(new SimpleCardSetAddition(cardSetRepository));
+		bind(CardRetrieval.class).toInstance(new SimpleCardRetrieval(cardRepository));
+		bind(CardAddition.class).toInstance(new SimpleCardAddition(cardRepository));
 	}
 
 }

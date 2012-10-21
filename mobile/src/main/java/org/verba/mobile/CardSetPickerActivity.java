@@ -2,8 +2,8 @@ package org.verba.mobile;
 
 import java.util.List;
 
-import org.verba.mobile.card.CardSet;
-import org.verba.mobile.card.CardSetDao;
+import org.verba.CardSet;
+import org.verba.boundary.CardSetRetrieval;
 
 import roboguice.inject.InjectView;
 import android.content.Intent;
@@ -23,7 +23,7 @@ import com.google.inject.Inject;
 public class CardSetPickerActivity extends VerbaActivity implements OnItemClickListener {
 	public static final String CARD_SET_ID_PARAMETER = "cardSetId";
 	@InjectView(R.id.cardSets) private ListView cardSetsList;
-	@Inject private CardSetDao cardSetDao;
+	@Inject private CardSetRetrieval cardSetRetrieval;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -49,7 +49,7 @@ public class CardSetPickerActivity extends VerbaActivity implements OnItemClickL
 	}
 
 	private void populateCardSetsList() {
-		List<CardSet> cardSets = cardSetDao.getAllCardSets();
+		List<CardSet> cardSets = cardSetRetrieval.getAllCardSets();
 		ArrayAdapter<CardSet> cardSetsDatasource = new ArrayAdapter<CardSet>(this, R.layout.list_item,
 				R.id.listItemTitle, cardSets);
 		cardSetsList.setAdapter(cardSetsDatasource);

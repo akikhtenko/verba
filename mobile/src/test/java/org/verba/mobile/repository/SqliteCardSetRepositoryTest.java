@@ -1,4 +1,4 @@
-package org.verba.mobile.card;
+package org.verba.mobile.repository;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
@@ -7,9 +7,9 @@ import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.verba.mobile.card.CardSetDao.DELETE_CARD_SET;
-import static org.verba.mobile.card.CardSetDao.INSERT_CARD_SET;
-import static org.verba.mobile.card.CardSetDao.SELECT_ALL_CARD_SETS;
+import static org.verba.mobile.repository.SqliteCardSetRepository.DELETE_CARD_SET;
+import static org.verba.mobile.repository.SqliteCardSetRepository.INSERT_CARD_SET;
+import static org.verba.mobile.repository.SqliteCardSetRepository.SELECT_ALL_CARD_SETS;
 
 import java.util.List;
 
@@ -18,15 +18,16 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.verba.mobile.card.CardDao.NoCardFoundException;
-import org.verba.mobile.card.CardSetDao.NoCardSetFoundException;
+import org.verba.CardSet;
+import org.verba.mobile.repository.SqliteCardRepository.NoCardFoundException;
+import org.verba.mobile.repository.SqliteCardSetRepository.NoCardSetFoundException;
 import org.verba.mobile.tools.VerbaDbManager;
 
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 @RunWith(MockitoJUnitRunner.class)
-public class CardSetDaoTest {
+public class SqliteCardSetRepositoryTest {
 	private static final Integer CARD_SET_ID = 123;
 	private static final String CARD_SET_NAME = "card set";
 
@@ -37,14 +38,14 @@ public class CardSetDaoTest {
 	@Mock
 	private Cursor cursor;
 
-	private CardSetDao cardSetDao;
+	private SqliteCardSetRepository sqliteCardSetRepository;
 
 	@Before
 	public void prepareDbInfrastructure() {
 		when(verbaDbManager.getReadableDatabase()).thenReturn(sqLiteDatabase);
 		when(verbaDbManager.getWritableDatabase()).thenReturn(sqLiteDatabase);
 		when(sqLiteDatabase.rawQuery(anyString(), any(String[].class))).thenReturn(cursor);
-		cardSetDao = new CardSetDao(verbaDbManager);
+		sqliteCardSetRepository = new SqliteCardSetRepository(verbaDbManager);
 	}
 
 	@Test
@@ -53,7 +54,7 @@ public class CardSetDaoTest {
 		cardSet.setName(CARD_SET_NAME);
 
 		givenOneRowInCursor();
-		int cardSetId = cardSetDao.addCardSet(cardSet);
+		int cardSetId = sqliteCardSetRepository.addCardSet(cardSet);
 
 		verify(sqLiteDatabase).execSQL(INSERT_CARD_SET, new String[] {CARD_SET_NAME});
 		assertThat(cardSetId, is(CARD_SET_ID));
@@ -64,7 +65,7 @@ public class CardSetDaoTest {
 		CardSet cardSet = new CardSet();
 		cardSet.setId(CARD_SET_ID);
 
-		cardSetDao.deleteCardSet(cardSet);
+		sqliteCardSetRepository.deleteCardSet(cardSet);
 
 		verify(sqLiteDatabase).execSQL(DELETE_CARD_SET, new Object[] {CARD_SET_ID});
 	}
@@ -73,7 +74,7 @@ public class CardSetDaoTest {
 	public void shouldGetCardSetById() throws NoCardSetFoundException {
 		givenOneRowInCursor();
 
-		CardSet cardSet = cardSetDao.getCardSetById(CARD_SET_ID);
+		CardSet cardSet = sqliteCardSetRepository.getCardSetById(CARD_SET_ID);
 
 		assertThat(cardSet.getName(), is(CARD_SET_NAME));
 	}
@@ -82,7 +83,7 @@ public class CardSetDaoTest {
 	public void shouldGetCardsInCardSet() throws NoCardFoundException {
 		givenOneRowInCursor();
 
-		List<CardSet> cardSets = cardSetDao.getAllCardSets();
+		List<CardSet> cardSets = sqliteCardSetRepository.getAllCardSets();
 
 		verify(sqLiteDatabase).rawQuery(SELECT_ALL_CARD_SETS, null);
 		CardSet cardSet = cardSets.get(0);
@@ -95,12 +96,12 @@ public class CardSetDaoTest {
 	public void shouldThrowExceptionWhenCardSetIsNotFound() throws NoCardSetFoundException {
 		givenNoRowsInCursor();
 
-		cardSetDao.getCardSetById(CARD_SET_ID);
+		sqliteCardSetRepository.getCardSetById(CARD_SET_ID);
 	}
 
 	@Test
 	public void shouldCloseDatabase() {
-		cardSetDao.close();
+		sqliteCardSetRepository.close();
 		verify(sqLiteDatabase).close();
 	}
 

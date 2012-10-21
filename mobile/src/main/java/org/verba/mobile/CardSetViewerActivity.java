@@ -4,8 +4,8 @@ import static org.verba.mobile.CardSetPickerActivity.CARD_SET_ID_PARAMETER;
 
 import java.util.List;
 
-import org.verba.mobile.card.Card;
-import org.verba.mobile.card.CardDao;
+import org.verba.Card;
+import org.verba.boundary.CardRetrieval;
 
 import roboguice.inject.InjectExtra;
 import roboguice.inject.InjectView;
@@ -21,7 +21,7 @@ import com.google.inject.Inject;
 
 public class CardSetViewerActivity extends VerbaActivity implements OnItemClickListener {
 	public static final String CARD_ID_PARAMETER = "cardId";
-	@Inject private CardDao cardDao;
+	@Inject private CardRetrieval cardRetrieval;
 	@InjectView(R.id.cards) private ListView cardsList;
 	@InjectExtra(CARD_SET_ID_PARAMETER) private int cardSetId;
 
@@ -44,7 +44,7 @@ public class CardSetViewerActivity extends VerbaActivity implements OnItemClickL
 	}
 
 	private void populateCardsList() {
-		List<Card> cardSets = cardDao.getCardsInCardSet(cardSetId, Integer.MAX_VALUE);
+		List<Card> cardSets = cardRetrieval.getCardsFromCardSet(cardSetId, Integer.MAX_VALUE);
 		ArrayAdapter<Card> cardSetsDatasource = new ArrayAdapter<Card>(this, R.layout.list_item, R.id.listItemTitle,
 				cardSets);
 		cardsList.setAdapter(cardSetsDatasource);

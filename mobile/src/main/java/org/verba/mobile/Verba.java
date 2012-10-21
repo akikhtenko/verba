@@ -2,10 +2,14 @@ package org.verba.mobile;
 
 import java.io.File;
 
-import org.verba.mobile.card.CardDao;
-import org.verba.mobile.card.CardSetDao;
-import org.verba.mobile.repository.SqliteDictionaryRepository;
+import org.verba.DictionaryEntryRepository;
+import org.verba.DictionaryRepository;
+import org.verba.card.CardRepository;
+import org.verba.cardset.CardSetRepository;
+import org.verba.mobile.repository.SqliteCardRepository;
+import org.verba.mobile.repository.SqliteCardSetRepository;
 import org.verba.mobile.repository.SqliteDictionaryEntryRepository;
+import org.verba.mobile.repository.SqliteDictionaryRepository;
 import org.verba.mobile.tools.VerbaDbManager;
 
 import android.app.Application;
@@ -14,8 +18,8 @@ import android.os.Environment;
 public class Verba extends Application {
 	private SqliteDictionaryRepository sqliteDictionaryRepository;
 	private SqliteDictionaryEntryRepository sqliteDictionaryEntryRepository;
-	private CardSetDao cardSetDao;
-	private CardDao cardDao;
+	private SqliteCardSetRepository sqliteCardSetRepository;
+	private SqliteCardRepository sqliteCardRepository;
 
 	@Override
 	public void onCreate() {
@@ -24,34 +28,34 @@ public class Verba extends Application {
 		VerbaDbManager verbaDbManager = new VerbaDbManager(getApplicationContext());
 		sqliteDictionaryRepository = new SqliteDictionaryRepository(verbaDbManager);
 		sqliteDictionaryEntryRepository = new SqliteDictionaryEntryRepository(verbaDbManager);
-		cardSetDao = new CardSetDao(verbaDbManager);
-		cardDao = new CardDao(verbaDbManager);
+		sqliteCardSetRepository = new SqliteCardSetRepository(verbaDbManager);
+		sqliteCardRepository = new SqliteCardRepository(verbaDbManager);
 	}
 
 	@Override
 	public void onTerminate() {
 		sqliteDictionaryRepository.close();
 		sqliteDictionaryEntryRepository.close();
-		cardSetDao.close();
-		cardDao.close();
+		sqliteCardSetRepository.close();
+		sqliteCardRepository.close();
 
 		super.onTerminate();
 	};
 
-	public SqliteDictionaryRepository getDictionaryRepository() {
+	public DictionaryRepository getDictionaryRepository() {
 		return sqliteDictionaryRepository;
 	}
 
-	public SqliteDictionaryEntryRepository getDictionaryEntryRepository() {
+	public DictionaryEntryRepository getDictionaryEntryRepository() {
 		return sqliteDictionaryEntryRepository;
 	}
 
-	public CardSetDao getCardSetDao() {
-		return cardSetDao;
+	public CardSetRepository getCardSetRepository() {
+		return sqliteCardSetRepository;
 	}
 
-	public CardDao getCardDao() {
-		return cardDao;
+	public CardRepository getCardRepository() {
+		return sqliteCardRepository;
 	}
 
 	public static File getVerbaDirectory() {

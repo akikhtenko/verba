@@ -3,9 +3,9 @@ package org.verba.mobile;
 import static android.widget.Toast.LENGTH_LONG;
 import static org.verba.mobile.CardSetViewerActivity.CARD_ID_PARAMETER;
 
-import org.verba.mobile.card.Card;
-import org.verba.mobile.card.CardDao;
-import org.verba.mobile.card.CardDao.NoCardFoundException;
+import org.verba.Card;
+import org.verba.boundary.CardRetrieval;
+import org.verba.mobile.repository.SqliteCardRepository.NoCardFoundException;
 
 import roboguice.inject.InjectExtra;
 import roboguice.inject.InjectView;
@@ -16,7 +16,7 @@ import android.widget.Toast;
 import com.google.inject.Inject;
 
 public class ViewCardActivity extends VerbaActivity {
-	@Inject private CardDao cardDao;
+	@Inject private CardRetrieval cardRetrieval;
 	@InjectView(R.id.phrase) private TextView cardPhraseField;
 	@InjectView(R.id.definition) private TextView cardDefinitionField;
 	@InjectExtra(CARD_ID_PARAMETER) private int cardId;
@@ -40,7 +40,7 @@ public class ViewCardActivity extends VerbaActivity {
 
 	private void populateCardFields() {
 		try {
-			Card cardToView = cardDao.getCardById(cardId);
+			Card cardToView = cardRetrieval.getCardById(cardId);
 
 			cardPhraseField.setText(cardToView.getPhrase());
 			cardDefinitionField.setText(cardToView.getDefinition());

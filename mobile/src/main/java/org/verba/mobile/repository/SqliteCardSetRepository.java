@@ -1,14 +1,16 @@
-package org.verba.mobile.card;
+package org.verba.mobile.repository;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import org.verba.CardSet;
+import org.verba.cardset.CardSetRepository;
 import org.verba.mobile.tools.VerbaDbManager;
 
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
-public class CardSetDao {
+public class SqliteCardSetRepository implements CardSetRepository {
 	public static final String SELECT_ALL_CARD_SETS = "select * from card_set order by name";
 	public static final String SELECT_CARD_SET_BY_ID = "select * from card_set where _id = ?";
 	public static final String SELECT_CARD_SET_BY_NAME = "select * from card_set where name = ?";
@@ -17,10 +19,11 @@ public class CardSetDao {
 
 	private SQLiteDatabase database;
 
-	public CardSetDao(VerbaDbManager aVerbaDbManager) {
+	public SqliteCardSetRepository(VerbaDbManager aVerbaDbManager) {
 		database = aVerbaDbManager.getWritableDatabase();
 	}
 
+	@Override
 	public List<CardSet> getAllCardSets() {
 		Cursor cardSetsCursor = queryAllCardSets();
 
