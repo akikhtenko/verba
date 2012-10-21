@@ -1,19 +1,7 @@
 package org.verba.mobile;
 
-import static java.lang.String.format;
-
-import java.util.List;
-
-import org.verba.DictionaryDataObject;
-import org.verba.DictionaryEntryDataObject;
-import org.verba.mobile.stardict.DictionaryDao;
-import org.verba.mobile.stardict.DictionaryDao.MoreThanOneDictionaryFoundException;
-import org.verba.mobile.stardict.DictionaryDao.NoDictionaryFoundException;
-import org.verba.mobile.stardict.DictionaryEntryDao;
-import org.verba.mobile.task.LookupPhraseDefinitionCoordinatesTask;
-import org.verba.mobile.task.LookupPhraseDefinitionTask;
-import org.verba.mobile.task.LookupPhraseDefinitionTask.Request;
-import org.verba.mobile.task.LookupPhraseDefinitionTask.Response;
+import org.verba.boundary.PhraseLookup;
+import org.verba.mobile.task.LookupPhraseTask;
 import org.verba.mobile.utils.WordUtils;
 import org.verba.mobile.widget.PhraseDefinitionView;
 import org.verba.mobile.xdxf.AndroidXdxfNodeDisplay;
@@ -47,11 +35,10 @@ public class PhraseDefinitionDetailsActivity extends VerbaActivity {
 	public static final String PHRASE_TO_LOOKUP = "phraseToLookup";
 	public static final String CARD_PHRASE_PARAMETER = "cardPhrase";
 	public static final String CARD_DEFINITION_PARAMETER = "cardDefinition";
-	private WordUtils wordUtils = new WordUtils();;
+	private WordUtils wordUtils = new WordUtils();
 	private int lastTapCharOffsetInItsBox;
 	@InjectView(R.id.phraseDefinitionsShowcase) private ViewGroup phraseDefinitionsShowcase;
-	@Inject private DictionaryDao dictionaryDao;
-	@Inject private DictionaryEntryDao dictionaryEntryDao;
+	@Inject private PhraseLookup phraseLookup;
 	@InjectExtra(PHRASE_TO_LOOKUP) private String phraseToLookup;
 
 	private OnLongClickListener phraseDefinitionDetailsViewLongClickListener = new OnLongClickListener() {
@@ -103,7 +90,7 @@ public class PhraseDefinitionDetailsActivity extends VerbaActivity {
 		super.onCreate(savedInstanceState);
 
 		showLookingForDefinitionProgress();
-		lookupPhraseDefinitionCoordinates();
+		lookupPhraseDefinitions();
 	}
 
 	private void showLookingForDefinitionProgress() {
@@ -120,8 +107,12 @@ public class PhraseDefinitionDetailsActivity extends VerbaActivity {
 		return R.layout.phrase_definition_details;
 	}
 
-	private void lookupPhraseDefinitionCoordinates() {
-		new LookupPhraseDefinitionCoordinatesTask(this, dictionaryEntryDao, phraseToLookup).execute();
+	private void lookupPhraseDefinitions() {
+		new LookupPhraseTask(this, phraseLookup, phraseToLookup);
+	}
+
+	public void displayPhraseLookupFailure() {
+		Toast.makeText(this, R.string.errorPhraseLookupFailed, Toast.LENGTH_SHORT).show();
 	}
 
 	private void displayText(CharSequence toDisplay) {
@@ -159,31 +150,7 @@ public class PhraseDefinitionDetailsActivity extends VerbaActivity {
 		return spannable;
 	}
 
-	public void lookupPhraseDefinition(List<DictionaryEntryDataObject> dictionaryEntries) {
-		for (DictionaryEntryDataObject dictionaryEntry : dictionaryEntries) {
-			DictionaryDataObject dictionary = getDictionaryFor(dictionaryEntry);
-			Request phraseDefinitionLookupRequest =
-							new Request(dictionary.getName(), dictionaryEntry.asPhraseDefinitionCoordinates());
-			new LookupPhraseDefinitionTask(this, phraseDefinitionLookupRequest).execute();
-		}
-	}
-
-	private DictionaryDataObject getDictionaryFor(DictionaryEntryDataObject dictionaryEntry) {
-		try {
-			return dictionaryDao.getDictionaryById(dictionaryEntry.getDictionaryId());
-		} catch (NoDictionaryFoundException e) {
-			throw new RuntimeException(format("Dictionary couldn't be found by id[%s]", dictionaryEntry.getDictionaryId()), e);
-		} catch (MoreThanOneDictionaryFoundException e) {
-			throw new RuntimeException(format("Multiple dictionaries found by id[%s]", dictionaryEntry.getDictionaryId()), e);
-		}
-	}
-
-	public void displayPhraseDefinitionCoordinatesNotFound() {
-		Toast.makeText(this, R.string.validationNoPhraseDefinitionCoordinatesFound, Toast.LENGTH_SHORT).show();
-	}
-
-	public void displayPhraseDefinition(Response phraseDefinitionLookupResponse) {
-		PhraseDefinition phraseDefinition = phraseDefinitionLookupResponse.getPhraseDefinition();
+	public void displayPhraseDefinition(PhraseDefinition phraseDefinition) {
 		PhraseDefinitionPart phraseDefinitionPart = phraseDefinition.parts().next();
 		XdxfPhraseDefinitionElement phraseDefinitionElement =
 				(XdxfPhraseDefinitionElement) phraseDefinitionPart.elements().next();

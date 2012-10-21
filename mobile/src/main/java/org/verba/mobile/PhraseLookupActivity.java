@@ -1,15 +1,12 @@
 package org.verba.mobile;
 
 import static org.verba.mobile.PhraseDefinitionDetailsActivity.PHRASE_TO_LOOKUP;
-import static org.verba.mobile.Verba.getVerbaDirectory;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import org.verba.DictionaryEntryDataObject;
-import org.verba.mobile.dictionary.DictionariesManager;
-import org.verba.mobile.stardict.DictionaryDao;
-import org.verba.mobile.stardict.DictionaryEntryDao;
+import org.verba.boundary.NewDictionariesScanner;
+import org.verba.boundary.SuggestionAdviser;
 
 import roboguice.inject.InjectView;
 import android.content.Intent;
@@ -34,8 +31,8 @@ public class PhraseLookupActivity extends VerbaActivity implements OnClickListen
 	private static final int SUGGESTIONS_LIMIT = 100;
 	@InjectView(R.id.wordToFindField) private EditText phraseToLookupField;
 	@InjectView(R.id.phraseSuggestions) private ListView phraseSuggestionsList;
-	@Inject private DictionaryDao dictionaryDao;
-	@Inject private DictionaryEntryDao dictionaryEntryDao;
+	@Inject private NewDictionariesScanner newDictionariesScanner;
+	@Inject private SuggestionAdviser suggestionAdviser;
 
 	@Override
 	public void onClick(View v) {
@@ -87,10 +84,9 @@ public class PhraseLookupActivity extends VerbaActivity implements OnClickListen
 	}
 
 	private void checkForNewDictionaries() {
-		DictionariesManager dictionariesManager = new DictionariesManager(getVerbaDirectory(), dictionaryDao);
-		ArrayList<String> dictionaries = dictionariesManager.findNewDictionaries();
-		if (!dictionaries.isEmpty()) {
-			showLoadDictionariesDialog(dictionaries);
+		ArrayList<String> newDictionaries = newDictionariesScanner.findNewDictionaries();
+		if (!newDictionaries.isEmpty()) {
+			showLoadDictionariesDialog(newDictionaries);
 		}
 	}
 
@@ -105,13 +101,16 @@ public class PhraseLookupActivity extends VerbaActivity implements OnClickListen
 		if (text.length() == 0) {
 			phraseSuggestionsList.setAdapter(null);
 		} else {
-			List<DictionaryEntryDataObject> suggestions = dictionaryEntryDao.getTopSuggestions(text.toString(),
-					SUGGESTIONS_LIMIT);
-
-			ListAdapter suggestionsListDatasource = new ArrayAdapter<DictionaryEntryDataObject>(this,
-					R.layout.list_item, R.id.listItemTitle, suggestions);
-			phraseSuggestionsList.setAdapter(suggestionsListDatasource);
+			displaySuggestions(text);
 		}
+	}
+
+	private void displaySuggestions(Editable text) {
+		List<String> suggestions = suggestionAdviser.getTopSuggestions(text.toString(), SUGGESTIONS_LIMIT);
+
+		ListAdapter suggestionsListDatasource =
+				new ArrayAdapter<String>(this, R.layout.list_item, R.id.listItemTitle, suggestions);
+		phraseSuggestionsList.setAdapter(suggestionsListDatasource);
 	}
 
 	@Override
@@ -124,8 +123,8 @@ public class PhraseLookupActivity extends VerbaActivity implements OnClickListen
 
 	@Override
 	public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-		DictionaryEntryDataObject selectedDictionaryEntry = (DictionaryEntryDataObject) phraseSuggestionsList
-				.getItemAtPosition(position);
-		lookupPhrase(selectedDictionaryEntry.getPhrase());
+		String selectedSuggestion = (String) phraseSuggestionsList.getItemAtPosition(position);
+
+		lookupPhrase(selectedSuggestion);
 	}
 }

@@ -1,4 +1,4 @@
-package org.verba.mobile.dictionary;
+package org.verba.mobile.dictionarycandidate;
 
 import java.util.ArrayList;
 import java.util.List;

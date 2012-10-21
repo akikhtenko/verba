@@ -1,4 +1,4 @@
-package org.verba.mobile.stardict;
+package org.verba.mobile.repository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,7 +10,7 @@ import org.verba.mobile.tools.VerbaDbManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
-public class DictionaryEntryDao implements DictionaryEntryRepository {
+public class SqliteDictionaryEntryRepository implements DictionaryEntryRepository {
 	private static final String WILDCARD = "*";
 	public static final String SELECT_DICTIONARY_ENTRY_BY_ID =
 			"select rowid as _id, * from dictionary_entry where rowid = ?";
@@ -26,11 +26,11 @@ public class DictionaryEntryDao implements DictionaryEntryRepository {
 
 	private SQLiteDatabase database;
 
-	public DictionaryEntryDao(VerbaDbManager aVerbaDbManager) {
+	public SqliteDictionaryEntryRepository(VerbaDbManager aVerbaDbManager) {
 		database = aVerbaDbManager.getWritableDatabase();
 	}
 
-	public DictionaryEntryDataObject getDictionaryEntryById(int dictionaryEntryId) throws NoDictionaryEntryFoundException {
+	public DictionaryEntryDataObject getDictionaryEntryById(int dictionaryEntryId) {
 		Cursor dictionaryEntriesCursor = queryDictionaryEntryById(dictionaryEntryId);
 
 		ensureAtLeastOneFound(dictionaryEntryId, dictionaryEntriesCursor);
@@ -38,8 +38,8 @@ public class DictionaryEntryDao implements DictionaryEntryRepository {
 		return extractDictionaryEntryFromCursor(dictionaryEntriesCursor);
 	}
 
-	public List<DictionaryEntryDataObject> getDictionaryEntriesByPhrase(String phrase)
-			throws NoDictionaryEntryFoundException {
+	@Override
+	public List<DictionaryEntryDataObject> getEntriesByPhrase(String phrase) {
 		Cursor dictionaryEntriesCursor = queryDictionaryEntryByPhrase(phrase);
 
 		List<DictionaryEntryDataObject> dictionaryEntries = extractDictionaryEntriesFromCursor(dictionaryEntriesCursor);
@@ -48,6 +48,7 @@ public class DictionaryEntryDao implements DictionaryEntryRepository {
 		return dictionaryEntries;
 	}
 
+	@Override
 	public List<DictionaryEntryDataObject> getTopSuggestions(String pattern, int count) {
 		Cursor dictionaryEntriesCursor = querySuggestionsByPhrasePattern(pattern + WILDCARD, count);
 
@@ -87,16 +88,14 @@ public class DictionaryEntryDao implements DictionaryEntryRepository {
 		return dictionaryEntry;
 	}
 
-	private void ensureAtLeastOneFound(int dictionaryEntryId, Cursor dictionaryEntriesCursor)
-			throws NoDictionaryEntryFoundException {
+	private void ensureAtLeastOneFound(int dictionaryEntryId, Cursor dictionaryEntriesCursor) {
 		if (!dictionaryEntriesCursor.moveToFirst()) {
 			throw new NoDictionaryEntryFoundException(String.format(
 					"Dictionary entry wasn't found in the database for id [%s]", dictionaryEntryId));
 		}
 	}
 
-	private void ensureAtLeastOneFound(String phrase, List<DictionaryEntryDataObject> dictionaryEntries)
-			throws NoDictionaryEntryFoundException {
+	private void ensureAtLeastOneFound(String phrase, List<DictionaryEntryDataObject> dictionaryEntries) {
 		if (dictionaryEntries.isEmpty()) {
 			throw new NoDictionaryEntryFoundException(String.format(
 					"Dictionary entry wasn't found in the database by phrase pattern [%s]", phrase));
@@ -115,14 +114,6 @@ public class DictionaryEntryDao implements DictionaryEntryRepository {
 		return database.rawQuery(SELECT_PHRASE_SUGGESTIONS, new String[] { pattern, String.valueOf(count) });
 	}
 
-	public static class NoDictionaryEntryFoundException extends Exception {
-		private static final long serialVersionUID = 7715190734536758220L;
-
-		public NoDictionaryEntryFoundException(String message) {
-			super(message);
-		}
-	}
-
 	public void close() {
 		database.close();
 	}
@@ -135,6 +126,14 @@ public class DictionaryEntryDao implements DictionaryEntryRepository {
 			database.setTransactionSuccessful();
 		} finally {
 			database.endTransaction();
+		}
+	}
+
+	public class NoDictionaryEntryFoundException extends RuntimeException {
+		private static final long serialVersionUID = 7715190734536758220L;
+
+		public NoDictionaryEntryFoundException(String message) {
+			super(message);
 		}
 	}
 }

@@ -4,16 +4,16 @@ import java.io.File;
 
 import org.verba.mobile.card.CardDao;
 import org.verba.mobile.card.CardSetDao;
-import org.verba.mobile.stardict.DictionaryDao;
-import org.verba.mobile.stardict.DictionaryEntryDao;
+import org.verba.mobile.repository.SqliteDictionaryRepository;
+import org.verba.mobile.repository.SqliteDictionaryEntryRepository;
 import org.verba.mobile.tools.VerbaDbManager;
 
 import android.app.Application;
 import android.os.Environment;
 
 public class Verba extends Application {
-	private DictionaryDao dictionaryDao;
-	private DictionaryEntryDao dictionaryEntryDao;
+	private SqliteDictionaryRepository sqliteDictionaryRepository;
+	private SqliteDictionaryEntryRepository sqliteDictionaryEntryRepository;
 	private CardSetDao cardSetDao;
 	private CardDao cardDao;
 
@@ -22,28 +22,28 @@ public class Verba extends Application {
 		super.onCreate();
 
 		VerbaDbManager verbaDbManager = new VerbaDbManager(getApplicationContext());
-		dictionaryDao = new DictionaryDao(verbaDbManager);
-		dictionaryEntryDao = new DictionaryEntryDao(verbaDbManager);
+		sqliteDictionaryRepository = new SqliteDictionaryRepository(verbaDbManager);
+		sqliteDictionaryEntryRepository = new SqliteDictionaryEntryRepository(verbaDbManager);
 		cardSetDao = new CardSetDao(verbaDbManager);
 		cardDao = new CardDao(verbaDbManager);
 	}
 
 	@Override
 	public void onTerminate() {
-		dictionaryDao.close();
-		dictionaryEntryDao.close();
+		sqliteDictionaryRepository.close();
+		sqliteDictionaryEntryRepository.close();
 		cardSetDao.close();
 		cardDao.close();
 
 		super.onTerminate();
 	};
 
-	public DictionaryDao getDictionaryDao() {
-		return dictionaryDao;
+	public SqliteDictionaryRepository getDictionaryRepository() {
+		return sqliteDictionaryRepository;
 	}
 
-	public DictionaryEntryDao getDictionaryEntryDao() {
-		return dictionaryEntryDao;
+	public SqliteDictionaryEntryRepository getDictionaryEntryRepository() {
+		return sqliteDictionaryEntryRepository;
 	}
 
 	public CardSetDao getCardSetDao() {

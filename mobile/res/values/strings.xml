@@ -22,11 +22,12 @@
     <string name="validationEmptyCardSetName">Card set name should not be empty</string>
     <string name="validationNoCardSetSelected">Please choose a card set</string>
     <string name="validationNoCardFound">Card has not been found</string>
-    <string name="validationNoPhraseDefinitionCoordinatesFound">Nothing found in the dictionary</string>
     
     <string name="editCardSetMenuItemTitle">Edit</string>
     <string name="deleteCardSetMenuItemTitle">Delete</string>
 
+    <string name="errorPhraseLookupFailed">Error occured while looking up the phrase</string>
+    
     <item type="string" name="databaseVersion" format="integer">1</item>
 
 </resources>

@@ -5,13 +5,13 @@ import static org.verba.mobile.PhraseLookupActivity.NEW_DICTIONARIES;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.verba.DictionaryEntryRepository;
+import org.verba.DictionaryRepository;
 import org.verba.interactors.StardictDictionaryPopulator;
 import org.verba.interactors.StardictDictionarySizeFinder;
-import org.verba.mobile.dictionary.DictionaryCandidate;
-import org.verba.mobile.dictionary.DictionaryCandidateArrayAdapter;
-import org.verba.mobile.dictionary.ToDictionaryCandidateConverter;
-import org.verba.mobile.stardict.DictionaryDao;
-import org.verba.mobile.stardict.DictionaryEntryDao;
+import org.verba.mobile.dictionarycandidate.DictionaryCandidate;
+import org.verba.mobile.dictionarycandidate.DictionaryCandidateArrayAdapter;
+import org.verba.mobile.dictionarycandidate.ToDictionaryCandidateConverter;
 import org.verba.mobile.task.DictionaryPopulatorTask;
 import org.verba.stardict.index.DictionaryIndexGateway;
 import org.verba.stardict.metadata.DictionaryMetadataGateway;
@@ -28,8 +28,8 @@ import com.google.inject.Inject;
 public class DictionariesLoaderActivity extends VerbaActivity {
 	private static final int POPULATION_PROGRESS_DELTA = 100;
 	private List<DictionaryCandidate> dictionaryCandidates;
-	@Inject private DictionaryDao dictionaryDao;
-	@Inject private DictionaryEntryDao dictionaryEntryDao;
+	@Inject private DictionaryRepository dictionaryRepository;
+	@Inject private DictionaryEntryRepository dictionaryEntryRepository;
 	@Inject private DictionaryMetadataGateway metadataGateway;
 	@Inject private DictionaryIndexGateway indexGateway;
 	@InjectExtra(NEW_DICTIONARIES) private ArrayList<String> newDictionaries;
@@ -99,7 +99,7 @@ public class DictionariesLoaderActivity extends VerbaActivity {
 
 	private void populateDictionary(DictionaryCandidate dictionaryCandidate) {
 		StardictDictionaryPopulator stardictDictionaryPopulator =
-				new StardictDictionaryPopulator(metadataGateway, indexGateway, dictionaryDao, dictionaryEntryDao);
+				new StardictDictionaryPopulator(metadataGateway, indexGateway, dictionaryRepository, dictionaryEntryRepository);
 
 		StardictDictionarySizeFinder dictionarySizeFinder = new StardictDictionarySizeFinder(metadataGateway);
 

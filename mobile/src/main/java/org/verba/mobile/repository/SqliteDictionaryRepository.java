@@ -1,4 +1,4 @@
-package org.verba.mobile.stardict;
+package org.verba.mobile.repository;
 
 import org.verba.DictionaryDataObject;
 import org.verba.DictionaryRepository;
@@ -7,7 +7,7 @@ import org.verba.mobile.tools.VerbaDbManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
-public class DictionaryDao implements DictionaryRepository {
+public class SqliteDictionaryRepository implements DictionaryRepository {
 	public static final String SELECT_DICTIONARY_BY_NAME = "select * from dictionary where name = ?";
 	public static final String SELECT_DICTIONARY_BY_ID = "select * from dictionary where _id = ?";
 	public static final String INSERT_DICTIONARY = "insert into dictionary (name, description) values (?, ?)";
@@ -15,12 +15,11 @@ public class DictionaryDao implements DictionaryRepository {
 
 	private SQLiteDatabase database;
 
-	public DictionaryDao(VerbaDbManager aVerbaDbManager) {
+	public SqliteDictionaryRepository(VerbaDbManager aVerbaDbManager) {
 		database = aVerbaDbManager.getWritableDatabase();
 	}
 
-	public DictionaryDataObject getDictionaryByName(String dictionaryName) throws NoDictionaryFoundException,
-			MoreThanOneDictionaryFoundException {
+	public DictionaryDataObject getDictionaryByName(String dictionaryName) {
 		Cursor dictionariesCursor = queryDictionaryByName(dictionaryName);
 
 		ensureAtLeastOneFound(dictionaryName, dictionariesCursor);
@@ -32,8 +31,8 @@ public class DictionaryDao implements DictionaryRepository {
 		return result;
 	}
 
-	public DictionaryDataObject getDictionaryById(int dictionaryId) throws NoDictionaryFoundException,
-			MoreThanOneDictionaryFoundException {
+	@Override
+	public DictionaryDataObject getDictionaryById(int dictionaryId) {
 		Cursor dictionariesCursor = queryDictionaryById(dictionaryId);
 
 		ensureAtLeastOneFound(dictionaryId, dictionariesCursor);
@@ -45,7 +44,8 @@ public class DictionaryDao implements DictionaryRepository {
 		return result;
 	}
 
-	public boolean dictionaryExists(String dictionaryName) {
+	@Override
+	public boolean exists(String dictionaryName) {
 		Cursor dictionariesCursor = queryDictionaryByName(dictionaryName);
 
 		return dictionariesCursor.moveToFirst();
@@ -83,32 +83,28 @@ public class DictionaryDao implements DictionaryRepository {
 		return dictionary;
 	}
 
-	private void ensureAtLeastOneFound(String dictionaryName, Cursor dictionariesCursor)
-			throws NoDictionaryFoundException {
+	private void ensureAtLeastOneFound(String dictionaryName, Cursor dictionariesCursor) {
 		if (!dictionariesCursor.moveToFirst()) {
 			throw new NoDictionaryFoundException(String.format(
 					"Dictionary wasn't found in the database for the name [%s]", dictionaryName));
 		}
 	}
 
-	private void ensureAtLeastOneFound(int dictionaryId, Cursor dictionariesCursor)
-			throws NoDictionaryFoundException {
+	private void ensureAtLeastOneFound(int dictionaryId, Cursor dictionariesCursor) {
 		if (!dictionariesCursor.moveToFirst()) {
 			throw new NoDictionaryFoundException(String.format(
 					"Dictionary wasn't found in the database for the id [%s]", dictionaryId));
 		}
 	}
 
-	private void ensureOnlyOneFound(String dictionaryName, Cursor dictionariesCursor)
-			throws MoreThanOneDictionaryFoundException {
+	private void ensureOnlyOneFound(String dictionaryName, Cursor dictionariesCursor) {
 		if (dictionariesCursor.moveToNext()) {
 			throw new MoreThanOneDictionaryFoundException(String.format(
 					"More than one dictionary was found in the database for the name [%s]", dictionaryName));
 		}
 	}
 
-	private void ensureOnlyOneFound(int dictionaryId, Cursor dictionariesCursor)
-			throws MoreThanOneDictionaryFoundException {
+	private void ensureOnlyOneFound(int dictionaryId, Cursor dictionariesCursor) {
 		if (dictionariesCursor.moveToNext()) {
 			throw new MoreThanOneDictionaryFoundException(String.format(
 					"More than one dictionary was found in the database for the id [%s]", dictionaryId));
@@ -123,7 +119,7 @@ public class DictionaryDao implements DictionaryRepository {
 		return database.rawQuery(SELECT_DICTIONARY_BY_ID, new String[] { String.valueOf(dictionaryId) });
 	}
 
-	public static class NoDictionaryFoundException extends Exception {
+	public static class NoDictionaryFoundException extends RuntimeException {
 		private static final long serialVersionUID = -4857208043479570757L;
 
 		public NoDictionaryFoundException(String message) {
@@ -131,7 +127,7 @@ public class DictionaryDao implements DictionaryRepository {
 		}
 	}
 
-	public static class MoreThanOneDictionaryFoundException extends Exception {
+	public static class MoreThanOneDictionaryFoundException extends RuntimeException {
 		private static final long serialVersionUID = -2213808607247745721L;
 
 		public MoreThanOneDictionaryFoundException(String message) {

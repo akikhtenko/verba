@@ -1,5 +1,6 @@
 package org.verba.stardict;
 
+import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
@@ -7,7 +8,7 @@ import java.nio.ByteBuffer;
 import org.verba.util.InputStreamReader;
 import org.verba.xdxf.XdxfPhraseDefinitionElement;
 
-public class PhraseDefinitionRepository {
+public class PhraseDefinitionRepository implements Closeable {
 	private InputStreamReader streamReader;
 
 	public PhraseDefinitionRepository(InputStream aDictionaryPayloadStream) {
@@ -23,7 +24,8 @@ public class PhraseDefinitionRepository {
 		return phraseDefinition;
 	}
 
-	public void destroy() throws IOException {
+	@Override
+	public void close() throws IOException {
 		streamReader.close();
 	}
 

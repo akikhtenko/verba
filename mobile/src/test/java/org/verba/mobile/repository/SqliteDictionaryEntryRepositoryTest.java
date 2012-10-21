@@ -1,4 +1,4 @@
-package org.verba.mobile.stardict;
+package org.verba.mobile.repository;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
@@ -7,8 +7,8 @@ import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.verba.mobile.stardict.DictionaryEntryDao.DELETE_DICTIONARY_ENTRY;
-import static org.verba.mobile.stardict.DictionaryEntryDao.INSERT_DICTIONARY_ENTRY;
+import static org.verba.mobile.repository.SqliteDictionaryEntryRepository.DELETE_DICTIONARY_ENTRY;
+import static org.verba.mobile.repository.SqliteDictionaryEntryRepository.INSERT_DICTIONARY_ENTRY;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -16,14 +16,14 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.verba.DictionaryEntryDataObject;
-import org.verba.mobile.stardict.DictionaryEntryDao.NoDictionaryEntryFoundException;
+import org.verba.mobile.repository.SqliteDictionaryEntryRepository.NoDictionaryEntryFoundException;
 import org.verba.mobile.tools.VerbaDbManager;
 
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 @RunWith(MockitoJUnitRunner.class)
-public class DictionaryEntryDaoTest {
+public class SqliteDictionaryEntryRepositoryTest {
 	private static final int DICTIONARY_ENTRY_ID = 123;
 	private static final int DICTIONARY_ID = 789;
 	private static final int DICTIONARY_ENTRY_LENGTH = 456;
@@ -37,14 +37,14 @@ public class DictionaryEntryDaoTest {
 	@Mock
 	private Cursor cursor;
 
-	private DictionaryEntryDao dictionaryEntryDao;
+	private SqliteDictionaryEntryRepository dictionaryEntryRepository;
 
 	@Before
 	public void prepareDbInfrastructure() {
 		when(verbaDbManager.getWritableDatabase()).thenReturn(sqLiteDatabase);
 		when(sqLiteDatabase.rawQuery(anyString(), aryEq(new String[] { String.valueOf(DICTIONARY_ENTRY_ID) })))
 		.thenReturn(cursor);
-		dictionaryEntryDao = new DictionaryEntryDao(verbaDbManager);
+		dictionaryEntryRepository = new SqliteDictionaryEntryRepository(verbaDbManager);
 	}
 
 	@Test
@@ -55,7 +55,7 @@ public class DictionaryEntryDaoTest {
 		dictionaryEntryDataObject.setLength(DICTIONARY_ENTRY_LENGTH);
 		dictionaryEntryDataObject.setDictionaryId(DICTIONARY_ID);
 
-		dictionaryEntryDao.addDictionaryEntry(dictionaryEntryDataObject);
+		dictionaryEntryRepository.addDictionaryEntry(dictionaryEntryDataObject);
 
 		verify(sqLiteDatabase).execSQL(INSERT_DICTIONARY_ENTRY, new Object[] {
 				DICTIONARY_ENTRY_PHRASE,
@@ -69,16 +69,17 @@ public class DictionaryEntryDaoTest {
 		DictionaryEntryDataObject dictionaryEntryDataObject = new DictionaryEntryDataObject();
 		dictionaryEntryDataObject.setId(DICTIONARY_ENTRY_ID);
 
-		dictionaryEntryDao.deleteDictionaryEntry(dictionaryEntryDataObject);
+		dictionaryEntryRepository.deleteDictionaryEntry(dictionaryEntryDataObject);
 
 		verify(sqLiteDatabase).execSQL(DELETE_DICTIONARY_ENTRY, new Object[] {DICTIONARY_ENTRY_ID});
 	}
 
 	@Test
-	public void shouldGetDictionaryEntryById() throws NoDictionaryEntryFoundException {
+	public void shouldGetDictionaryEntryById() {
 		givenOneRowInCursor();
 
-		DictionaryEntryDataObject dictionaryEntryDataObject = dictionaryEntryDao.getDictionaryEntryById(DICTIONARY_ENTRY_ID);
+		DictionaryEntryDataObject dictionaryEntryDataObject =
+				dictionaryEntryRepository.getDictionaryEntryById(DICTIONARY_ENTRY_ID);
 
 		assertThat(dictionaryEntryDataObject.getId(), is(DICTIONARY_ENTRY_ID));
 		assertThat(dictionaryEntryDataObject.getDictionaryId(), is(DICTIONARY_ID));
@@ -88,15 +89,15 @@ public class DictionaryEntryDaoTest {
 	}
 
 	@Test(expected = NoDictionaryEntryFoundException.class)
-	public void shouldThrowExceptionWhenDictionaryEntryIsNotFound() throws NoDictionaryEntryFoundException {
+	public void shouldThrowExceptionWhenDictionaryEntryIsNotFound() {
 		givenNoRowsInCursor();
 
-		dictionaryEntryDao.getDictionaryEntryById(DICTIONARY_ENTRY_ID);
+		dictionaryEntryRepository.getDictionaryEntryById(DICTIONARY_ENTRY_ID);
 	}
 
 	@Test
 	public void shouldCloseDatabase() {
-		dictionaryEntryDao.close();
+		dictionaryEntryRepository.close();
 		verify(sqLiteDatabase).close();
 	}
 

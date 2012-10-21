@@ -7,7 +7,7 @@ import java.io.InputStream;
 import org.verba.util.DictionaryFileFinder;
 
 public class StardictDictionaryMetadataGateway implements DictionaryMetadataGateway {
-	private static final String DICTIONARY_METADATA_FILE_EXTENSION = "ifo";
+	public static final String DICTIONARY_METADATA_FILE_EXTENSION = "ifo";
 	private DictionaryFileFinder dictionaryFileFinder;
 
 	public StardictDictionaryMetadataGateway(DictionaryFileFinder dictionaryFileFinder) {

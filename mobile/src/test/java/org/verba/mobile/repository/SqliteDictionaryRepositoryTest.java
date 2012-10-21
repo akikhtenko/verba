@@ -1,4 +1,4 @@
-package org.verba.mobile.stardict;
+package org.verba.mobile.repository;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
@@ -7,8 +7,8 @@ import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.verba.mobile.stardict.DictionaryDao.DELETE_DICTIONARY;
-import static org.verba.mobile.stardict.DictionaryDao.INSERT_DICTIONARY;
+import static org.verba.mobile.repository.SqliteDictionaryRepository.DELETE_DICTIONARY;
+import static org.verba.mobile.repository.SqliteDictionaryRepository.INSERT_DICTIONARY;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -16,15 +16,15 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.verba.DictionaryDataObject;
-import org.verba.mobile.stardict.DictionaryDao.MoreThanOneDictionaryFoundException;
-import org.verba.mobile.stardict.DictionaryDao.NoDictionaryFoundException;
+import org.verba.mobile.repository.SqliteDictionaryRepository.MoreThanOneDictionaryFoundException;
+import org.verba.mobile.repository.SqliteDictionaryRepository.NoDictionaryFoundException;
 import org.verba.mobile.tools.VerbaDbManager;
 
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 @RunWith(MockitoJUnitRunner.class)
-public class DictionaryDaoTest {
+public class SqliteDictionaryRepositoryTest {
 	private static final String DICTIONARY_NAME = "dictionary";
 	private static final Integer DICTIONARY_ID = 123;
 	private static final String DICTIONARY_DESCRIPTION = "description";
@@ -36,14 +36,14 @@ public class DictionaryDaoTest {
 	@Mock
 	private Cursor cursor;
 
-	private DictionaryDao dictionaryDao;
+	private SqliteDictionaryRepository dictionaryRepository;
 
 	@Before
 	public void prepareDbInfrastructure() {
 		when(verbaDbManager.getReadableDatabase()).thenReturn(sqLiteDatabase);
 		when(verbaDbManager.getWritableDatabase()).thenReturn(sqLiteDatabase);
 		when(sqLiteDatabase.rawQuery(anyString(), aryEq(new String[] {DICTIONARY_NAME}))).thenReturn(cursor);
-		dictionaryDao = new DictionaryDao(verbaDbManager);
+		dictionaryRepository = new SqliteDictionaryRepository(verbaDbManager);
 	}
 
 	@Test
@@ -53,7 +53,7 @@ public class DictionaryDaoTest {
 		dictionaryDataObject.setDescription(DICTIONARY_DESCRIPTION);
 
 		givenOneRowInCursor();
-		int dictionaryId = dictionaryDao.addDictionary(dictionaryDataObject);
+		int dictionaryId = dictionaryRepository.addDictionary(dictionaryDataObject);
 
 		verify(sqLiteDatabase).execSQL(INSERT_DICTIONARY, new String[] {DICTIONARY_NAME, DICTIONARY_DESCRIPTION});
 		assertThat(dictionaryId, is(DICTIONARY_ID));
@@ -64,39 +64,37 @@ public class DictionaryDaoTest {
 		DictionaryDataObject dictionaryDataObject = new DictionaryDataObject();
 		dictionaryDataObject.setId(DICTIONARY_ID);
 
-		dictionaryDao.deleteDictionary(dictionaryDataObject);
+		dictionaryRepository.deleteDictionary(dictionaryDataObject);
 
 		verify(sqLiteDatabase).execSQL(DELETE_DICTIONARY, new Object[] {DICTIONARY_ID});
 	}
 
 	@Test
-	public void shouldGetDictionaryByName() throws NoDictionaryFoundException, MoreThanOneDictionaryFoundException {
+	public void shouldGetDictionaryByName() {
 		givenOneRowInCursor();
 
-		DictionaryDataObject dictionary = dictionaryDao.getDictionaryByName(DICTIONARY_NAME);
+		DictionaryDataObject dictionary = dictionaryRepository.getDictionaryByName(DICTIONARY_NAME);
 
 		assertThat(dictionary.getName(), is(DICTIONARY_NAME));
 	}
 
 	@Test(expected = NoDictionaryFoundException.class)
-	public void shouldThrowExceptionWhenDictionaryIsNotFound() throws NoDictionaryFoundException,
-			MoreThanOneDictionaryFoundException {
+	public void shouldThrowExceptionWhenDictionaryIsNotFound() {
 		givenNoRowsInCursor();
 
-		dictionaryDao.getDictionaryByName(DICTIONARY_NAME);
+		dictionaryRepository.getDictionaryByName(DICTIONARY_NAME);
 	}
 
 	@Test(expected = MoreThanOneDictionaryFoundException.class)
-	public void shouldThrowExceptionWhenMoreThanOneDictionaryFound() throws NoDictionaryFoundException,
-			MoreThanOneDictionaryFoundException {
+	public void shouldThrowExceptionWhenMoreThanOneDictionaryFound() {
 		givenTwoRowsInCursor();
 
-		dictionaryDao.getDictionaryByName(DICTIONARY_NAME);
+		dictionaryRepository.getDictionaryByName(DICTIONARY_NAME);
 	}
 
 	@Test
 	public void shouldCloseDatabase() {
-		dictionaryDao.close();
+		dictionaryRepository.close();
 		verify(sqLiteDatabase).close();
 	}
 

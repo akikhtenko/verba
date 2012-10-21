@@ -60,7 +60,7 @@ public class PhraseDefinitionRepositoryTest {
 
 	@Test
 	public void shouldDestroyPhraseDefinitionRepository() throws IOException {
-		new PhraseDefinitionRepository(inputStream).destroy();
+		new PhraseDefinitionRepository(inputStream).close();
 		verify(inputStream).close();
 	}
 }

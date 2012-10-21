@@ -1,4 +1,4 @@
-package org.verba.mobile.dictionary;
+package org.verba.mobile.dictionarycandidate;
 
 import android.widget.CheckBox;
 import android.widget.ProgressBar;
