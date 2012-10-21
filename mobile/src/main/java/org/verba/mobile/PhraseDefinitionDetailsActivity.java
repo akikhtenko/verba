@@ -108,7 +108,7 @@ public class PhraseDefinitionDetailsActivity extends VerbaActivity {
 	}
 
 	private void lookupPhraseDefinitions() {
-		new LookupPhraseTask(this, phraseLookup, phraseToLookup);
+		new LookupPhraseTask(this, phraseLookup, phraseToLookup).execute();
 	}
 
 	public void displayPhraseLookupFailure() {

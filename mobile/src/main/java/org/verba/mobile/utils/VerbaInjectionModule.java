@@ -2,6 +2,8 @@ package org.verba.mobile.utils;
 
 import static org.verba.mobile.Verba.getVerbaDirectory;
 
+import org.verba.DictionaryEntryRepository;
+import org.verba.DictionaryRepository;
 import org.verba.boundary.NewDictionariesScanner;
 import org.verba.boundary.PhraseLookup;
 import org.verba.boundary.SuggestionAdviser;
@@ -41,8 +43,8 @@ public class VerbaInjectionModule extends AbstractModule {
 		bind(DictionaryMetadataGateway.class).toInstance(new StardictDictionaryMetadataGateway(dictionaryFileFinder));
 		bind(DictionaryIndexGateway.class).toInstance(new StardictDictionaryIndexGateway(dictionaryFileFinder));
 
-		bind(SqliteDictionaryRepository.class).toInstance(dictionaryRepository);
-		bind(SqliteDictionaryEntryRepository.class).toInstance(verbaApplication.getDictionaryEntryRepository());
+		bind(DictionaryRepository.class).toInstance(dictionaryRepository);
+		bind(DictionaryEntryRepository.class).toInstance(verbaApplication.getDictionaryEntryRepository());
 		bind(CardSetDao.class).toInstance(verbaApplication.getCardSetDao());
 		bind(CardDao.class).toInstance(verbaApplication.getCardDao());
 
