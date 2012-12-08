@@ -1,14 +1,12 @@
 package org.verba.mobile;
 
-import static org.verba.mobile.PhraseLookupActivity.NEW_DICTIONARIES;
-
-import java.util.ArrayList;
 import java.util.List;
 
 import org.verba.DictionaryEntryRepository;
 import org.verba.DictionaryRepository;
-import org.verba.interactors.PopulateDictionary;
 import org.verba.interactors.GetDictionarySize;
+import org.verba.interactors.GetNewDictionaries;
+import org.verba.interactors.PopulateDictionary;
 import org.verba.mobile.dictionarycandidate.DictionaryCandidate;
 import org.verba.mobile.dictionarycandidate.DictionaryCandidateArrayAdapter;
 import org.verba.mobile.dictionarycandidate.ToDictionaryCandidateConverter;
@@ -16,7 +14,6 @@ import org.verba.mobile.task.DictionaryPopulatorTask;
 import org.verba.stardict.index.DictionaryIndexGateway;
 import org.verba.stardict.metadata.DictionaryMetadataGateway;
 
-import roboguice.inject.InjectExtra;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -32,7 +29,7 @@ public class DictionariesLoaderActivity extends VerbaActivity {
 	@Inject private DictionaryEntryRepository dictionaryEntryRepository;
 	@Inject private DictionaryMetadataGateway metadataGateway;
 	@Inject private DictionaryIndexGateway indexGateway;
-	@InjectExtra(NEW_DICTIONARIES) private ArrayList<String> newDictionaries;
+	@Inject private GetNewDictionaries getNewDictionaries;
 
 	private OnClickListener loadNewDictionariesButtonListener = new OnClickListener() {
 		@Override
@@ -41,16 +38,9 @@ public class DictionariesLoaderActivity extends VerbaActivity {
 		}
 	};
 
-	private OnClickListener closeDictionariesLoaderButtonListener = new OnClickListener() {
-		@Override
-		public void onClick(View v) {
-			finish();
-		}
-	};
-
 	@Override
 	protected boolean loadSystemMenu() {
-		return false;
+		return true;
 	}
 
 	@Override
@@ -64,7 +54,6 @@ public class DictionariesLoaderActivity extends VerbaActivity {
 
 		setupDictionaryCandidatesListView();
 		setupLoadNewDictionariesButton();
-		setupCloseDictionariesLoaderButton();
 	}
 
 	private void setupLoadNewDictionariesButton() {
@@ -72,14 +61,9 @@ public class DictionariesLoaderActivity extends VerbaActivity {
 		loadNewDictionariesButton.setOnClickListener(loadNewDictionariesButtonListener);
 	}
 
-	private void setupCloseDictionariesLoaderButton() {
-		Button closeDictionariesLoaderButton = (Button) findViewById(R.id.closeNewDictionariesDialogButton);
-		closeDictionariesLoaderButton.setOnClickListener(closeDictionariesLoaderButtonListener);
-	}
-
 	private void setupDictionaryCandidatesListView() {
 		ListView dictionaryCandidatesListView = (ListView) findViewById(R.id.newDictionaries);
-		dictionaryCandidates = new ToDictionaryCandidateConverter().convert(newDictionaries);
+		dictionaryCandidates = new ToDictionaryCandidateConverter().convert(getNewDictionaries.all());
 		dictionaryCandidatesListView.setAdapter(new DictionaryCandidateArrayAdapter(this, dictionaryCandidates));
 	}
 

@@ -19,7 +19,6 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.verba.CardSet;
-import org.verba.mobile.repository.SqliteCardRepository.NoCardFoundException;
 import org.verba.mobile.repository.SqliteCardSetRepository.NoCardSetFoundException;
 import org.verba.mobile.tools.VerbaDbManager;
 
@@ -80,7 +79,7 @@ public class SqliteCardSetRepositoryTest {
 	}
 
 	@Test
-	public void shouldGetCardsInCardSet() throws NoCardFoundException {
+	public void shouldGetCardsInCardSet() {
 		givenOneRowInCursor();
 
 		List<CardSet> cardSets = sqliteCardSetRepository.getAllCardSets();

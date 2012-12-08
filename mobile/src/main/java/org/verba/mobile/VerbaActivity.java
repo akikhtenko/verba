@@ -8,7 +8,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 
@@ -25,6 +24,13 @@ public abstract class VerbaActivity extends RoboActivity {
 		public void onClick(View v) {
 			Intent commandToOpenDictionary = new Intent(VerbaActivity.this, CardSetPickerActivity.class);
 			startActivity(commandToOpenDictionary);
+		}
+	};
+	private OnClickListener openDictionariesManagerButtonListener = new OnClickListener() {
+		@Override
+		public void onClick(View v) {
+			Intent commandToOpenDictionariesManager = new Intent(VerbaActivity.this, DictionariesLoaderActivity.class);
+			startActivity(commandToOpenDictionariesManager);
 		}
 	};
 
@@ -44,6 +50,7 @@ public abstract class VerbaActivity extends RoboActivity {
 
 		setupOpenDictionaryButton();
 		setupOpenCardSetPickerButton();
+		setupOpenDictionariesManagerButton();
 	}
 
 	protected View getContentViewWithMenu() {
@@ -59,13 +66,18 @@ public abstract class VerbaActivity extends RoboActivity {
 	}
 
 	private void setupOpenCardSetPickerButton() {
-		Button button = (Button) findViewById(R.id.cardsMenuButton);
+		ImageButton button = (ImageButton) findViewById(R.id.cardsMenuButton);
 		button.setOnClickListener(openCardSetPickerButtonListener);
 	}
 
 	private void setupOpenDictionaryButton() {
 		ImageButton button = (ImageButton) findViewById(R.id.dictionaryMenuButton);
 		button.setOnClickListener(openDictionaryButtonListener);
+	}
+
+	private void setupOpenDictionariesManagerButton() {
+		ImageButton button = (ImageButton) findViewById(R.id.dictionariesMenuButton);
+		button.setOnClickListener(openDictionariesManagerButtonListener);
 	}
 
 	protected abstract int getContentLayout();

@@ -2,7 +2,6 @@ package org.verba.mobile;
 
 import static org.verba.mobile.PhraseDefinitionDetailsActivity.PHRASE_TO_LOOKUP;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.verba.interactors.GetNewDictionaries;
@@ -76,24 +75,10 @@ public class PhraseLookupActivity extends VerbaActivity implements OnClickListen
 	protected void onResume() {
 		super.onResume();
 		setupRestoreSafePhraseChangeListener();
-		checkForNewDictionaries();
 	}
 
 	private void setupRestoreSafePhraseChangeListener() {
 		phraseToLookupField.addTextChangedListener(this);
-	}
-
-	private void checkForNewDictionaries() {
-		ArrayList<String> newDictionaries = getNewDictionaries.all();
-		if (!newDictionaries.isEmpty()) {
-			showLoadDictionariesDialog(newDictionaries);
-		}
-	}
-
-	private void showLoadDictionariesDialog(ArrayList<String> dictionaries) {
-		Intent showDictionariesLoaderCommand = new Intent(this, DictionariesLoaderActivity.class);
-		showDictionariesLoaderCommand.putStringArrayListExtra(NEW_DICTIONARIES, dictionaries);
-		startActivity(showDictionariesLoaderCommand);
 	}
 
 	@Override
