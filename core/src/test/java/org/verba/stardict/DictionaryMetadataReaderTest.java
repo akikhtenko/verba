@@ -17,8 +17,7 @@ import org.verba.stardict.metadata.DictionaryMetadataReader;
 public class DictionaryMetadataReaderTest {
 	@Test
 	public void shouldParseDictionaryMetadata() throws IOException {
-		InputStream dictionaryMdSource = getClass().getClassLoader().getResourceAsStream(
-				"org/verba/stardict/dictionary.ifo");
+		InputStream dictionaryMdSource = getClass().getClassLoader().getResourceAsStream("org/verba/stardict/dictionary.ifo");
 		DictionaryMetadataReader dictionaryMetadataReader = new DictionaryMetadataReader(dictionaryMdSource);
 		try {
 			DictionaryMetadata dictionaryMetadata = dictionaryMetadataReader.read();

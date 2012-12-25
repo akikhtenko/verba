@@ -2,16 +2,19 @@ package org.verba.stardict.metadata;
 
 import static java.lang.Integer.parseInt;
 import static org.apache.commons.io.Charsets.UTF_8;
+import static org.apache.commons.io.IOUtils.lineIterator;
+import static org.apache.commons.lang.StringUtils.isNotEmpty;
 import static org.verba.stardict.IndexOffsetSize.fromString;
+import static org.verba.stardict.PhraseDefinitionElementType.HTML;
+import static org.verba.stardict.PhraseDefinitionElementType.PURE_MEANING;
 import static org.verba.stardict.PhraseDefinitionElementType.XDXF;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.LineIterator;
-import org.verba.stardict.PhraseDefinitionPartFormat;
+import org.verba.stardict.PhraseDefinitionFormat;
 
 public class DictionaryMetadataReader {
 	private static final String ERROR_MISSING_PROPERTY = "Mandatory property [%s] is missing";
@@ -46,27 +49,32 @@ public class DictionaryMetadataReader {
 		populateVersion();
 		populateWordCount();
 		populateIndexOffsetSize();
-		populatePhraseDefinitionPartFormat();
+		populatePhraseDefinitionFormat();
 	}
 
-	private void populatePhraseDefinitionPartFormat() {
+	private void populatePhraseDefinitionFormat() {
 		String sameTypeSequence = dictionaryProperties.getProperty(PROPERTY_SAMETYPESEQUENCE);
 		if (isNotEmpty(sameTypeSequence)) {
-			dictionaryMetadata.setPhraseDefinitionPartFormat(parsePhraseDefinitionFormat(sameTypeSequence));
+			dictionaryMetadata.setPhraseDefinitionFormat(parsePhraseDefinitionFormat(sameTypeSequence));
 		}
 	}
 
-	private PhraseDefinitionPartFormat parsePhraseDefinitionFormat(String sameTypeSequence) {
-		PhraseDefinitionPartFormat phraseDefinitionPartFormat = new PhraseDefinitionPartFormat();
+	private PhraseDefinitionFormat parsePhraseDefinitionFormat(String sameTypeSequence) {
+		PhraseDefinitionFormat phraseDefinitionFormat = new PhraseDefinitionFormat();
 		for (int i = 0; i < sameTypeSequence.length(); i++) {
 			switch (sameTypeSequence.charAt(i)) {
 			case 'x':
-				phraseDefinitionPartFormat.add(XDXF);
+				phraseDefinitionFormat.add(XDXF);
+				break;
+			case 'h':
+				phraseDefinitionFormat.add(HTML);
+				break;
 			default:
+				phraseDefinitionFormat.add(PURE_MEANING);
 				break;
 			}
 		}
-		return phraseDefinitionPartFormat;
+		return phraseDefinitionFormat;
 	}
 
 	private void populateIndexOffsetSize() {
@@ -116,9 +124,9 @@ public class DictionaryMetadataReader {
 	}
 
 	private void parseDictionaryMetadataSource() throws IOException {
-		LineIterator it = IOUtils.lineIterator(dictionaryMetadataSource, UTF_8);
+		LineIterator it = lineIterator(dictionaryMetadataSource, UTF_8);
 		while (it.hasNext()) {
-			String line = it.nextLine().trim();
+			String line = it.nextLine();
 			processNextLine(line);
 		}
 	}
@@ -126,15 +134,11 @@ public class DictionaryMetadataReader {
 	private void processNextLine(String line) {
 		String[] parameterValuePair = line.split(PARAMETER_VALUE_DELIMITER);
 		if (isValidParameterValuePair(parameterValuePair)) {
-			dictionaryProperties.setProperty(parameterValuePair[0], parameterValuePair[1]);
+			dictionaryProperties.setProperty(parameterValuePair[0].trim(), parameterValuePair[1].trim());
 		}
 	}
 
 	private boolean isValidParameterValuePair(String[] parameterValuePair) {
 		return parameterValuePair.length > 1;
-	}
-
-	private boolean isNotEmpty(String string) {
-		return string != null && string.length() > 0;
 	}
 }

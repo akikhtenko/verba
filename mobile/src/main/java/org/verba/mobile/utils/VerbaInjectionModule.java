@@ -42,7 +42,9 @@ public class VerbaInjectionModule extends AbstractModule {
 		CardSetRepository cardSetRepository = verbaApplication.getCardSetRepository();
 		CardRepository cardRepository = verbaApplication.getCardRepository();
 
-		bind(DictionaryMetadataGateway.class).toInstance(new StardictDictionaryMetadataGateway(dictionaryFileFinder));
+		DictionaryMetadataGateway dictionaryMetadataGateway = new StardictDictionaryMetadataGateway(dictionaryFileFinder);
+
+		bind(DictionaryMetadataGateway.class).toInstance(dictionaryMetadataGateway);
 		bind(DictionaryIndexGateway.class).toInstance(new StardictDictionaryIndexGateway(dictionaryFileFinder));
 
 		bind(DictionaryRepository.class).toInstance(dictionaryRepository);
@@ -52,8 +54,8 @@ public class VerbaInjectionModule extends AbstractModule {
 
 		bind(GetNewDictionaries.class).toInstance(new GetNewDictionaries(getVerbaDirectory(), dictionaryRepository));
 		bind(GetSuggestions.class).toInstance(new GetSuggestions(dictionaryEntryRepository));
-		bind(LookupPhrase.class).toInstance(new LookupPhrase(
-				dictionaryRepository, dictionaryEntryRepository, new StardictDictionaryDefinitionsGateway(dictionaryFileFinder)));
+		bind(LookupPhrase.class).toInstance(new LookupPhrase(dictionaryRepository, dictionaryEntryRepository, dictionaryMetadataGateway,
+						new StardictDictionaryDefinitionsGateway(dictionaryFileFinder)));
 		bind(GetCardSet.class).toInstance(new GetCardSet(cardSetRepository));
 		bind(AddCardSet.class).toInstance(new AddCardSet(cardSetRepository));
 		bind(GetCard.class).toInstance(new GetCard(cardRepository));

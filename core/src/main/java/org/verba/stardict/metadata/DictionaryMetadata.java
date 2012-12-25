@@ -3,7 +3,7 @@ package org.verba.stardict.metadata;
 import static org.verba.stardict.IndexOffsetSize.BITS_32;
 
 import org.verba.stardict.IndexOffsetSize;
-import org.verba.stardict.PhraseDefinitionPartFormat;
+import org.verba.stardict.PhraseDefinitionFormat;
 
 public class DictionaryMetadata {
 	private String name;
@@ -12,7 +12,7 @@ public class DictionaryMetadata {
 	private int wordCount;
 	private IndexOffsetSize indexOffsetSize = BITS_32;
 	private String date;
-	private PhraseDefinitionPartFormat phraseDefinitionPartFormat;
+	private PhraseDefinitionFormat phraseDefinitionFormat;
 
 	public String getName() {
 		return name;
@@ -50,10 +50,10 @@ public class DictionaryMetadata {
 	public void setDate(String date) {
 		this.date = date;
 	}
-	public PhraseDefinitionPartFormat getPhraseDefinitionPartFormat() {
-		return phraseDefinitionPartFormat;
+	public PhraseDefinitionFormat getPhraseDefinitionPartFormat() {
+		return phraseDefinitionFormat;
 	}
-	public void setPhraseDefinitionPartFormat(PhraseDefinitionPartFormat phraseDefinitionPartFormat) {
-		this.phraseDefinitionPartFormat = phraseDefinitionPartFormat;
+	public void setPhraseDefinitionFormat(PhraseDefinitionFormat phraseDefinitionFormat) {
+		this.phraseDefinitionFormat = phraseDefinitionFormat;
 	}
 }

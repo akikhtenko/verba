@@ -1,5 +1,5 @@
 package org.verba.stardict;
 
 public enum PhraseDefinitionElementType {
-	XDXF
+	XDXF, PURE_MEANING, HTML
 }

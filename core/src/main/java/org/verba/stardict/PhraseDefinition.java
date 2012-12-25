@@ -5,13 +5,13 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class PhraseDefinition {
-	private List<PhraseDefinitionPart> phraseDefinitionParts = new LinkedList<PhraseDefinitionPart>();
+	private List<PhraseDefinitionElement> phraseDefinitionElements = new LinkedList<PhraseDefinitionElement>();
 
-	public void add(PhraseDefinitionPart phraseDefinitionPart) {
-		phraseDefinitionParts.add(phraseDefinitionPart);
+	public void add(PhraseDefinitionElement phraseDefinitionElement) {
+		phraseDefinitionElements.add(phraseDefinitionElement);
 	}
 
-	public Iterator<PhraseDefinitionPart> parts() {
-		return phraseDefinitionParts.iterator();
+	public Iterator<PhraseDefinitionElement> elements() {
+		return phraseDefinitionElements.iterator();
 	}
 }

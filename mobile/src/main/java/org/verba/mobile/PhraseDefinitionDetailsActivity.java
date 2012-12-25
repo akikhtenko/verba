@@ -6,7 +6,6 @@ import org.verba.mobile.utils.WordUtils;
 import org.verba.mobile.widget.PhraseDefinitionView;
 import org.verba.mobile.xdxf.AndroidXdxfNodeDisplay;
 import org.verba.stardict.PhraseDefinition;
-import org.verba.stardict.PhraseDefinitionPart;
 import org.verba.xdxf.XdxfPhraseDefinitionElement;
 import org.verba.xdxf.node.XdxfElement;
 
@@ -153,9 +152,7 @@ public class PhraseDefinitionDetailsActivity extends VerbaActivity {
 	}
 
 	public void displayPhraseDefinition(PhraseDefinition phraseDefinition) {
-		PhraseDefinitionPart phraseDefinitionPart = phraseDefinition.parts().next();
-		XdxfPhraseDefinitionElement phraseDefinitionElement =
-				(XdxfPhraseDefinitionElement) phraseDefinitionPart.elements().next();
+		XdxfPhraseDefinitionElement phraseDefinitionElement = (XdxfPhraseDefinitionElement) phraseDefinition.elements().next();
 		displayText(asSpannableString(phraseDefinitionElement.asXdxfArticle()));
 	}
 

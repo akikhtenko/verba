@@ -53,7 +53,7 @@ public abstract class VerbaActivity extends RoboActivity {
 		setupOpenDictionariesManagerButton();
 	}
 
-	protected View getContentViewWithMenu() {
+	private View getContentViewWithMenu() {
 		LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		LinearLayout parent = (LinearLayout) inflater.inflate(R.layout.menu, null);
 

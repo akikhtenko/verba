@@ -13,17 +13,22 @@ import org.verba.DictionaryRepository;
 import org.verba.stardict.PhraseDefinition;
 import org.verba.stardict.PhraseDefinitionRepository;
 import org.verba.stardict.definitions.DictionaryDefinitionsGateway;
+import org.verba.stardict.metadata.DictionaryMetadata;
+import org.verba.stardict.metadata.DictionaryMetadataGateway;
 
 public class LookupPhrase {
 	private DictionaryRepository dictionaryRepository;
 	private DictionaryEntryRepository dictionaryEntryRepository;
+	private DictionaryMetadataGateway metadataGateway;
 	private DictionaryDefinitionsGateway definitionsGateway;
 
 	public LookupPhrase(DictionaryRepository dictionaryRepository,
 			DictionaryEntryRepository dictionaryEntryRepository,
+			DictionaryMetadataGateway metadataGateway,
 			DictionaryDefinitionsGateway definitionsGateway) {
 		this.dictionaryRepository = dictionaryRepository;
 		this.dictionaryEntryRepository = dictionaryEntryRepository;
+		this.metadataGateway = metadataGateway;
 		this.definitionsGateway = definitionsGateway;
 	}
 
@@ -40,13 +45,13 @@ public class LookupPhrase {
 	private PhraseDefinition lookupDefinitionFor(String phrase, DictionaryEntryDataObject dictionaryEntry) {
 		DictionaryDataObject dictionary = dictionaryRepository.getDictionaryById(dictionaryEntry.getDictionaryId());
 
-		PhraseDefinitionRepository phraseDefinitionRepository =
-				definitionsGateway.getDictionaryDefinitionsFor(dictionary.getName());
+		DictionaryMetadata dictionaryMetadata = metadataGateway.getMetadataFor(dictionary.getName());
+		PhraseDefinitionRepository phraseDefinitionRepository = definitionsGateway.getDictionaryDefinitionsFor(dictionary.getName(), dictionaryMetadata);
 
 		try {
 			return phraseDefinitionRepository.find(dictionaryEntry.asPhraseDefinitionCoordinates());
 		} catch (IOException e) {
-			throw new RuntimeException(String.format("Failed looking for a definition of [%s]", phrase), e);
+			throw new RuntimeException(String.format("Failed looking up a definition of [%s]", phrase), e);
 		} finally {
 			closeQuietly(phraseDefinitionRepository);
 		}

@@ -1,6 +1,7 @@
 package org.verba.stardict.definitions;
 
 import org.verba.stardict.PhraseDefinitionRepository;
+import org.verba.stardict.metadata.DictionaryMetadata;
 import org.verba.util.DictionaryFileFinder;
 
 public class StardictDictionaryDefinitionsGateway implements DictionaryDefinitionsGateway {
@@ -12,8 +13,7 @@ public class StardictDictionaryDefinitionsGateway implements DictionaryDefinitio
 	}
 
 	@Override
-	public PhraseDefinitionRepository getDictionaryDefinitionsFor(String dictionaryName) {
-		return new PhraseDefinitionRepository(dictionaryFileFinder.getDictionaryFileStream(dictionaryName,
-				DICTIONARY_DATA_FILE_EXTENSION));
+	public PhraseDefinitionRepository getDictionaryDefinitionsFor(String dictionaryName, DictionaryMetadata dictionaryMetadata) {
+		return new PhraseDefinitionRepository(dictionaryFileFinder.getDictionaryFileStream(dictionaryName, DICTIONARY_DATA_FILE_EXTENSION), dictionaryMetadata);
 	}
 }

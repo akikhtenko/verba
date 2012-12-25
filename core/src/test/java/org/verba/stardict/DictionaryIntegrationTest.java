@@ -8,11 +8,13 @@ import java.net.URL;
 
 import org.junit.Ignore;
 import org.junit.Test;
+import org.verba.stardict.metadata.DictionaryMetadata;
 import org.verba.xdxf.XdxfPhraseDefinitionElement;
 
 public class DictionaryIntegrationTest {
 	private static final String WORD_TO_LOOK_FOR = "admission";
 	private static final int MILLIS_IN_SECOND = 1000;
+	private static final DictionaryMetadata UNIMPORTANT_METADATA = null;
 
 	@Test
 	@Ignore
@@ -24,17 +26,16 @@ public class DictionaryIntegrationTest {
 
 		PhraseDefinitionCoordinatesRepository coordinatesRepository = new FsPhraseDefinitionCoordinatesRepository(indexFile);
 
-		PhraseDefinitionRepository definitionsRepository = new PhraseDefinitionRepository(dictionaryStream);
+		PhraseDefinitionRepository definitionsRepository = new PhraseDefinitionRepository(dictionaryStream, UNIMPORTANT_METADATA);
 
 		Dictionary dictionary = new Dictionary(coordinatesRepository, definitionsRepository);
 		long timeStarted = System.currentTimeMillis();
 
 		try {
 			PhraseDefinition phraseDefinition = dictionary.lookup(WORD_TO_LOOK_FOR);
-			XdxfPhraseDefinitionElement phraseDefinitionPart = (XdxfPhraseDefinitionElement) phraseDefinition.parts()
-					.next().elements().next();
+			XdxfPhraseDefinitionElement phraseDefinitionElement = (XdxfPhraseDefinitionElement) phraseDefinition.elements().next();
 
-			System.out.println(String.format("%s [%s]", WORD_TO_LOOK_FOR, new String(phraseDefinitionPart.bytes())));
+			System.out.println(String.format("%s [%s]", WORD_TO_LOOK_FOR, new String(phraseDefinitionElement.bytes())));
 		} finally {
 			definitionsRepository.close();
 		}

@@ -1,11 +1,11 @@
 package org.verba.xdxf;
 
+import static org.apache.commons.io.IOUtils.closeQuietly;
 import static org.verba.stardict.PhraseDefinitionElementType.XDXF;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
-import org.apache.commons.io.IOUtils;
 import org.verba.stardict.PhraseDefinitionElement;
 import org.verba.stardict.PhraseDefinitionElementType;
 import org.verba.xdxf.XdxfParser.XdxfArticleParseException;
@@ -34,7 +34,7 @@ public class XdxfPhraseDefinitionElement implements PhraseDefinitionElement {
 		} catch (XdxfArticleParseException e) {
 			throw new RuntimeException("Unexpected error while parsing xdxf word definition part", e);
 		} finally {
-			IOUtils.closeQuietly(contentAsStream);
+			closeQuietly(contentAsStream);
 		}
 	}
 
