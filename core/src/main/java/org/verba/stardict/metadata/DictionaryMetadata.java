@@ -50,7 +50,7 @@ public class DictionaryMetadata {
 	public void setDate(String date) {
 		this.date = date;
 	}
-	public PhraseDefinitionFormat getPhraseDefinitionPartFormat() {
+	public PhraseDefinitionFormat getPhraseDefinitionFormat() {
 		return phraseDefinitionFormat;
 	}
 	public void setPhraseDefinitionFormat(PhraseDefinitionFormat phraseDefinitionFormat) {

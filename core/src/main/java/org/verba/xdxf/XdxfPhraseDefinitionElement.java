@@ -1,30 +1,24 @@
 package org.verba.xdxf;
 
 import static org.apache.commons.io.IOUtils.closeQuietly;
-import static org.verba.stardict.PhraseDefinitionElementType.XDXF;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
 import org.verba.stardict.PhraseDefinitionElement;
-import org.verba.stardict.PhraseDefinitionElementType;
+import org.verba.stardict.PhraseDefinitionElementDisplay;
 import org.verba.xdxf.XdxfParser.XdxfArticleParseException;
 import org.verba.xdxf.node.XdxfElement;
 
 public class XdxfPhraseDefinitionElement implements PhraseDefinitionElement {
-	private byte[] rawPhraseDefinition;
+	private byte[] rawPhraseDefinitionElement;
 
 	public XdxfPhraseDefinitionElement(byte[] phraseDefinitionBuffer) {
-		rawPhraseDefinition = phraseDefinitionBuffer.clone();
-	}
-
-	@Override
-	public PhraseDefinitionElementType getType() {
-		return XDXF;
+		rawPhraseDefinitionElement = phraseDefinitionBuffer.clone();
 	}
 
 	public byte[] bytes() {
-		return rawPhraseDefinition;
+		return rawPhraseDefinitionElement;
 	}
 
 	public XdxfElement asXdxfArticle() {
@@ -39,10 +33,15 @@ public class XdxfPhraseDefinitionElement implements PhraseDefinitionElement {
 	}
 
 	private ByteArrayInputStream getContentAsInputStream() {
-		return new ByteArrayInputStream(rawPhraseDefinition);
+		return new ByteArrayInputStream(rawPhraseDefinitionElement);
 	}
 
 	protected XdxfParser createXdxfParser() {
 		return new XdxfParser();
+	}
+
+	@Override
+	public void print(PhraseDefinitionElementDisplay phraseDefinitionDisplay) {
+		phraseDefinitionDisplay.print(this);
 	}
 }

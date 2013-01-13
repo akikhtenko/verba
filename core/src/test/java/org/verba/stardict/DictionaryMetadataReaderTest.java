@@ -1,10 +1,10 @@
 package org.verba.stardict;
 
+import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 import static org.verba.stardict.IndexOffsetSize.BITS_32;
 import static org.verba.stardict.IndexOffsetSize.BITS_64;
-import static org.verba.stardict.PhraseDefinitionElementType.XDXF;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -13,6 +13,7 @@ import java.io.InputStream;
 import org.junit.Test;
 import org.verba.stardict.metadata.DictionaryMetadata;
 import org.verba.stardict.metadata.DictionaryMetadataReader;
+import org.verba.stardict.metadata.elementtype.XdxfElementType;
 
 public class DictionaryMetadataReaderTest {
 	@Test
@@ -27,7 +28,7 @@ public class DictionaryMetadataReaderTest {
 			assertThat(dictionaryMetadata.getDate(), is("2008.07.21"));
 			assertThat(dictionaryMetadata.getWordCount(), is(1234));
 			assertThat(dictionaryMetadata.getIndexOffsetSize(), is(BITS_64));
-			assertThat(dictionaryMetadata.getPhraseDefinitionPartFormat().elementTypes().next(), is(XDXF));
+			assertThat(dictionaryMetadata.getPhraseDefinitionFormat().elementTypes().next(), is(instanceOf(XdxfElementType.class)));
 		} catch (IOException e) {
 			dictionaryMdSource.close();
 		}

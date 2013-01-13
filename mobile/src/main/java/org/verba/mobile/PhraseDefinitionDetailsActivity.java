@@ -1,13 +1,14 @@
 package org.verba.mobile;
 
+import java.util.Iterator;
+
 import org.verba.interactors.LookupPhrase;
 import org.verba.mobile.task.LookupPhraseTask;
 import org.verba.mobile.utils.WordUtils;
 import org.verba.mobile.widget.PhraseDefinitionView;
-import org.verba.mobile.xdxf.AndroidXdxfNodeDisplay;
 import org.verba.stardict.PhraseDefinition;
-import org.verba.xdxf.XdxfPhraseDefinitionElement;
-import org.verba.xdxf.node.XdxfElement;
+import org.verba.stardict.PhraseDefinitionElement;
+import org.verba.stardict.PhraseDefinitionElementDisplay;
 
 import roboguice.inject.InjectExtra;
 import roboguice.inject.InjectView;
@@ -142,18 +143,17 @@ public class PhraseDefinitionDetailsActivity extends VerbaActivity {
 		phraseDefinitionBox.setOnUseSelectionButtonClick(onUseSelectionButtonClickListener);
 	}
 
-	private CharSequence asSpannableString(XdxfElement xdxfArticle) {
-		SpannableStringBuilder spannable = new SpannableStringBuilder();
-
-		AndroidXdxfNodeDisplay xdxfDisplay = new AndroidXdxfNodeDisplay(this, spannable);
-		xdxfArticle.print(xdxfDisplay);
-
-		return spannable;
-	}
-
 	public void displayPhraseDefinition(PhraseDefinition phraseDefinition) {
-		XdxfPhraseDefinitionElement phraseDefinitionElement = (XdxfPhraseDefinitionElement) phraseDefinition.elements().next();
-		displayText(asSpannableString(phraseDefinitionElement.asXdxfArticle()));
+		SpannableStringBuilder spannable = new SpannableStringBuilder();
+		PhraseDefinitionElementDisplay phraseDefinitionDisplay = new AndroidPhraseDefinitionElementDisplay(this, spannable);
+
+		Iterator<PhraseDefinitionElement> phraseDefinitionElements = phraseDefinition.elements();
+		while (phraseDefinitionElements.hasNext()) {
+			PhraseDefinitionElement phraseDefinitionElement = phraseDefinitionElements.next();
+			phraseDefinitionElement.print(phraseDefinitionDisplay);
+		}
+
+		displayText(spannable);
 	}
 
 	public void lookupAnotherPhrase(String anotherPhraseToLookup) {

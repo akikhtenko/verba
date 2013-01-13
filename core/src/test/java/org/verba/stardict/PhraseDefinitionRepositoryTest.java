@@ -15,6 +15,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.verba.stardict.metadata.DictionaryMetadata;
+import org.verba.stardict.metadata.elementtype.XdxfElementType;
 import org.verba.xdxf.XdxfPhraseDefinitionElement;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -39,9 +40,18 @@ public class PhraseDefinitionRepositoryTest {
 	}
 
 	@Test
-	public void shouldGetPhraseDefinitionByPhraseDefinitionCoordinates() throws IOException {
+	public void shouldGetPhraseDefinitionWhenFormatIsSet() throws IOException {
 		PhraseDefinitionRepository wordsRepository =
-				new PhraseDefinitionRepository(new ByteArrayInputStream(DICTIONARY_CONTENT.getBytes()), UNIMPORTANT_METADATA);
+				new PhraseDefinitionRepository(new ByteArrayInputStream(DICTIONARY_CONTENT.getBytes()), createXdxfBasedDictionaryMetadata());
+		PhraseDefinition phraseDefinition = wordsRepository.find(phraseCoordinates);
+		XdxfPhraseDefinitionElement phraseDefinitionElement = (XdxfPhraseDefinitionElement) phraseDefinition.elements().next();
+		assertThat(new String(phraseDefinitionElement.bytes()), is(ADJUSTED_WORD_DEFINITION));
+	}
+
+	@Test
+	public void shouldGetPhraseDefinitionWhenFormatIsNotSet() throws IOException {
+		PhraseDefinitionRepository wordsRepository =
+				new PhraseDefinitionRepository(new ByteArrayInputStream(DICTIONARY_CONTENT.getBytes()), createXdxfBasedDictionaryMetadata());
 		PhraseDefinition phraseDefinition = wordsRepository.find(phraseCoordinates);
 		XdxfPhraseDefinitionElement phraseDefinitionElement = (XdxfPhraseDefinitionElement) phraseDefinition.elements().next();
 		assertThat(new String(phraseDefinitionElement.bytes()), is(ADJUSTED_WORD_DEFINITION));
@@ -65,5 +75,13 @@ public class PhraseDefinitionRepositoryTest {
 	public void shouldDestroyPhraseDefinitionRepository() throws IOException {
 		new PhraseDefinitionRepository(inputStream, UNIMPORTANT_METADATA).close();
 		verify(inputStream).close();
+	}
+
+	private DictionaryMetadata createXdxfBasedDictionaryMetadata() {
+		DictionaryMetadata dictionaryMetadata = new DictionaryMetadata();
+		PhraseDefinitionFormat phraseDefinitionFormat = new PhraseDefinitionFormat();
+		phraseDefinitionFormat.add(new XdxfElementType());
+		dictionaryMetadata.setPhraseDefinitionFormat(phraseDefinitionFormat);
+		return dictionaryMetadata;
 	}
 }

@@ -5,9 +5,6 @@ import static org.apache.commons.io.Charsets.UTF_8;
 import static org.apache.commons.io.IOUtils.lineIterator;
 import static org.apache.commons.lang.StringUtils.isNotEmpty;
 import static org.verba.stardict.IndexOffsetSize.fromString;
-import static org.verba.stardict.PhraseDefinitionElementType.HTML;
-import static org.verba.stardict.PhraseDefinitionElementType.PURE_MEANING;
-import static org.verba.stardict.PhraseDefinitionElementType.XDXF;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -15,6 +12,7 @@ import java.util.Properties;
 
 import org.apache.commons.io.LineIterator;
 import org.verba.stardict.PhraseDefinitionFormat;
+import org.verba.stardict.metadata.elementtype.PhraseDefinitionElementTypeFactory;
 
 public class DictionaryMetadataReader {
 	private static final String ERROR_MISSING_PROPERTY = "Mandatory property [%s] is missing";
@@ -29,11 +27,13 @@ public class DictionaryMetadataReader {
 	private InputStream dictionaryMetadataSource;
 	private Properties dictionaryProperties;
 	private DictionaryMetadata dictionaryMetadata;
+	private PhraseDefinitionElementTypeFactory phraseDefinitionElementTypeFactory;
 
 	public DictionaryMetadataReader(InputStream dictionaryMetadataSource) {
 		this.dictionaryMetadataSource = dictionaryMetadataSource;
 		dictionaryProperties = new Properties();
 		dictionaryMetadata = new DictionaryMetadata();
+		phraseDefinitionElementTypeFactory = new PhraseDefinitionElementTypeFactory();
 	}
 
 	public DictionaryMetadata read() throws IOException {
@@ -62,17 +62,7 @@ public class DictionaryMetadataReader {
 	private PhraseDefinitionFormat parsePhraseDefinitionFormat(String sameTypeSequence) {
 		PhraseDefinitionFormat phraseDefinitionFormat = new PhraseDefinitionFormat();
 		for (int i = 0; i < sameTypeSequence.length(); i++) {
-			switch (sameTypeSequence.charAt(i)) {
-			case 'x':
-				phraseDefinitionFormat.add(XDXF);
-				break;
-			case 'h':
-				phraseDefinitionFormat.add(HTML);
-				break;
-			default:
-				phraseDefinitionFormat.add(PURE_MEANING);
-				break;
-			}
+			phraseDefinitionFormat.add(phraseDefinitionElementTypeFactory.createFromChar(sameTypeSequence.charAt(i)));
 		}
 		return phraseDefinitionFormat;
 	}

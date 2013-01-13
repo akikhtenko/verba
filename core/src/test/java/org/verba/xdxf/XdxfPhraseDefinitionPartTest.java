@@ -6,7 +6,6 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.verba.stardict.PhraseDefinitionElementType.XDXF;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -35,11 +34,6 @@ public class XdxfPhraseDefinitionPartTest {
 	public void createXdxfPhraseDefinitionPart() {
 		xdxfPhraseDefinitionElement = spy(new XdxfPhraseDefinitionElement(WORD_DEFINITION.getBytes()));
 		when(xdxfPhraseDefinitionElement.createXdxfParser()).thenReturn(xdxfParser);
-	}
-
-	@Test
-	public void shouldReturnXdxfType() {
-		assertThat(xdxfPhraseDefinitionElement.getType(), is(XDXF));
 	}
 
 	@Test
