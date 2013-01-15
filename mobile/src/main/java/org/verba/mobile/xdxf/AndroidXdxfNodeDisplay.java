@@ -27,6 +27,7 @@ import android.text.style.TextAppearanceSpan;
 import android.view.View;
 
 public class AndroidXdxfNodeDisplay implements XdxfNodeDisplay {
+	private static final char INVISIBLE_CHAR_PREVENTING_UNDESIRABLE_CLICKS = '\u2063';
 	private SpannableStringBuilder spannable;
 	private PhraseDefinitionDetailsActivity activity;
 	Pattern rgbColorPattern = Pattern.compile("^#\\d{6}$");
@@ -74,6 +75,7 @@ public class AndroidXdxfNodeDisplay implements XdxfNodeDisplay {
 		};
 
 		applySpan(linkToAnotherDefinition, phraseReference);
+		spannable.append(INVISIBLE_CHAR_PREVENTING_UNDESIRABLE_CLICKS);
 	}
 
 	private void applySpan(CharacterStyle characterStyle, XdxfNode xdxfNode) {
