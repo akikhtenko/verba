@@ -10,7 +10,7 @@ public class XdxfElementType implements PhraseDefinitionElementType {
 
 	@Override
 	public PhraseDefinitionElement parsePhraseDefinitionElement(ByteArray rawElementData) {
-		return new XdxfPhraseDefinitionElement(adjustPhraseDefinitionXdxmElementBuffer(rawElementData.asBytes()));
+		return new XdxfPhraseDefinitionElement(adjustPhraseDefinitionXdxmElementBuffer(rawElementData.bytes()));
 	}
 
 	private byte[] adjustPhraseDefinitionXdxmElementBuffer(byte[] purePhraseDefinitionPartData) {

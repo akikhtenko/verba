@@ -6,9 +6,9 @@ public class PhraseDefinitionElementTypeFactory {
 			case 'x':
 				return new XdxfElementType();
 			case 'h':
-				return new XdxfElementType();
+				return new HtmlElementType();
 			default:
-				return new XdxfElementType();
+				return new PlainMeaningElementType();
 			}
 	}
 }

@@ -5,12 +5,15 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import org.verba.stardict.metadata.DictionaryMetadata;
+import org.verba.stardict.metadata.elementtype.PhraseDefinitionElementType;
+import org.verba.stardict.metadata.elementtype.PhraseDefinitionElementTypeFactory;
 import org.verba.util.ByteArray;
 import org.verba.util.InputStreamReader;
 
 public class PhraseDefinitionRepository implements Closeable {
 	private InputStreamReader streamReader;
 	private DictionaryMetadata dictionaryMetadata;
+	private PhraseDefinitionElementTypeFactory elementTypeFactory = new PhraseDefinitionElementTypeFactory();
 
 	public PhraseDefinitionRepository(InputStream aDictionaryPayloadStream, DictionaryMetadata dictionaryMetadata) {
 		streamReader = new InputStreamReader(aDictionaryPayloadStream);
@@ -20,11 +23,6 @@ public class PhraseDefinitionRepository implements Closeable {
 	public PhraseDefinition find(PhraseDefinitionCoordinates phraseCoordinates) throws IOException {
 		PhraseDefinition phraseDefinition = new PhraseDefinition();
 
-		// There can be only ONE part in a phrase definition.
-		// Though each part can contain multiple elements
-		// when PhraseDefinitionFormat is not set the number of elements is only determined
-		// by the length of a phrase definition. Otherwise PhraseDefinitionFormat explicitly says
-		// how many elements will comprise one phrase definition part.
 		byte[] phraseDefinitionBuffer = streamReader.readBytesAtOffset(phraseCoordinates.getPhraseDefinitionOffset(), phraseCoordinates.getPhraseDefinitionLength());
 		int elementIndex = 0;
 		for (ByteArray elementByteArray: new ByteArray(phraseDefinitionBuffer).split(new byte[] {'\0'})) {
@@ -42,7 +40,10 @@ public class PhraseDefinitionRepository implements Closeable {
 	}
 
 	private PhraseDefinitionElement readPhraseDefinitionElementFromUntypedDefinition(ByteArray rawElementData) {
-		return null;
+		byte[] elementDataBytes = rawElementData.bytes();
+		PhraseDefinitionElementType elementType = elementTypeFactory.createFromChar((char) elementDataBytes[0]);
+
+		return elementType.parsePhraseDefinitionElement(new ByteArray(elementDataBytes, 1, elementDataBytes.length - 1));
 	}
 
 	@Override

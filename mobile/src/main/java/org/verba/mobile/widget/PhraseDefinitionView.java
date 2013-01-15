@@ -6,12 +6,12 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.text.Layout;
+import android.text.Selection;
 import android.text.Spannable;
 import android.text.method.ArrowKeyMovementMethod;
 import android.text.method.MovementMethod;
 import android.text.style.ClickableSpan;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.ViewTreeObserver;
@@ -26,6 +26,8 @@ public class PhraseDefinitionView extends TextView implements OnScrollChangedLis
 	private HandleView leftHandle = new LeftHandleView(this, selectionActionsView);
 	private HandleView rightHandle = new RightHandleView(this, selectionActionsView);
 	private Paint highlightPaint = new Paint();
+	private Path highlightPath = new Path();
+	private boolean justShowedSelectionWithHandles;
 
 	{
 		highlightPaint.setColor(SELECTION_COLOR);
@@ -66,14 +68,15 @@ public class PhraseDefinitionView extends TextView implements OnScrollChangedLis
 		rightHandle.show();
 
 		selectionActionsView.show();
+		justShowedSelectionWithHandles = true;
 	}
 
-	public void hideSelectionHandles() {
+	public void removeSelectionWithHandles() {
 		leftHandle.dismiss();
 		rightHandle.dismiss();
 		selectionActionsView.dismiss();
 		deregisterOnScrollListener();
-//		Selection.setSelection((Spannable) getText(), getSelectionStart());
+		Selection.setSelection((Spannable) getText(), getSelectionStart(), getSelectionStart());
 	}
 
 	@Override
@@ -83,19 +86,16 @@ public class PhraseDefinitionView extends TextView implements OnScrollChangedLis
 
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {
-//		Log.d("Verba", String.format("1. Touched definition box [isFocused=%s], [didTouchFocusSelect=%s]", isFocused(),
-//				didTouchFocusSelect()));
 		boolean result = super.onTouchEvent(event);
-//		Log.d("Verba",
-//				String.format("2. Touched definition box [action=%s, hasSelection=%s, areHandlesActive=%s]",
-//						event.getActionMasked(), hasSelection(), leftHandle.isActive() || rightHandle.isActive()));
+
 		if (event.getActionMasked() == MotionEvent.ACTION_DOWN) {
+			justShowedSelectionWithHandles = false;
 			result |= gotoClickedLinkIfAny(event);
-		} else if (event.getActionMasked() == MotionEvent.ACTION_UP
-				&& !hasSelection()
+		} else if (event.getActionMasked() == MotionEvent.ACTION_UP /*UP event is suppressed when long clicked*/
+				&& !justShowedSelectionWithHandles
 				&& (leftHandle.isActive() || rightHandle.isActive())) {
-			Log.d("Verba", "Hiding selection handles");
-			hideSelectionHandles();
+//			Log.d("Verba", "Hiding selection handles");
+			removeSelectionWithHandles();
 		}
 
 		return result;
@@ -136,12 +136,13 @@ public class PhraseDefinitionView extends TextView implements OnScrollChangedLis
 		int selStart = getSelectionStart();
 		int selEnd = getSelectionEnd();
 
-		Path highlight = new Path();
 		if (hasSelection()) {
-			getLayout().getSelectionPath(selStart, selEnd, highlight);
+			getLayout().getSelectionPath(selStart, selEnd, highlightPath);
+		} else if (!highlightPath.isEmpty()) {
+			highlightPath.rewind();
 		}
 
-		canvas.drawPath(highlight, highlightPaint);
+		canvas.drawPath(highlightPath, highlightPaint);
 
 		canvas.restore();
 	}

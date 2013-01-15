@@ -12,7 +12,7 @@ public class ByteArrayTest {
 	public void shouldReturnNonDelimitedArrayAsIs() {
 		Iterator<ByteArray> splitArrayIterator = new ByteArray("some text".getBytes()).split(new byte[] {'|'}).iterator();
 		assertThat(splitArrayIterator.hasNext(), is(true));
-		assertThat(splitArrayIterator.next().asBytes(), is("some text".getBytes()));
+		assertThat(splitArrayIterator.next().bytes(), is("some text".getBytes()));
 		assertThat(splitArrayIterator.hasNext(), is(false));
 	}
 
@@ -20,9 +20,9 @@ public class ByteArrayTest {
 	public void shouldSplitArrayIntoTwoArrays() {
 		Iterator<ByteArray> splitArrayIterator = new ByteArray("some\0text".getBytes()).split(new byte[] {'\0'}).iterator();
 		assertThat(splitArrayIterator.hasNext(), is(true));
-		assertThat(splitArrayIterator.next().asBytes(), is("some".getBytes()));
+		assertThat(splitArrayIterator.next().bytes(), is("some".getBytes()));
 		assertThat(splitArrayIterator.hasNext(), is(true));
-		assertThat(splitArrayIterator.next().asBytes(), is("text".getBytes()));
+		assertThat(splitArrayIterator.next().bytes(), is("text".getBytes()));
 		assertThat(splitArrayIterator.hasNext(), is(false));
 	}
 }

@@ -15,8 +15,6 @@ import roboguice.inject.InjectView;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.Selection;
-import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -82,8 +80,7 @@ public class PhraseDefinitionDetailsActivity extends VerbaActivity {
 	private void hideAllSelectionHandles() {
 		for (int i = 0; i < phraseDefinitionsShowcase.getChildCount(); i++) {
 			PhraseDefinitionView phraseDefinitionBox = (PhraseDefinitionView) phraseDefinitionsShowcase.getChildAt(i);
-			phraseDefinitionBox.hideSelectionHandles();
-			Selection.removeSelection((Spannable) phraseDefinitionBox.getText());
+			phraseDefinitionBox.removeSelectionWithHandles();
 		}
 	}
 

@@ -14,7 +14,7 @@ public class ByteArray {
 		System.arraycopy(bytes, start, this.bytes, 0, length);
 	}
 
-	public byte[] asBytes() {
+	public byte[] bytes() {
 		return bytes;
 	}
 
