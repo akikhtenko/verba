@@ -3,13 +3,14 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent">
     <ScrollView
+        android:id="@+id/phraseDefinitionWorkingArea"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:overScrollMode="always"
         android:descendantFocusability="beforeDescendants">
         
             <LinearLayout
-                android:id="@+id/phraseDefinitionsShowcase"
+                android:id="@+id/phraseDefinitionShowcase"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"

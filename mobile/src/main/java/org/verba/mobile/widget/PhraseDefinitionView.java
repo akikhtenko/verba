@@ -5,6 +5,7 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Path;
+import android.graphics.Rect;
 import android.text.Layout;
 import android.text.Selection;
 import android.text.Spannable;
@@ -28,6 +29,7 @@ public class PhraseDefinitionView extends TextView implements OnScrollChangedLis
 	private Paint highlightPaint = new Paint();
 	private Path highlightPath = new Path();
 	private boolean justShowedSelectionWithHandles;
+	private Rect workingAreaVisibleRect;
 
 	{
 		highlightPaint.setColor(SELECTION_COLOR);
@@ -158,6 +160,14 @@ public class PhraseDefinitionView extends TextView implements OnScrollChangedLis
 		if (selectionActionsView.isActive()) {
 			selectionActionsView.refreshPanel();
 		}
+	}
+
+	public void setWorkingAreaVisibleRect(Rect workingAreaVisibleRect) {
+		this.workingAreaVisibleRect = workingAreaVisibleRect;
+	}
+
+	Rect getWorkingAreaVisibleRect() {
+		return workingAreaVisibleRect;
 	}
 
 	private void autoScrollDownWhenDraggingRightHandle() {

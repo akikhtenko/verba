@@ -14,6 +14,7 @@ import roboguice.inject.InjectExtra;
 import roboguice.inject.InjectView;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.text.SpannableStringBuilder;
 import android.view.LayoutInflater;
@@ -37,7 +38,8 @@ public class PhraseDefinitionDetailsActivity extends VerbaActivity {
 	public static final String CARD_DEFINITION_PARAMETER = "cardDefinition";
 	private WordUtils wordUtils = new WordUtils();
 	private int lastTapCharOffsetInItsBox;
-	@InjectView(R.id.phraseDefinitionsShowcase) private ViewGroup phraseDefinitionsShowcase;
+	@InjectView(R.id.phraseDefinitionShowcase) private ViewGroup phraseDefinitionShowcase;
+	@InjectView(R.id.phraseDefinitionWorkingArea) private ViewGroup phraseDefinitionWorkingArea;
 	@Inject private LookupPhrase lookupPhrase;
 	@InjectExtra(PHRASE_TO_LOOKUP) private String phraseToLookup;
 
@@ -78,8 +80,8 @@ public class PhraseDefinitionDetailsActivity extends VerbaActivity {
 	};
 
 	private void hideAllSelectionHandles() {
-		for (int i = 0; i < phraseDefinitionsShowcase.getChildCount(); i++) {
-			PhraseDefinitionView phraseDefinitionBox = (PhraseDefinitionView) phraseDefinitionsShowcase.getChildAt(i);
+		for (int i = 0; i < phraseDefinitionShowcase.getChildCount(); i++) {
+			PhraseDefinitionView phraseDefinitionBox = (PhraseDefinitionView) phraseDefinitionShowcase.getChildAt(i);
 			phraseDefinitionBox.removeSelectionWithHandles();
 		}
 	}
@@ -119,10 +121,17 @@ public class PhraseDefinitionDetailsActivity extends VerbaActivity {
 		PhraseDefinitionView phraseDefinitionBox =
 				(PhraseDefinitionView) inflater.inflate(R.layout.phrase_definition_box_template, null);
 
+		setupWorkingAreaVisibleRectFor(phraseDefinitionBox);
 		setupPhraseDefinitionBoxListeners(phraseDefinitionBox);
 		phraseDefinitionBox.setText(toDisplay, BufferType.SPANNABLE);
 
-		phraseDefinitionsShowcase.addView(phraseDefinitionBox, getMarginLayoutParams());
+		phraseDefinitionShowcase.addView(phraseDefinitionBox, getMarginLayoutParams());
+	}
+
+	private void setupWorkingAreaVisibleRectFor(PhraseDefinitionView phraseDefinitionBox) {
+		Rect clip = new Rect();
+		phraseDefinitionWorkingArea.getGlobalVisibleRect(clip);
+		phraseDefinitionBox.setWorkingAreaVisibleRect(clip);
 	}
 
 	private LinearLayout.LayoutParams getMarginLayoutParams() {

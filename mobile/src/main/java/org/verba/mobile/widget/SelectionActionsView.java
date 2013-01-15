@@ -9,12 +9,11 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewParent;
 import android.widget.ImageButton;
 import android.widget.PopupWindow;
 
 public class SelectionActionsView extends View {
-	private static final int PANEL_FROM_HANDLES_OFFSET = 7;
+	private static final int PANEL_FROM_HANDLES_OFFSET = 5;
 	private PhraseDefinitionView textView;
 	private PopupWindow mContainer;
 	private View selectionPanelView;
@@ -91,11 +90,10 @@ public class SelectionActionsView extends View {
 	}
 
 	private void computePanelPositionNearSelectionHandle(HandleView handleView) {
-		Rect clip = getVisibilityClip();
 		int[] parentCoordinates = getParentViewAbsoluteCoordinates();
 
-		computePanelXCoordinate(handleView, clip, parentCoordinates);
-		computePanelYCoordinate(handleView, clip, parentCoordinates);
+		computePanelXCoordinate(handleView, textView.getWorkingAreaVisibleRect(), parentCoordinates);
+		computePanelYCoordinate(handleView, textView.getWorkingAreaVisibleRect(), parentCoordinates);
 	}
 
 	private void computePanelXCoordinate(HandleView handleView, Rect clip, int[] parentCoordinates) {
@@ -159,32 +157,8 @@ public class SelectionActionsView extends View {
 		return active;
 	}
 
-	private Rect getVisibilityClip() {
-		final int extendedPaddingTop = textView.getExtendedPaddingTop();
-		final int extendedPaddingBottom = textView.getExtendedPaddingBottom();
-		final int compoundPaddingLeft = textView.getCompoundPaddingLeft();
-		final int compoundPaddingRight = textView.getCompoundPaddingRight();
-
-		final int left = 0;
-		final int right = textView.getWidth();
-		final int top = 0;
-		final int bottom = textView.getHeight();
-
-		final Rect clip = new Rect();
-		clip.left = left + compoundPaddingLeft;
-		clip.top = top + extendedPaddingTop;
-		clip.right = right - compoundPaddingRight;
-		clip.bottom = bottom - extendedPaddingBottom;
-
-		final ViewParent parent = textView.getParent();
-		parent.getChildVisibleRect(textView, clip, null);
-
-		return clip;
-	}
-
-
 	private boolean isPositionVisible(int posX, int posY) {
-		Rect clip = getVisibilityClip();
+		Rect clip = textView.getWorkingAreaVisibleRect();
 		return posX >= clip.left
 				&& (posX + selectionPanelView.getMeasuredWidth()) <= clip.right
 				&& posY >= clip.top
