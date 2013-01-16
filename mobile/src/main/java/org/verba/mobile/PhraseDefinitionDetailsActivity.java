@@ -79,6 +79,13 @@ public class PhraseDefinitionDetailsActivity extends VerbaActivity {
 		}
 	};
 
+	private OnClickListener onSearchButtonClickListener = new OnClickListener() {
+		@Override
+		public void onClick(View v) {
+			lookupAnotherPhrase(getSelection());
+		}
+	};
+
 	private void hideAllSelectionHandles() {
 		for (int i = 0; i < phraseDefinitionShowcase.getChildCount(); i++) {
 			PhraseDefinitionView phraseDefinitionBox = (PhraseDefinitionView) phraseDefinitionShowcase.getChildAt(i);
@@ -147,6 +154,7 @@ public class PhraseDefinitionDetailsActivity extends VerbaActivity {
 		phraseDefinitionBox.setOnLongClickListener(phraseDefinitionDetailsViewLongClickListener);
 		phraseDefinitionBox.setOnTouchListener(phraseDefinitionDetailsViewTouchListener);
 		phraseDefinitionBox.setOnUseSelectionButtonClick(onUseSelectionButtonClickListener);
+		phraseDefinitionBox.setOnSearchButtonClick(onSearchButtonClickListener);
 	}
 
 	public void displayPhraseDefinition(PhraseDefinition phraseDefinition) {

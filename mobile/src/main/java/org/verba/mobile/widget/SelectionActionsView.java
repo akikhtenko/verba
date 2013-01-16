@@ -53,6 +53,11 @@ public class SelectionActionsView extends View {
 		useSelectionButton.setOnClickListener(listener);
 	}
 
+	public void setOnSearchButtonClick(OnClickListener listener) {
+		ImageButton searchButton = (ImageButton) selectionPanelView.findViewById(R.id.searchButton);
+		searchButton.setOnClickListener(listener);
+	}
+
 	protected void measureContent() {
 		final DisplayMetrics displayMetrics = textView.getContext().getResources().getDisplayMetrics();
 		selectionPanelView.measure(View.MeasureSpec.makeMeasureSpec(displayMetrics.widthPixels, View.MeasureSpec.AT_MOST),

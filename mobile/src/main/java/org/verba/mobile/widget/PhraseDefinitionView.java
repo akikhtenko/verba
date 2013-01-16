@@ -60,6 +60,10 @@ public class PhraseDefinitionView extends TextView implements OnScrollChangedLis
 		selectionActionsView.setOnUseSelectionButtonClick(listener);
 	}
 
+	public void setOnSearchButtonClick(OnClickListener listener) {
+		selectionActionsView.setOnSearchButtonClick(listener);
+	}
+
 	public void showSelectionHandles() {
 		registerOnScrollListener();
 
