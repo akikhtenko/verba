@@ -1,5 +1,9 @@
 package org.verba.mobile;
 
+import static org.verba.mobile.utils.SelectionUtils.getPhraseMarkEnd;
+import static org.verba.mobile.utils.SelectionUtils.getPhraseMarkStart;
+import static org.verba.mobile.utils.SelectionUtils.hasPhraseMark;
+
 import java.util.Iterator;
 
 import org.verba.interactors.LookupPhrase;
@@ -16,6 +20,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Rect;
 import android.os.Bundle;
+import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -73,7 +78,7 @@ public class PhraseDefinitionDetailsActivity extends VerbaActivity {
 		@Override
 		public void onClick(View v) {
 			Intent commandToOpenEditCardActivity = new Intent(PhraseDefinitionDetailsActivity.this, EditCardActivity.class);
-			commandToOpenEditCardActivity.putExtra(CARD_PHRASE_PARAMETER, getIntent().getStringExtra(PHRASE_TO_LOOKUP));
+			commandToOpenEditCardActivity.putExtra(CARD_PHRASE_PARAMETER, getPhraseToMemorize());
 			commandToOpenEditCardActivity.putExtra(CARD_DEFINITION_PARAMETER, getSelection());
 			startActivity(commandToOpenEditCardActivity);
 		}
@@ -174,6 +179,21 @@ public class PhraseDefinitionDetailsActivity extends VerbaActivity {
 		Intent commandToOpenPhraseDefinitionDetails = new Intent(this, PhraseDefinitionDetailsActivity.class);
 		commandToOpenPhraseDefinitionDetails.putExtra(PHRASE_TO_LOOKUP, anotherPhraseToLookup);
 		startActivity(commandToOpenPhraseDefinitionDetails);
+	}
+
+	private String getPhraseToMemorize() {
+		View currentlyFocusedView = getCurrentFocus();
+		if (currentlyFocusedView != null) {
+			// FIX: the line below throws class cast to LinearLayout
+			PhraseDefinitionView phraseDefinitionBox = (PhraseDefinitionView) currentlyFocusedView;
+			if (hasPhraseMark((Spannable) phraseDefinitionBox.getText())) {
+				int phraseMarkStart = getPhraseMarkStart((Spannable) phraseDefinitionBox.getText());
+				int phraseMarkEnd = getPhraseMarkEnd((Spannable) phraseDefinitionBox.getText());
+				return phraseDefinitionBox.getText().subSequence(phraseMarkStart, phraseMarkEnd).toString();
+			}
+		}
+
+		return phraseToLookup;
 	}
 
 	private String getSelection() {

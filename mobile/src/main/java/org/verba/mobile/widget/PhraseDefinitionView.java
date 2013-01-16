@@ -1,6 +1,8 @@
 package org.verba.mobile.widget;
 
 
+import org.verba.mobile.utils.SelectionUtils;
+
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
@@ -15,6 +17,7 @@ import android.text.style.ClickableSpan;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.MotionEvent;
+import android.view.View;
 import android.view.ViewTreeObserver;
 import android.view.ViewTreeObserver.OnScrollChangedListener;
 import android.widget.TextView;
@@ -22,18 +25,30 @@ import android.widget.TextView;
 public class PhraseDefinitionView extends TextView implements OnScrollChangedListener {
 	private static final int HYSTERESIS_OFFSET_THRESHOLD_BASIS = 8;
 	private static final int SELECTION_COLOR = 0x4403992B;
+	private static final int PHRASE_MARK_COLOR = 0x4405BFFC;
 
 	private SelectionActionsView selectionActionsView = new SelectionActionsView(this);
 	private HandleView leftHandle = new LeftHandleView(this, selectionActionsView);
 	private HandleView rightHandle = new RightHandleView(this, selectionActionsView);
 	private Paint highlightPaint = new Paint();
+	private Paint phraseMarkPaint = new Paint();
 	private Path highlightPath = new Path();
+	private Path phraseMarkPath = new Path();
 	private boolean justShowedSelectionWithHandles;
 	private Rect workingAreaVisibleRect;
+	private OnClickListener onUseAsPhraseButtonClickListener = new OnClickListener() {
+		@Override
+		public void onClick(View v) {
+			useSelectionAsPhrase();
+		}
+	};
 
 	{
 		highlightPaint.setColor(SELECTION_COLOR);
 		highlightPaint.setStyle(Paint.Style.FILL);
+		phraseMarkPaint.setColor(PHRASE_MARK_COLOR);
+		phraseMarkPaint.setStyle(Paint.Style.FILL);
+		selectionActionsView.setOnUseAsPhraseButtonClick(onUseAsPhraseButtonClickListener);
 	}
 
 	public PhraseDefinitionView(Context context, AttributeSet attrs, int defStyle) {
@@ -98,9 +113,7 @@ public class PhraseDefinitionView extends TextView implements OnScrollChangedLis
 			justShowedSelectionWithHandles = false;
 			result |= gotoClickedLinkIfAny(event);
 		} else if (event.getActionMasked() == MotionEvent.ACTION_UP /*UP event is suppressed when long clicked*/
-				&& !justShowedSelectionWithHandles
-				&& (leftHandle.isActive() || rightHandle.isActive())) {
-//			Log.d("Verba", "Hiding selection handles");
+				&& !justShowedSelectionWithHandles && (leftHandle.isActive() || rightHandle.isActive())) {
 			removeSelectionWithHandles();
 		}
 
@@ -139,6 +152,13 @@ public class PhraseDefinitionView extends TextView implements OnScrollChangedLis
 		// translate in by padding
 		canvas.translate(getCompoundPaddingLeft(), getExtendedPaddingTop() + getVerticalOffset());
 
+		drawSelection(canvas);
+		drawPhraseMark(canvas);
+
+		canvas.restore();
+	}
+
+	private void drawSelection(Canvas canvas) {
 		int selStart = getSelectionStart();
 		int selEnd = getSelectionEnd();
 
@@ -149,8 +169,27 @@ public class PhraseDefinitionView extends TextView implements OnScrollChangedLis
 		}
 
 		canvas.drawPath(highlightPath, highlightPaint);
+	}
 
-		canvas.restore();
+	private void drawPhraseMark(Canvas canvas) {
+		Spannable spannableText = (Spannable) getText();
+		int phraseMarkStart = SelectionUtils.getPhraseMarkStart(spannableText);
+		int phraseMarkEnd = SelectionUtils.getPhraseMarkEnd(spannableText);
+
+		if (SelectionUtils.hasPhraseMark(spannableText)) {
+			getLayout().getSelectionPath(phraseMarkStart, phraseMarkEnd, phraseMarkPath);
+		} else if (!phraseMarkPath.isEmpty()) {
+			phraseMarkPath.rewind();
+		}
+
+		canvas.drawPath(phraseMarkPath, phraseMarkPaint);
+	}
+
+	private void useSelectionAsPhrase() {
+		SelectionUtils.removePhraseMark((Spannable) getText());
+		invalidate(); // removes the previous mark from the text view
+		SelectionUtils.setSelectionAsPhrase((Spannable) getText());
+		removeSelectionWithHandles();
 	}
 
 	@Override
@@ -289,4 +328,5 @@ public class PhraseDefinitionView extends TextView implements OnScrollChangedLis
 
 		return yCoordinate;
 	}
+
 }

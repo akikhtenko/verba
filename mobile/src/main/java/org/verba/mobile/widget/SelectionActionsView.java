@@ -21,15 +21,6 @@ public class SelectionActionsView extends View {
 	private int absoluteYInView;
 	private boolean active;
 
-	private void createPopupWindow() {
-		mContainer = new PopupWindow(textView.getContext());
-		mContainer.setClippingEnabled(false);
-		mContainer.setWindowLayoutMode(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-		mContainer.setWidth(ViewGroup.LayoutParams.WRAP_CONTENT);
-		mContainer.setHeight(ViewGroup.LayoutParams.WRAP_CONTENT);
-		mContainer.setBackgroundDrawable(null);
-	}
-
 	public SelectionActionsView(PhraseDefinitionView phraseDefinitionView) {
 		super(phraseDefinitionView.getContext());
 		textView = phraseDefinitionView;
@@ -39,6 +30,15 @@ public class SelectionActionsView extends View {
 		initContentView();
 
 		mContainer.setContentView(selectionPanelView);
+	}
+
+	private void createPopupWindow() {
+		mContainer = new PopupWindow(textView.getContext());
+		mContainer.setClippingEnabled(false);
+		mContainer.setWindowLayoutMode(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+		mContainer.setWidth(ViewGroup.LayoutParams.WRAP_CONTENT);
+		mContainer.setHeight(ViewGroup.LayoutParams.WRAP_CONTENT);
+		mContainer.setBackgroundDrawable(null);
 	}
 
 	protected void initContentView() {
@@ -56,6 +56,11 @@ public class SelectionActionsView extends View {
 	public void setOnSearchButtonClick(OnClickListener listener) {
 		ImageButton searchButton = (ImageButton) selectionPanelView.findViewById(R.id.searchButton);
 		searchButton.setOnClickListener(listener);
+	}
+
+	public void setOnUseAsPhraseButtonClick(OnClickListener listener) {
+		ImageButton useAsPhraseButton = (ImageButton) selectionPanelView.findViewById(R.id.useAsPhraseButton);
+		useAsPhraseButton.setOnClickListener(listener);
 	}
 
 	protected void measureContent() {
