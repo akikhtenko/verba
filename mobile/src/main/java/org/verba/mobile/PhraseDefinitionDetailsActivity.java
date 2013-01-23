@@ -33,6 +33,9 @@ import android.widget.LinearLayout;
 import android.widget.TextView.BufferType;
 import android.widget.Toast;
 
+import com.actionbarsherlock.view.ActionMode;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuItem;
 import com.google.inject.Inject;
 
 public class PhraseDefinitionDetailsActivity extends VerbaActivity {
@@ -43,6 +46,7 @@ public class PhraseDefinitionDetailsActivity extends VerbaActivity {
 	public static final String CARD_DEFINITION_PARAMETER = "cardDefinition";
 	private WordUtils wordUtils = new WordUtils();
 	private int lastTapCharOffsetInItsBox;
+	private ActionMode mMode;
 	@InjectView(R.id.phraseDefinitionShowcase) private ViewGroup phraseDefinitionShowcase;
 	@InjectView(R.id.phraseDefinitionWorkingArea) private ViewGroup phraseDefinitionWorkingArea;
 	@Inject private LookupPhrase lookupPhrase;
@@ -55,6 +59,9 @@ public class PhraseDefinitionDetailsActivity extends VerbaActivity {
 			PhraseDefinitionView phraseDefinitionBox = (PhraseDefinitionView) eventView;
 			wordUtils.selectWordAtLastTapOffset(phraseDefinitionBox.getText(), lastTapCharOffsetInItsBox);
 			phraseDefinitionBox.showSelectionHandles();
+			if (mMode == null) {
+				mMode = startActionMode(new AnActionModeOfEpicProportions());
+			}
 			return true;
 		}
 	};
@@ -206,6 +213,42 @@ public class PhraseDefinitionDetailsActivity extends VerbaActivity {
 			return phraseDefinitionBox.getText().subSequence(selectionStart, selectionEnd).toString();
 		} else {
 			return null;
+		}
+	}
+
+	private final class AnActionModeOfEpicProportions implements ActionMode.Callback {
+		@Override
+		public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+			menu.add("Save").setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+
+			menu.add("Search").setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+
+			menu.add("Refresh").setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+
+			menu.add("Save").setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+
+			menu.add("Search").setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+
+			menu.add("Refresh").setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+
+			return true;
+		}
+
+		@Override
+		public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+			return false;
+		}
+
+		@Override
+		public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+			Toast.makeText(PhraseDefinitionDetailsActivity.this, "Got click: " + item, Toast.LENGTH_SHORT).show();
+			mode.finish();
+			return true;
+		}
+
+		@Override
+		public void onDestroyActionMode(ActionMode mode) {
+			mMode = null;
 		}
 	}
 }

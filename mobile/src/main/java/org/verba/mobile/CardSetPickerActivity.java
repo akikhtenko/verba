@@ -45,12 +45,12 @@ public class CardSetPickerActivity extends VerbaActivity implements OnItemClickL
 
 	private void setupCardSetsList() {
 		cardSetsList.setOnItemClickListener(this);
-		registerForContextMenu(cardSetsList);
+//		registerForContextMenu(cardSetsList);
 	}
 
 	private void populateCardSetsList() {
 		List<CardSet> cardSets = getCardSet.all();
-		ArrayAdapter<CardSet> cardSetsDatasource = new ArrayAdapter<CardSet>(this, R.layout.list_item,
+		ArrayAdapter<CardSet> cardSetsDatasource = new ArrayAdapter<CardSet>(this, R.layout.card_sets_list_item,
 				R.id.listItemTitle, cardSets);
 		cardSetsList.setAdapter(cardSetsDatasource);
 	}

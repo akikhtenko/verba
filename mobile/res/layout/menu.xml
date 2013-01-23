@@ -1,52 +1,68 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.actionbarsherlock.internal.widget.IcsLinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/menuLayout"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:background="@color/phrase_definition_details_background"
-    android:orientation="vertical">
+    android:divider="@drawable/abs__list_divider_holo_dark"
+    android:dividerPadding="12dip"
+    android:showDividers="middle"
+    android:gravity="center_vertical|right"
+    android:background="@drawable/abs__cab_background_top_holo_dark">
     
-    <FrameLayout 
-        android:id="@+id/layoutContent"
-        android:layout_width="fill_parent" 
-        android:layout_height="0dip"
-        android:layout_weight="1"/>
-
     <LinearLayout
-        android:id="@+id/menuLayout"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/phrase_definition_details_background">
-        
+        style="@style/Widget.Sherlock.ActionButton"
+        android:layout_width="wrap_content"
+        android:layout_height="fill_parent"
+        android:addStatesFromChildren="true">
+
         <ImageButton
             android:id="@+id/dictionaryMenuButton"
-            android:layout_width="0dip"
-            android:layout_weight="0.25"
-            android:layout_height="wrap_content"
-            android:background="@drawable/menu_button_border"
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:background="@null"
             android:src="@drawable/dictionary" />
-        
+    </LinearLayout>
+
+    <LinearLayout
+        style="@style/Widget.Sherlock.ActionButton"
+        android:layout_width="wrap_content"
+        android:layout_height="fill_parent"
+        android:addStatesFromChildren="true">
+
         <ImageButton
             android:id="@+id/cardsMenuButton"
-            android:layout_width="0dip"
-            android:layout_weight="0.25"
-            android:layout_height="match_parent"
-            android:background="@drawable/menu_button_border"
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:background="@null"
             android:src="@drawable/cards" />
+    </LinearLayout>
+
+    <LinearLayout
+        style="@style/Widget.Sherlock.ActionButton"
+        android:layout_width="wrap_content"
+        android:layout_height="fill_parent"
+        android:addStatesFromChildren="true">
 
         <ImageButton
             android:id="@+id/dictionariesMenuButton"
-            android:layout_width="0dip"
-            android:layout_weight="0.25"
-            android:layout_height="match_parent"
-            android:background="@drawable/menu_button_border"
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:background="@null"
             android:src="@drawable/dictionaries" />
-        
+    </LinearLayout>
+
+    <LinearLayout
+        style="@style/Widget.Sherlock.ActionButton"
+        android:layout_width="wrap_content"
+        android:layout_height="fill_parent"
+        android:addStatesFromChildren="true">
+
         <ImageButton
             android:id="@+id/settingsMenuButton"
-            android:layout_width="0dip"
-            android:layout_weight="0.25"
-            android:layout_height="match_parent"
-            android:background="@drawable/menu_button_border"
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:background="@null"
             android:src="@drawable/settings" />
     </LinearLayout>
-</LinearLayout>
+
+</com.actionbarsherlock.internal.widget.IcsLinearLayout>

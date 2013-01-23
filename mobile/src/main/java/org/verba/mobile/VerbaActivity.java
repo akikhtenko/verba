@@ -1,17 +1,25 @@
 package org.verba.mobile;
 
-import roboguice.activity.RoboActivity;
-import android.content.Context;
+import java.lang.reflect.Field;
+
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
-import android.view.LayoutInflater;
+import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.ViewGroup;
+import android.view.ViewConfiguration;
 import android.widget.ImageButton;
-import android.widget.LinearLayout;
 
-public abstract class VerbaActivity extends RoboActivity {
+import com.actionbarsherlock.app.ActionBar;
+import com.actionbarsherlock.view.MenuItem;
+import com.github.rtyley.android.sherlock.roboguice.activity.RoboSherlockActivity;
+
+public abstract class VerbaActivity extends RoboSherlockActivity {
+	public static final int DEVICE_VERSION   = Build.VERSION.SDK_INT;
+	public static final int DEVICE_HONEYCOMB = Build.VERSION_CODES.HONEYCOMB;
+
 	private OnClickListener openDictionaryButtonListener = new OnClickListener() {
 		@Override
 		public void onClick(View v) {
@@ -35,34 +43,58 @@ public abstract class VerbaActivity extends RoboActivity {
 	};
 
 	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-
-		if (loadSystemMenu()) {
-			inflateSystemMenu();
-		} else {
-			setContentView(getContentLayout());
+	public boolean onOptionsItemSelected(MenuItem menuItem) {
+		switch (menuItem.getItemId()) {
+		case R.id.searchMenuItem:
+			openScreen(PhraseLookupActivity.class);
+			return true;
+		case R.id.cardsMenuItem:
+			openScreen(CardSetPickerActivity.class);
+			return true;
+		case R.id.dictionariesMenuItem:
+			openScreen(DictionariesLoaderActivity.class);
+			return true;
+		case R.id.settingsMenuItem:
+			openScreen(PhraseLookupActivity.class);
+			return true;
+		default:
+			return super.onOptionsItemSelected(menuItem);
 		}
 	}
 
-	private void inflateSystemMenu() {
-		setContentView(getContentViewWithMenu());
+	@SuppressWarnings("rawtypes")
+	private void openScreen(Class clazz) {
+		Intent commandToOpenDictionary = new Intent(VerbaActivity.this, clazz);
+		startActivity(commandToOpenDictionary);
+	}
 
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+
+		hackSherlockActionBarToShowOverlayAtAllTimes();
+		ActionBar actionBar = getSupportActionBar();
+		actionBar.setCustomView(R.layout.menu);
+
+		setContentView(getContentLayout());
 		setupOpenDictionaryButton();
 		setupOpenCardSetPickerButton();
 		setupOpenDictionariesManagerButton();
 	}
 
-	private View getContentViewWithMenu() {
-		LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-		LinearLayout parent = (LinearLayout) inflater.inflate(R.layout.menu, null);
-
-		ViewGroup layoutContentView = (ViewGroup) parent.findViewById(R.id.layoutContent);
-
-		View contentView = inflater.inflate(getContentLayout(), null);
-		layoutContentView.addView(contentView);
-
-		return parent;
+	private void hackSherlockActionBarToShowOverlayAtAllTimes() {
+		if (DEVICE_VERSION >= DEVICE_HONEYCOMB) {
+			try {
+				ViewConfiguration config = ViewConfiguration.get(this);
+				Field menuKeyField = ViewConfiguration.class.getDeclaredField("sHasPermanentMenuKey");
+				if (menuKeyField != null) {
+					menuKeyField.setAccessible(true);
+					menuKeyField.setBoolean(config, false);
+				}
+			} catch (Exception ex) {
+				Log.e("Verba", "ABS Overflow Menu forcing hack failed", ex);
+			}
+		}
 	}
 
 	private void setupOpenCardSetPickerButton() {
@@ -83,4 +115,20 @@ public abstract class VerbaActivity extends RoboActivity {
 	protected abstract int getContentLayout();
 
 	protected abstract boolean loadSystemMenu();
+
+	/**
+	 * The second half of the hack to always show the action bar overlay button
+	 * @see check out hackSherlockActionBarToShowOverlayAtAllTimes() to find the first half
+	 */
+	@Override
+	public boolean onKeyUp(int keyCode, KeyEvent event) {
+		if (DEVICE_VERSION < DEVICE_HONEYCOMB) {
+			if (event.getAction() == KeyEvent.ACTION_UP && keyCode == KeyEvent.KEYCODE_MENU) {
+				openOptionsMenu();
+				return true;
+			}
+		}
+		return super.onKeyUp(keyCode, event);
+	}
+
 }
