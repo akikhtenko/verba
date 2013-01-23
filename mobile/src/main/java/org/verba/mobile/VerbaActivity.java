@@ -76,7 +76,6 @@ public abstract class VerbaActivity extends RoboSherlockActivity {
 		ActionBar actionBar = getSupportActionBar();
 		actionBar.setCustomView(R.layout.menu);
 
-		setContentView(getContentLayout());
 		setupOpenDictionaryButton();
 		setupOpenCardSetPickerButton();
 		setupOpenDictionariesManagerButton();
@@ -111,10 +110,6 @@ public abstract class VerbaActivity extends RoboSherlockActivity {
 		ImageButton button = (ImageButton) findViewById(R.id.dictionariesMenuButton);
 		button.setOnClickListener(openDictionariesManagerButtonListener);
 	}
-
-	protected abstract int getContentLayout();
-
-	protected abstract boolean loadSystemMenu();
 
 	/**
 	 * The second half of the hack to always show the action bar overlay button

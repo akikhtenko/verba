@@ -7,6 +7,7 @@ import org.verba.Card;
 import org.verba.interactors.GetCard;
 import org.verba.mobile.repository.SqliteCardRepository.NoCardFoundException;
 
+import roboguice.inject.ContentView;
 import roboguice.inject.InjectExtra;
 import roboguice.inject.InjectView;
 import android.os.Bundle;
@@ -15,6 +16,7 @@ import android.widget.Toast;
 
 import com.google.inject.Inject;
 
+@ContentView(R.layout.view_card)
 public class ViewCardActivity extends VerbaActivity {
 	@Inject private GetCard getCard;
 
@@ -27,16 +29,6 @@ public class ViewCardActivity extends VerbaActivity {
 		super.onCreate(savedInstanceState);
 
 		populateCardFields();
-	}
-
-	@Override
-	protected boolean loadSystemMenu() {
-		return true;
-	}
-
-	@Override
-	protected int getContentLayout() {
-		return R.layout.view_card;
 	}
 
 	private void populateCardFields() {

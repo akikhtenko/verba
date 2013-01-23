@@ -12,6 +12,7 @@ import org.verba.interactors.AddCard;
 import org.verba.interactors.AddCardSet;
 import org.verba.interactors.GetCardSet;
 
+import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
 import android.app.Dialog;
 import android.os.Bundle;
@@ -24,6 +25,7 @@ import android.widget.Spinner;
 
 import com.google.inject.Inject;
 
+@ContentView(R.layout.edit_card)
 public class EditCardActivity extends VerbaActivity implements OnClickListener {
 	private static final int DIALOG_ADD_CARD_SET = 0;
 	@Inject private GetCardSet getCardSet;
@@ -84,17 +86,6 @@ public class EditCardActivity extends VerbaActivity implements OnClickListener {
 		cardDefinitionField.setText(getIntent().getStringExtra(CARD_DEFINITION_PARAMETER));
 		setupSaveButton();
 	}
-
-	@Override
-	protected boolean loadSystemMenu() {
-		return true;
-	}
-
-	@Override
-	protected int getContentLayout() {
-		return R.layout.edit_card;
-	}
-
 
 	private void setupAddCardSetButton() {
 		Button button = (Button) findViewById(R.id.addCardSetButton);

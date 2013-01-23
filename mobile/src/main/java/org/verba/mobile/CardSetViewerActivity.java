@@ -7,6 +7,7 @@ import java.util.List;
 import org.verba.Card;
 import org.verba.interactors.GetCards;
 
+import roboguice.inject.ContentView;
 import roboguice.inject.InjectExtra;
 import roboguice.inject.InjectView;
 import android.content.Intent;
@@ -19,6 +20,7 @@ import android.widget.ListView;
 
 import com.google.inject.Inject;
 
+@ContentView(R.layout.card_set_viewer)
 public class CardSetViewerActivity extends VerbaActivity implements OnItemClickListener {
 	public static final String CARD_ID_PARAMETER = "cardId";
 	@Inject private GetCards getCards;
@@ -31,16 +33,6 @@ public class CardSetViewerActivity extends VerbaActivity implements OnItemClickL
 
 		cardsList.setOnItemClickListener(this);
 		populateCardsList();
-	}
-
-	@Override
-	protected boolean loadSystemMenu() {
-		return true;
-	}
-
-	@Override
-	protected int getContentLayout() {
-		return R.layout.card_set_viewer;
 	}
 
 	private void populateCardsList() {

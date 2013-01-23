@@ -7,6 +7,7 @@ import java.util.List;
 import org.verba.interactors.GetNewDictionaries;
 import org.verba.interactors.GetSuggestions;
 
+import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
 import android.content.Intent;
 import android.os.Bundle;
@@ -24,6 +25,7 @@ import android.widget.ListView;
 
 import com.google.inject.Inject;
 
+@ContentView(R.layout.phrase_definition_lookup)
 public class PhraseLookupActivity extends VerbaActivity implements OnClickListener, TextWatcher,
 		OnItemClickListener {
 	public static final String NEW_DICTIONARIES = "newDictionaries";
@@ -54,16 +56,6 @@ public class PhraseLookupActivity extends VerbaActivity implements OnClickListen
 
 		setupLookupButton();
 		phraseSuggestionsList.setOnItemClickListener(this);
-	}
-
-	@Override
-	protected boolean loadSystemMenu() {
-		return true;
-	}
-
-	@Override
-	protected int getContentLayout() {
-		return R.layout.phrase_definition_lookup;
 	}
 
 	private void setupLookupButton() {

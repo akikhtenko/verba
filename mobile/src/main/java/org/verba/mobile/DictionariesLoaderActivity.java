@@ -14,6 +14,7 @@ import org.verba.mobile.task.DictionaryPopulatorTask;
 import org.verba.stardict.index.DictionaryIndexGateway;
 import org.verba.stardict.metadata.DictionaryMetadataGateway;
 
+import roboguice.inject.ContentView;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -22,6 +23,7 @@ import android.widget.ListView;
 
 import com.google.inject.Inject;
 
+@ContentView(R.layout.dictionaries_loader)
 public class DictionariesLoaderActivity extends VerbaActivity {
 	private static final int POPULATION_PROGRESS_DELTA = 100;
 	private List<DictionaryCandidate> dictionaryCandidates;
@@ -37,16 +39,6 @@ public class DictionariesLoaderActivity extends VerbaActivity {
 			loadSelectedDictionaries();
 		}
 	};
-
-	@Override
-	protected boolean loadSystemMenu() {
-		return true;
-	}
-
-	@Override
-	protected int getContentLayout() {
-		return R.layout.dictionaries_loader;
-	}
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {

@@ -5,6 +5,7 @@ import java.util.List;
 import org.verba.CardSet;
 import org.verba.interactors.GetCardSet;
 
+import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
 import android.content.Intent;
 import android.os.Bundle;
@@ -20,6 +21,7 @@ import android.widget.ListView;
 
 import com.google.inject.Inject;
 
+@ContentView(R.layout.card_sets)
 public class CardSetPickerActivity extends VerbaActivity implements OnItemClickListener {
 	public static final String CARD_SET_ID_PARAMETER = "cardSetId";
 	@InjectView(R.id.cardSets) private ListView cardSetsList;
@@ -31,16 +33,6 @@ public class CardSetPickerActivity extends VerbaActivity implements OnItemClickL
 
 		setupCardSetsList();
 		populateCardSetsList();
-	}
-
-	@Override
-	protected boolean loadSystemMenu() {
-		return true;
-	}
-
-	@Override
-	protected int getContentLayout() {
-		return R.layout.card_sets;
 	}
 
 	private void setupCardSetsList() {

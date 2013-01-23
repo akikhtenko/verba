@@ -14,6 +14,7 @@ import org.verba.stardict.PhraseDefinition;
 import org.verba.stardict.PhraseDefinitionElement;
 import org.verba.stardict.PhraseDefinitionElementDisplay;
 
+import roboguice.inject.ContentView;
 import roboguice.inject.InjectExtra;
 import roboguice.inject.InjectView;
 import android.content.Context;
@@ -38,6 +39,7 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 import com.google.inject.Inject;
 
+@ContentView(R.layout.phrase_definition_details)
 public class PhraseDefinitionDetailsActivity extends VerbaActivity {
 	private static final int MARGIN_5_IN_DIP = 5;
 	private static final int MARGIN_20_IN_DIP = 20;
@@ -115,16 +117,6 @@ public class PhraseDefinitionDetailsActivity extends VerbaActivity {
 
 	private void showLookingForDefinitionProgress() {
 		//displayText("Looking for definition...");
-	}
-
-	@Override
-	protected boolean loadSystemMenu() {
-		return true;
-	}
-
-	@Override
-	protected int getContentLayout() {
-		return R.layout.phrase_definition_details;
 	}
 
 	private void lookupPhraseDefinitions() {
