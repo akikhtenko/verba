@@ -14,7 +14,6 @@ import android.widget.PopupWindow;
 public abstract class HandleView extends View {
 	private static final int ROTATION_180_DEGREES = 180;
 	protected PhraseDefinitionView textView;
-	protected SelectionActionsView selectionActionsView;
 	private Drawable underlyingDrawable;
 	private PopupWindow mContainer;
 	private int handleAbsoluteXInView;
@@ -35,10 +34,9 @@ public abstract class HandleView extends View {
 		TOP, BOTTOM, INLINE
 	}
 
-	public HandleView(PhraseDefinitionView aTextView, SelectionActionsView aSelectionActionsView) {
+	public HandleView(PhraseDefinitionView aTextView) {
 		super(aTextView.getContext());
 		textView = aTextView;
-		selectionActionsView = aSelectionActionsView;
 		createPopupWindow(aTextView);
 
 		initialiseState();
@@ -226,7 +224,6 @@ public abstract class HandleView extends View {
 		lastParentAbsoluteX = coords[0];
 		lastParentAbsoluteY = coords[1];
 		markDragging();
-		selectionActionsView.hide();
 	}
 
 	private void handleActionMove(MotionEvent ev) {
@@ -244,7 +241,6 @@ public abstract class HandleView extends View {
 
 	private void handleActionUp() {
 		markNotDragging();
-		selectionActionsView.updateAfterSelectionHandleDrag(this);
 	}
 
 	void setPositionAt(final int offset) {

@@ -14,13 +14,15 @@
                 android:ems="10"
                 android:hint="@string/wordToFindHint"
                 android:layout_width="0dip"
-                android:singleLine="true" android:layout_weight="1"/>
+                android:singleLine="true" android:layout_weight="1"
+                style="@style/Verba.EditLine"/>
     
             <Button
                 android:id="@+id/lookupButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/lookupButtonLabel" />
+                android:text="@string/lookupButtonLabel"
+                style="@style/Verba.Button"/>
     
     </LinearLayout>
     

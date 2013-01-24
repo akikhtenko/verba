@@ -1,15 +1,13 @@
 package org.verba.mobile.widget;
 
 import static org.verba.mobile.widget.HandleView.VerticalPosition.BOTTOM;
-
-
 import android.text.Selection;
 import android.text.Spannable;
 
 public class RightHandleView extends HandleView {
 
-	public RightHandleView(PhraseDefinitionView phraseDefinitionView, SelectionActionsView aSelectionActionsView) {
-		super(phraseDefinitionView, aSelectionActionsView);
+	public RightHandleView(PhraseDefinitionView phraseDefinitionView) {
+		super(phraseDefinitionView);
 	}
 
 	@Override

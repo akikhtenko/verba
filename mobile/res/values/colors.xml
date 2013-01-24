@@ -2,6 +2,7 @@
 
     <color name="phrase_definition_details_background">#fff1c2</color>
     <color name="phrase_definition_details_text">#000000</color>
+    <color name="edit_text_background">#FFFFFF</color>
     <color name="default_colored_phrase">#00008B</color>
     
     <color name="white">#FFFFFF</color>

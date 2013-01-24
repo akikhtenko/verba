@@ -17,7 +17,6 @@ import android.text.style.ClickableSpan;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.MotionEvent;
-import android.view.View;
 import android.view.ViewTreeObserver;
 import android.view.ViewTreeObserver.OnScrollChangedListener;
 import android.widget.TextView;
@@ -27,28 +26,21 @@ public class PhraseDefinitionView extends TextView implements OnScrollChangedLis
 	private static final int SELECTION_COLOR = 0x4403992B;
 	private static final int PHRASE_MARK_COLOR = 0x4405BFFC;
 
-	private SelectionActionsView selectionActionsView = new SelectionActionsView(this);
-	private HandleView leftHandle = new LeftHandleView(this, selectionActionsView);
-	private HandleView rightHandle = new RightHandleView(this, selectionActionsView);
+	private HandleView leftHandle = new LeftHandleView(this);
+	private HandleView rightHandle = new RightHandleView(this);
+	private SelectionManualRemoveListener selectionManualRemoveListener;
 	private Paint highlightPaint = new Paint();
 	private Paint phraseMarkPaint = new Paint();
 	private Path highlightPath = new Path();
 	private Path phraseMarkPath = new Path();
 	private boolean justShowedSelectionWithHandles;
 	private Rect workingAreaVisibleRect;
-	private OnClickListener onUseAsPhraseButtonClickListener = new OnClickListener() {
-		@Override
-		public void onClick(View v) {
-			useSelectionAsPhrase();
-		}
-	};
 
 	{
 		highlightPaint.setColor(SELECTION_COLOR);
 		highlightPaint.setStyle(Paint.Style.FILL);
 		phraseMarkPaint.setColor(PHRASE_MARK_COLOR);
 		phraseMarkPaint.setStyle(Paint.Style.FILL);
-		selectionActionsView.setOnUseAsPhraseButtonClick(onUseAsPhraseButtonClickListener);
 	}
 
 	public PhraseDefinitionView(Context context, AttributeSet attrs, int defStyle) {
@@ -63,22 +55,6 @@ public class PhraseDefinitionView extends TextView implements OnScrollChangedLis
 		super(context);
 	}
 
-	HandleView getLeftHandle() {
-		return leftHandle;
-	}
-
-	HandleView getRightHandle() {
-		return rightHandle;
-	}
-
-	public void setOnUseSelectionButtonClick(OnClickListener listener) {
-		selectionActionsView.setOnUseSelectionButtonClick(listener);
-	}
-
-	public void setOnSearchButtonClick(OnClickListener listener) {
-		selectionActionsView.setOnSearchButtonClick(listener);
-	}
-
 	public void showSelectionHandles() {
 		registerOnScrollListener();
 
@@ -88,14 +64,12 @@ public class PhraseDefinitionView extends TextView implements OnScrollChangedLis
 		rightHandle.setPositionAt(getSelectionEnd());
 		rightHandle.show();
 
-		selectionActionsView.show();
 		justShowedSelectionWithHandles = true;
 	}
 
 	public void removeSelectionWithHandles() {
 		leftHandle.dismiss();
 		rightHandle.dismiss();
-		selectionActionsView.dismiss();
 		deregisterOnScrollListener();
 		Selection.setSelection((Spannable) getText(), getSelectionStart(), getSelectionStart());
 	}
@@ -103,6 +77,10 @@ public class PhraseDefinitionView extends TextView implements OnScrollChangedLis
 	@Override
 	protected MovementMethod getDefaultMovementMethod() {
 		return ArrowKeyMovementMethod.getInstance();
+	}
+
+	public void setSelectionManualRemoveListener(SelectionManualRemoveListener selectionManualRemoveListener) {
+		this.selectionManualRemoveListener = selectionManualRemoveListener;
 	}
 
 	@Override
@@ -115,6 +93,9 @@ public class PhraseDefinitionView extends TextView implements OnScrollChangedLis
 		} else if (event.getActionMasked() == MotionEvent.ACTION_UP /*UP event is suppressed when long clicked*/
 				&& !justShowedSelectionWithHandles && (leftHandle.isActive() || rightHandle.isActive())) {
 			removeSelectionWithHandles();
+			if (selectionManualRemoveListener != null) {
+				selectionManualRemoveListener.onSelectionManualRemove();
+			}
 		}
 
 		return result;
@@ -185,7 +166,7 @@ public class PhraseDefinitionView extends TextView implements OnScrollChangedLis
 		canvas.drawPath(phraseMarkPath, phraseMarkPaint);
 	}
 
-	private void useSelectionAsPhrase() {
+	public void markSelectionAsCardTitle() {
 		SelectionUtils.removePhraseMark((Spannable) getText());
 		invalidate(); // removes the previous mark from the text view
 		SelectionUtils.setSelectionAsPhrase((Spannable) getText());
@@ -200,17 +181,10 @@ public class PhraseDefinitionView extends TextView implements OnScrollChangedLis
 		if (rightHandle.isActive()) {
 			rightHandle.refreshHandle();
 		}
-		if (selectionActionsView.isActive()) {
-			selectionActionsView.refreshPanel();
-		}
 	}
 
 	public void setWorkingAreaVisibleRect(Rect workingAreaVisibleRect) {
 		this.workingAreaVisibleRect = workingAreaVisibleRect;
-	}
-
-	Rect getWorkingAreaVisibleRect() {
-		return workingAreaVisibleRect;
 	}
 
 	private void autoScrollDownWhenDraggingRightHandle() {

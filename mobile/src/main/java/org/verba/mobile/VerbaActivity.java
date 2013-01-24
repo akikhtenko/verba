@@ -13,7 +13,6 @@ import android.view.ViewConfiguration;
 import android.widget.ImageButton;
 
 import com.actionbarsherlock.app.ActionBar;
-import com.actionbarsherlock.view.MenuItem;
 import com.github.rtyley.android.sherlock.roboguice.activity.RoboSherlockActivity;
 
 public abstract class VerbaActivity extends RoboSherlockActivity {
@@ -41,32 +40,6 @@ public abstract class VerbaActivity extends RoboSherlockActivity {
 			startActivity(commandToOpenDictionariesManager);
 		}
 	};
-
-	@Override
-	public boolean onOptionsItemSelected(MenuItem menuItem) {
-		switch (menuItem.getItemId()) {
-		case R.id.searchMenuItem:
-			openScreen(PhraseLookupActivity.class);
-			return true;
-		case R.id.cardsMenuItem:
-			openScreen(CardSetPickerActivity.class);
-			return true;
-		case R.id.dictionariesMenuItem:
-			openScreen(DictionariesLoaderActivity.class);
-			return true;
-		case R.id.settingsMenuItem:
-			openScreen(PhraseLookupActivity.class);
-			return true;
-		default:
-			return super.onOptionsItemSelected(menuItem);
-		}
-	}
-
-	@SuppressWarnings("rawtypes")
-	private void openScreen(Class clazz) {
-		Intent commandToOpenDictionary = new Intent(VerbaActivity.this, clazz);
-		startActivity(commandToOpenDictionary);
-	}
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {

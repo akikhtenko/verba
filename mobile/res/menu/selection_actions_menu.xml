@@ -1,0 +1,5 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/createCardSelectionAction" android:title="New card" android:icon="@drawable/memo" android:showAsAction="ifRoom|withText"/>
+    <item android:id="@+id/markPhraseSelectionAction" android:title="Set card title" android:icon="@drawable/use_selection" android:showAsAction="ifRoom|withText"/>
+    <item android:id="@+id/searchSelectionAction" android:title="Search" android:icon="@drawable/search" android:showAsAction="ifRoom|withText"/>
+</menu>

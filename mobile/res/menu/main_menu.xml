@@ -1,6 +1,0 @@
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:id="@+id/searchMenuItem" android:title="Search" android:showAsAction="ifRoom|withText"/>
-    <item android:id="@+id/cardsMenuItem" android:title="Cards" android:showAsAction="ifRoom|withText"/>
-    <item android:id="@+id/dictionariesMenuItem" android:title="Dictionaries" android:showAsAction="ifRoom|withText"/>
-    <item android:id="@+id/settingsMenuItem" android:title="Settings" android:showAsAction="ifRoom|withText"/>
-</menu>

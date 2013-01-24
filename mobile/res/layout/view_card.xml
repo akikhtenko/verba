@@ -10,21 +10,13 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="0.1"
-        android:textColor="@color/phrase_definition_details_text"
-        android:padding="5dip"
-        android:layout_margin="10dip"
-        android:background="@drawable/border"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
-
+        style="@style/Verba.EditText"/>
+    
     <TextView
         android:id="@+id/definition"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="0.9"
-        android:textColor="@color/phrase_definition_details_text"
-        android:padding="5dip"
-        android:layout_margin="10dip"
-        android:background="@drawable/border"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
+        style="@style/Verba.EditText"/>
 
 </LinearLayout>
