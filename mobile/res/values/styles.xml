@@ -20,8 +20,10 @@
     </style>
     
     <style name="Widget.Styled.ActionBar" parent="@style/Widget.Sherlock.ActionBar">
-        <item name="android:displayOptions">showCustom</item>
-        <item name="displayOptions">showCustom</item>
+        <item name="android:displayOptions">showTitle|showHome|useLogo|showCustom</item>
+        <item name="displayOptions">showTitle|showHome|useLogo|showCustom</item>
+        <item name="android:background">@drawable/abs__cab_background_top_holo_dark</item>
+        <item name="background">@drawable/abs__cab_background_top_holo_dark</item>
     </style>
     
     <style name="Verba.Button"/>
