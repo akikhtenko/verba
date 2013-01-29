@@ -40,6 +40,13 @@ public abstract class VerbaActivity extends RoboSherlockActivity {
 			startActivity(commandToOpenDictionariesManager);
 		}
 	};
+	private OnClickListener openPreferencesButtonListener = new OnClickListener() {
+		@Override
+		public void onClick(View v) {
+			Intent commandToOpenVerbaPreferences = new Intent(VerbaActivity.this, VerbaPreferences.class);
+			startActivity(commandToOpenVerbaPreferences);
+		}
+	};
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +59,7 @@ public abstract class VerbaActivity extends RoboSherlockActivity {
 		setupOpenDictionaryButton();
 		setupOpenCardSetPickerButton();
 		setupOpenDictionariesManagerButton();
+		setupOpenVerbaPreferencesButton();
 	}
 
 	private void hackSherlockActionBarToShowOverlayAtAllTimes() {
@@ -82,6 +90,11 @@ public abstract class VerbaActivity extends RoboSherlockActivity {
 	private void setupOpenDictionariesManagerButton() {
 		ImageButton button = (ImageButton) findViewById(R.id.dictionariesMenuButton);
 		button.setOnClickListener(openDictionariesManagerButtonListener);
+	}
+
+	private void setupOpenVerbaPreferencesButton() {
+		ImageButton button = (ImageButton) findViewById(R.id.settingsMenuButton);
+		button.setOnClickListener(openPreferencesButtonListener);
 	}
 
 	/**

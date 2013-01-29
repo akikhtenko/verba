@@ -11,6 +11,7 @@ import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
 import android.content.Intent;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
@@ -54,6 +55,7 @@ public class PhraseLookupActivity extends VerbaActivity implements OnClickListen
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
+		PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
 		setupLookupButton();
 		phraseSuggestionsList.setOnItemClickListener(this);
 	}

@@ -11,6 +11,7 @@
     <string name="addCardSetDialogLabel">Create new card set</string>
     <string name="pickCardSetLabel">Choose Card Set To View</string>
     <string name="pickCardLabel">Choose Card To View</string>
+    <string name="verbaPreferencesLabel">Verba Preferences</string>
     <string name="cardSetNameHint">Enter card set name</string>
     <string name="doAddCardSetNameButtonLabel">Save</string>
     <string name="cardSetAdded">A new card set has been created</string>
@@ -26,6 +27,9 @@
     <string name="deleteCardSetMenuItemTitle">Delete</string>
 
     <string name="errorPhraseLookupFailed">Error occured while looking up the phrase</string>
+    
+    <string name="pref_theme">Color theme</string>
+    <string name="pref_fontsize">Font size</string>
     
     <item type="string" name="databaseVersion" format="integer">1</item>
 
