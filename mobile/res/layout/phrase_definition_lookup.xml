@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout 
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:bind="http://robobinding.org/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent" 
     android:orientation="vertical">
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content" >
-    
     
             <EditText
                 android:id="@+id/wordToFindField"
@@ -15,14 +16,16 @@
                 android:hint="@string/wordToFindHint"
                 android:layout_width="0dip"
                 android:singleLine="true" android:layout_weight="1"
-                style="@style/Verba.EditLine"/>
+                style="@style/Verba.EditLine"
+                bind:text="${phraseToLookup}"/>
     
             <Button
                 android:id="@+id/lookupButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/lookupButtonLabel"
-                style="@style/Verba.Button"/>
+                style="@style/Verba.Button"
+                bind:onClick="lookupPhrase"/>
     
     </LinearLayout>
     
@@ -30,5 +33,8 @@
         android:id="@+id/phraseSuggestions"
         android:layout_width="match_parent"
         android:layout_height="0dip" 
-        android:layout_weight="1"/>
+        android:layout_weight="1"
+        bind:source="{suggestions}"
+        bind:itemLayout="@layout/suggestion_list_item"
+        bind:onItemClick="phraseSuggestionSelected"/>
 </LinearLayout>

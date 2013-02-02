@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.actionbarsherlock.internal.widget.IcsLinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.actionbarsherlock.internal.widget.IcsLinearLayout 
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:bind="http://robobinding.org/android"
     android:id="@+id/menuLayout"
     android:layout_width="wrap_content"
     android:layout_height="fill_parent"
@@ -20,7 +22,8 @@
             android:layout_width="wrap_content"
             android:layout_height="fill_parent"
             android:background="@null"
-            android:src="@drawable/dictionary" />
+            android:src="@drawable/dictionary"
+            bind:onClick="openDictionary"/>
     </LinearLayout>
 
     <LinearLayout
@@ -34,7 +37,8 @@
             android:layout_width="wrap_content"
             android:layout_height="fill_parent"
             android:background="@null"
-            android:src="@drawable/cards" />
+            android:src="@drawable/cards"
+            bind:onClick="openCardSetPicker"/>
     </LinearLayout>
 
     <LinearLayout
@@ -48,7 +52,8 @@
             android:layout_width="wrap_content"
             android:layout_height="fill_parent"
             android:background="@null"
-            android:src="@drawable/dictionaries" />
+            android:src="@drawable/dictionaries"
+            bind:onClick="openDictionaryManager"/>
     </LinearLayout>
 
     <LinearLayout
@@ -62,7 +67,8 @@
             android:layout_width="wrap_content"
             android:layout_height="fill_parent"
             android:background="@null"
-            android:src="@drawable/settings" />
+            android:src="@drawable/settings"
+            bind:onClick="openVerbaPreferences"/>
     </LinearLayout>
 
 </com.actionbarsherlock.internal.widget.IcsLinearLayout>
