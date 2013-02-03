@@ -25,13 +25,8 @@ public class PhraseDefinitionLookupPresentationModel {
 	private static final int SUGGESTIONS_LIMIT = 100;
 	@Inject private GetSuggestions getSuggestions;
 	@InjectView(R.id.phraseSuggestions) private ListView phraseSuggestionsList;
-	private Activity activity;
+	@Inject private Activity activity;
 	private String phraseToLookup = EMPTY;
-
-	@Inject
-	public PhraseDefinitionLookupPresentationModel(Activity activity) {
-		this.activity = activity;
-	}
 
 	public String getPhraseToLookup() {
 		return phraseToLookup;

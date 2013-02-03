@@ -1,11 +1,20 @@
 package org.verba;
 
+import static org.apache.commons.lang.StringUtils.EMPTY;
+
 
 public class Card {
 	private int id;
 	private String phrase;
 	private String definition;
 	private int cardSetId;
+
+	public static Card emptyCard() {
+		Card card = new Card();
+		card.setPhrase(EMPTY);
+		card.setDefinition(EMPTY);
+		return card;
+	}
 
 	public Card() {
 	}

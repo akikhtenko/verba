@@ -2,6 +2,7 @@ package org.verba.mobile.utils;
 
 import static org.verba.mobile.Verba.getVerbaDirectory;
 
+import org.verba.Card;
 import org.verba.DictionaryEntryRepository;
 import org.verba.DictionaryRepository;
 import org.verba.card.CardRepository;
@@ -15,6 +16,8 @@ import org.verba.interactors.GetNewDictionaries;
 import org.verba.interactors.GetSuggestions;
 import org.verba.interactors.LookupPhrase;
 import org.verba.mobile.Verba;
+import org.verba.mobile.provider.SoughtCardProvider;
+import org.verba.mobile.provider.SoughtCard;
 import org.verba.stardict.definitions.StardictDictionaryDefinitionsGateway;
 import org.verba.stardict.index.DictionaryIndexGateway;
 import org.verba.stardict.index.StardictDictionaryIndexGateway;
@@ -61,6 +64,8 @@ public class VerbaInjectionModule extends AbstractModule {
 		bind(GetCard.class).toInstance(new GetCard(cardRepository));
 		bind(GetCards.class).toInstance(new GetCards(cardRepository));
 		bind(AddCard.class).toInstance(new AddCard(cardRepository));
+
+		bind(Card.class).annotatedWith(SoughtCard.class).toProvider(SoughtCardProvider.class);
 	}
 
 }

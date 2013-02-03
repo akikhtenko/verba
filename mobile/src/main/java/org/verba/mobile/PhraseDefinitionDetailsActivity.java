@@ -18,7 +18,6 @@ import org.verba.stardict.PhraseDefinitionElementDisplay;
 import roboguice.inject.ContentView;
 import roboguice.inject.InjectExtra;
 import roboguice.inject.InjectView;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Spannable;
@@ -50,9 +49,9 @@ public class PhraseDefinitionDetailsActivity extends VerbaActivity implements Se
 	private int lastTapCharOffsetInItsBox;
 	private ActionMode actionMode;
 	@InjectView(R.id.phraseDefinitionShowcase) private ViewGroup phraseDefinitionShowcase;
-	@InjectView(R.id.phraseDefinitionWorkingArea) private ViewGroup phraseDefinitionWorkingArea;
 	@Inject private LookupPhrase lookupPhrase;
 	@InjectExtra(PHRASE_TO_LOOKUP) private String phraseToLookup;
+	@Inject private LayoutInflater layoutInflater;
 
 	private OnLongClickListener phraseDefinitionDetailsViewLongClickListener = new OnLongClickListener() {
 		@Override
@@ -116,9 +115,8 @@ public class PhraseDefinitionDetailsActivity extends VerbaActivity implements Se
 	}
 
 	private void displayText(CharSequence toDisplay) {
-		LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		PhraseDefinitionView phraseDefinitionBox =
-				(PhraseDefinitionView) inflater.inflate(R.layout.phrase_definition_box_template, null);
+				(PhraseDefinitionView) layoutInflater.inflate(R.layout.phrase_definition_box_template, null);
 
 		setupPhraseDefinitionBoxListeners(phraseDefinitionBox);
 		phraseDefinitionBox.setText(toDisplay, BufferType.SPANNABLE);
