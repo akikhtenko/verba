@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:bind="http://robobinding.org/android"
+    android:layout_height="@dimen/item_height"
+    android:layout_width="fill_parent"
+    android:background="@drawable/list_item_style">
+    
+    <ImageView
+      android:id="@id/drag_handle"
+      android:background="@drawable/drag"
+      android:layout_width="wrap_content"
+      android:layout_height="@dimen/item_height"
+      android:layout_alignParentLeft="true"
+      android:layout_alignParentTop="true" />
+    
+    <TextView
+      android:id="@+id/dictionaryItemTitle"
+      android:layout_width="wrap_content"
+      android:layout_height="@dimen/item_height"
+      android:layout_toRightOf="@id/drag_handle"
+      android:gravity="center_vertical"
+      android:layout_gravity="bottom"
+      android:textStyle="normal"
+      android:textSize="18dp"
+      android:textColor="@color/phrase_definition_details_text"
+      android:paddingLeft="8dp"
+      bind:text="{dictionaryName}"/>
+    
+    <ImageView
+      android:id="@id/click_remove"
+      android:background="@drawable/delete"
+      android:layout_width="@dimen/item_height"
+      android:layout_height="@dimen/item_height"
+      android:layout_alignParentTop="true"
+      android:layout_alignParentRight="true"/>
+</RelativeLayout>

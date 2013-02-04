@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.actionbarsherlock.internal.widget.IcsLinearLayout 
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:bind="http://robobinding.org/android"
+    android:id="@+id/menuLayout"
+    android:layout_width="wrap_content"
+    android:layout_height="fill_parent"
+    android:divider="@drawable/abs__list_divider_holo_dark"
+    android:dividerPadding="12dip"
+    android:showDividers="middle"
+    android:gravity="center_vertical|right"
+    android:layout_gravity="right">
+    
+    <LinearLayout
+        style="@style/Widget.Sherlock.ActionButton"
+        android:layout_width="wrap_content"
+        android:layout_height="fill_parent"
+        android:addStatesFromChildren="true">
+
+        <ImageButton
+            android:id="@+id/dictionaryLoaderMenuButton"
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:background="@null"
+            android:src="@drawable/load_dictionary"
+            bind:onClick="openDictionaryLoader"/>
+    </LinearLayout>
+    
+</com.actionbarsherlock.internal.widget.IcsLinearLayout>

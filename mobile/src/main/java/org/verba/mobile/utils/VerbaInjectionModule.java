@@ -12,12 +12,13 @@ import org.verba.interactors.AddCardSet;
 import org.verba.interactors.GetCard;
 import org.verba.interactors.GetCardSet;
 import org.verba.interactors.GetCards;
+import org.verba.interactors.GetDictionary;
 import org.verba.interactors.GetNewDictionaries;
 import org.verba.interactors.GetSuggestions;
 import org.verba.interactors.LookupPhrase;
 import org.verba.mobile.Verba;
-import org.verba.mobile.provider.SoughtCardProvider;
 import org.verba.mobile.provider.SoughtCard;
+import org.verba.mobile.provider.SoughtCardProvider;
 import org.verba.stardict.definitions.StardictDictionaryDefinitionsGateway;
 import org.verba.stardict.index.DictionaryIndexGateway;
 import org.verba.stardict.index.StardictDictionaryIndexGateway;
@@ -55,6 +56,7 @@ public class VerbaInjectionModule extends AbstractModule {
 		bind(CardSetRepository.class).toInstance(cardSetRepository);
 		bind(CardRepository.class).toInstance(cardRepository);
 
+		bind(GetDictionary.class).toInstance(new GetDictionary(dictionaryRepository));
 		bind(GetNewDictionaries.class).toInstance(new GetNewDictionaries(getVerbaDirectory(), dictionaryRepository));
 		bind(GetSuggestions.class).toInstance(new GetSuggestions(dictionaryEntryRepository));
 		bind(LookupPhrase.class).toInstance(new LookupPhrase(dictionaryRepository, dictionaryEntryRepository, dictionaryMetadataGateway,

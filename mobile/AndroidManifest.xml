@@ -27,6 +27,9 @@
             android:screenOrientation="nosensor"
             android:configChanges="keyboardHidden|orientation"
             android:theme="@style/Verba.Theme"/>
+        <activity android:name="DictionaryManagerActivity"
+            android:windowSoftInputMode="stateUnspecified|adjustPan"
+            android:theme="@style/Verba.Theme"/>
         <activity android:name="PhraseDefinitionDetailsActivity"
             android:windowSoftInputMode="stateUnspecified|adjustPan"
             android:theme="@style/Verba.Theme"/>

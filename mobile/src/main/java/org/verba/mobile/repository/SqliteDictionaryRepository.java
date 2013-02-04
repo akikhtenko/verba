@@ -1,5 +1,8 @@
 package org.verba.mobile.repository;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.verba.DictionaryDataObject;
 import org.verba.DictionaryRepository;
 import org.verba.mobile.tools.VerbaDbManager;
@@ -8,6 +11,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 public class SqliteDictionaryRepository implements DictionaryRepository {
+	public static final String SELECT_ALL_DICTIONARIES = "select * from dictionary order by description";
 	public static final String SELECT_DICTIONARY_BY_NAME = "select * from dictionary where name = ?";
 	public static final String SELECT_DICTIONARY_BY_ID = "select * from dictionary where _id = ?";
 	public static final String INSERT_DICTIONARY = "insert into dictionary (name, description) values (?, ?)";
@@ -17,6 +21,12 @@ public class SqliteDictionaryRepository implements DictionaryRepository {
 
 	public SqliteDictionaryRepository(VerbaDbManager aVerbaDbManager) {
 		database = aVerbaDbManager.getWritableDatabase();
+	}
+
+	@Override
+	public List<DictionaryDataObject> getAllDictionaries() {
+		Cursor dictionariesCursor = queryAllDictionaries();
+		return extractDictionariesFromCursor(dictionariesCursor);
 	}
 
 	public DictionaryDataObject getDictionaryByName(String dictionaryName) {
@@ -73,6 +83,13 @@ public class SqliteDictionaryRepository implements DictionaryRepository {
 		database.execSQL(DELETE_DICTIONARY, new Object[] { dictionaryDataObject.getId() });
 	}
 
+	private List<DictionaryDataObject> extractDictionariesFromCursor(Cursor cursor) {
+		List<DictionaryDataObject> result = new ArrayList<DictionaryDataObject>();
+		while (cursor.moveToNext()) {
+			result.add(extractDictionaryFromCursor(cursor));
+		}
+		return result;
+	}
 
 	private DictionaryDataObject extractDictionaryFromCursor(Cursor dictionariesCursor) {
 		DictionaryDataObject dictionary = new DictionaryDataObject();
@@ -117,6 +134,10 @@ public class SqliteDictionaryRepository implements DictionaryRepository {
 
 	private Cursor queryDictionaryById(int dictionaryId) {
 		return database.rawQuery(SELECT_DICTIONARY_BY_ID, new String[] { String.valueOf(dictionaryId) });
+	}
+
+	private Cursor queryAllDictionaries() {
+		return database.rawQuery(SELECT_ALL_DICTIONARIES, null);
 	}
 
 	public static class NoDictionaryFoundException extends RuntimeException {

@@ -1,19 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout 
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:dslv="http://schemas.android.com/apk/res/org.verba.mobile"
+    xmlns:bind="http://robobinding.org/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent" 
-    android:orientation="vertical"
-    android:background="@color/phrase_definition_details_background">
+    android:orientation="vertical">
     
-    <!--<ListView
-        android:id="@+id/cardSets"
-        android:layout_width="fill_parent"
-        android:layout_height="0dip" android:layout_weight="1">
-    </ListView>-->
-
     <com.mobeta.android.dslv.DragSortListView
-        android:id="@+id/cardSets"
+        android:id="@+id/dictionaries"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:padding="3dp"
@@ -28,6 +23,8 @@
         dslv:drag_handle_id="@id/drag_handle"
         dslv:remove_enabled="true"
         dslv:remove_mode="clickRemove"
-        dslv:click_remove_id="@id/click_remove" />
+        dslv:click_remove_id="@id/click_remove"
+        bind:source="{dictionaries}"
+        bind:itemLayout="@layout/dictionary_list_item"/>
 
 </LinearLayout>

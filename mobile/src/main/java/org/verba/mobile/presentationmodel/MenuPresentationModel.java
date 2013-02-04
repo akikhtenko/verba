@@ -2,7 +2,7 @@ package org.verba.mobile.presentationmodel;
 
 import org.robobinding.presentationmodel.PresentationModel;
 import org.verba.mobile.CardSetPickerActivity;
-import org.verba.mobile.DictionariesLoaderActivity;
+import org.verba.mobile.DictionaryManagerActivity;
 import org.verba.mobile.PhraseLookupActivity;
 import org.verba.mobile.VerbaActivity;
 import org.verba.mobile.VerbaPreferences;
@@ -26,7 +26,7 @@ public class MenuPresentationModel {
 	}
 
 	public void openDictionaryManager() {
-		gotoVerbaActivity(DictionariesLoaderActivity.class);
+		gotoVerbaActivity(DictionaryManagerActivity.class);
 	}
 
 	public void openVerbaPreferences() {
