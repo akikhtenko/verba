@@ -4,6 +4,7 @@ public class DictionaryDataObject {
 	private int id;
 	private String name;
 	private String description;
+	private int position;
 
 	public int getId() {
 		return id;
@@ -22,5 +23,11 @@ public class DictionaryDataObject {
 	}
 	public void setDescription(String description) {
 		this.description = description;
+	}
+	public int getPosition() {
+		return position;
+	}
+	public void setPosition(int position) {
+		this.position = position;
 	}
 }

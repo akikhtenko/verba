@@ -7,4 +7,5 @@ public interface DictionaryRepository {
 	int addDictionary(DictionaryDataObject dictionaryDataObject);
 	boolean exists(String dictionaryName);
 	DictionaryDataObject getDictionaryById(int dictionaryId);
+	void moveToPosition(DictionaryDataObject dictionaryDataObject, int position);
 }

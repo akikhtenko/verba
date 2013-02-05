@@ -31,6 +31,6 @@
     <string name="pref_theme">Color theme</string>
     <string name="pref_fontsize">Font size</string>
     
-    <item type="string" name="databaseVersion" format="integer">1</item>
+    <item type="string" name="databaseVersion" format="integer">2</item>
 
 </resources>

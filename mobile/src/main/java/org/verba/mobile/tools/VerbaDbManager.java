@@ -27,7 +27,11 @@ public class VerbaDbManager extends SQLiteOpenHelper {
 
 	@Override
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-		executeQueriesBatch(db, "update_database.sql");
+		int migrationNumber = oldVersion;
+		while (migrationNumber < newVersion) {
+			executeQueriesBatch(db, String.format("update_database_from_%s.sql", migrationNumber));
+			migrationNumber++;
+		}
 	}
 
 	private void executeQueriesBatch(SQLiteDatabase db, String batchFile) {

@@ -11,11 +11,15 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 public class SqliteDictionaryRepository implements DictionaryRepository {
-	public static final String SELECT_ALL_DICTIONARIES = "select * from dictionary order by description";
+	public static final String SELECT_ALL_DICTIONARIES = "select * from dictionary order by position";
 	public static final String SELECT_DICTIONARY_BY_NAME = "select * from dictionary where name = ?";
 	public static final String SELECT_DICTIONARY_BY_ID = "select * from dictionary where _id = ?";
-	public static final String INSERT_DICTIONARY = "insert into dictionary (name, description) values (?, ?)";
+	public static final String INSERT_DICTIONARY = "insert into dictionary (name, description, position) "
+			+ "values (?, ?, (SELECT IFNULL(MAX(position)+1, 1) FROM dictionary))";
 	public static final String DELETE_DICTIONARY = "delete from dictionary where _id = ?";
+	public static final String SHIFT_POSITIONS_UP = "update dictionary set position = position-1 where position > ? and position <= ?";
+	public static final String SHIFT_POSITIONS_DOWN = "update dictionary set position = position+1 where position >= ? and position < ?";
+	public static final String ASSIGN_NEW_POSITION = "update dictionary set position = ? where _id = ?";
 
 	private SQLiteDatabase database;
 
@@ -69,6 +73,42 @@ public class SqliteDictionaryRepository implements DictionaryRepository {
 		return getInsertedDictionaryId(dictionaryDataObject);
 	}
 
+	@Override
+	public void moveToPosition(DictionaryDataObject dictionaryDataObject, int position) {
+		database.beginTransaction();
+		try {
+			doMoveToPosition(dictionaryDataObject, position);
+			database.setTransactionSuccessful();
+		} finally {
+			database.endTransaction();
+		}
+	}
+
+	private void doMoveToPosition(DictionaryDataObject dictionaryDataObject, int newPosition) {
+		if (dictionaryDataObject.getPosition() == newPosition) {
+			return;
+		}
+
+		if (newPosition > dictionaryDataObject.getPosition()) {
+			shiftUpAllDictionariesBetween(dictionaryDataObject.getPosition(), newPosition);
+		} else {
+			shiftDownAllDictionariesBetween(newPosition, dictionaryDataObject.getPosition());
+		}
+		assignNewPosition(dictionaryDataObject, newPosition);
+	}
+
+	private void shiftUpAllDictionariesBetween(int newPosition, int oldPosition) {
+		database.execSQL(SHIFT_POSITIONS_UP, new Object[] { newPosition, oldPosition });
+	}
+
+	private void shiftDownAllDictionariesBetween(int oldPosition, int newPosition) {
+		database.execSQL(SHIFT_POSITIONS_DOWN, new Object[] { oldPosition, newPosition });
+	}
+
+	private void assignNewPosition(DictionaryDataObject dictionaryDataObject, int newPosition) {
+		database.execSQL(ASSIGN_NEW_POSITION, new Object[] { newPosition, dictionaryDataObject.getId() });
+	}
+
 	private int getInsertedDictionaryId(DictionaryDataObject dictionaryDataObject) {
 		Cursor dictionaryCursor = queryDictionaryByName(dictionaryDataObject.getName());
 
@@ -96,6 +136,7 @@ public class SqliteDictionaryRepository implements DictionaryRepository {
 		dictionary.setId(dictionariesCursor.getInt(dictionariesCursor.getColumnIndex("_id")));
 		dictionary.setName(dictionariesCursor.getString(dictionariesCursor.getColumnIndex("name")));
 		dictionary.setDescription(dictionariesCursor.getString(dictionariesCursor.getColumnIndex("description")));
+		dictionary.setPosition(dictionariesCursor.getInt(dictionariesCursor.getColumnIndex("position")));
 
 		return dictionary;
 	}
